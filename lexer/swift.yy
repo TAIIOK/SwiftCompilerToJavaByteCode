@@ -16,7 +16,7 @@
 %%
 
 "/*" {strcat(strconst," "); strcat(strconst,yytext); BEGIN(COMMENT); }
-<COMMENT>"*/" {strcat(strconst,yytext); printf("%s",strconst); BEGIN(INITIAL);}
+<COMMENT>"*/" {strcat(strconst,yytext); printf("Found multiple line comment %s",strconst); BEGIN(INITIAL);}
 <COMMENT>([^*]|\n)+|. {strcat(strconst,yytext);}
 <COMMENT><<EOF>> {printf("Unterminated comment\n");return 0;}
 
