@@ -4,7 +4,7 @@
 //
 
 /*
-
+ 
  {"StickerPacks":[
  {
  "name": "test",
@@ -32,16 +32,17 @@ __ == "s"
 
 var trueBool:Bool = true
 var falseBool:Bool = false
-var int:int = 0
-var char:char = "s"
-var string:string = "string"
-var double:double = 0.1
-var float:float = 0.1
+
+var int:Int = 0
+var char:Character = "s"
+var string:String = "string"
+var doublevar:Double = 0.1
+var float:Float = 0.1
 
 
-var string = "testing string"
+var stringvar = "testing string"
 
-if (trueBool | falseBool )
+if (trueBool || falseBool )
 {
 }
 
@@ -49,12 +50,11 @@ if (trueBool && falseBool )
 {
 }
 
-&__
 
 if(varuble == constant){
-
+    
     print("равны")
-
+    
 }
 else if (varuble < constant){
 }
@@ -65,11 +65,26 @@ while varuble==constant{
 }
 
 repeat{
-
-print ("")
-
+    
+    print("")
+    
 }while (varuble>constant)
 
 for index in 1...5 {
     print("\(index) times 5 is \(index * 5)")
 }
+
+func myFunc(dad:Int) -> Bool {
+    return true
+}
+
+switch trueBool {
+    
+case true: break
+    
+case false: break
+    
+default: break
+    
+}
+

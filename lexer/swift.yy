@@ -37,7 +37,6 @@
 "..."						  printf("Found \"...\"\n");
 "repeat"                      printf("Found \"repeat\"\n");
 "return"                      printf("Found \"return\"\n");
-"break"                       printf("Found \"break\"\n");
 "nil"                         printf("Found \"nil\"\n");
 "true"                        printf("Found \"true\" constant\n");
 "false"                       printf("Found \"false\" constant\n");
@@ -45,7 +44,7 @@
 "error"                       printf("Found \"error\" call\n");
 "print"                       printf("Found \"print\" call\n");
 "local"                       printf("Found \"local\" (variable declaration)\n");
-"function"                    printf("Found \"function\" (function declaration)\n");
+"func"                        printf("Found \"function\" (function declaration)\n");
 ">"                           printf("Found \">\"\n");
 "<"                           printf("Found \"<\"\n");
 "-"                           printf("Found \"-\"\n");
@@ -69,12 +68,23 @@
 "\n"						  printf("Found \"find new line symbol\"\n");
 ":"                           printf("Found \":\"\n");
 
-"int"						  printf("Found \"int\"\n");
-"char"						  printf("Found \"char\"\n");
-"string"					  printf("Found \"String\"\n");
-"Bool" 						  printf("Found \"bool\"\n");
-"float" 				      printf("Found \"float\"\n");
-"double" 					  printf("Found \"double\"\n");
+"->"                           printf("Found \"function type arrow\"\n");
+
+
+"||"                           printf("Found \"or\"\n");
+"&&"                           printf("Found \"&&\"\n");
+
+"Int"						  printf("Found \"Int type\"\n");
+"Character"				      printf("Found \"Char type\"\n");
+"String"					  printf("Found \"String type\"\n");
+"Bool" 						  printf("Found \"Bool type\"\n");
+"Float" 				      printf("Found \"Float type\"\n");
+"Double" 					  printf("Found \"Double type\"\n");
+
+"switch"						  printf("Found \"switch\" \n");
+"case"						  printf("Found \"case\" \n");
+"default"						  printf("Found \"default\"\n");
+"break"						  printf("Found \"break\"\n");
 
 "0x"[A-F0-9]+                 printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
 [+-]?[0-9]+                   printf("Found decimal: %d\n",atoi(yytext));
