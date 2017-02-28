@@ -28,8 +28,8 @@
 "let"						  printf("Found \"let\"\n");
 "import"					  printf("Found \"import\"\n");
 "while"                       printf("Found \"while\"\n");
-"end"                         printf("Found \"end\"\n");
 "for"                         printf("Found \"for\"\n");
+"in"						  printf("Found \"in\"\n");
 "if"                          printf("Found \"if\"\n");
 "else if"                     printf("Found \"else if\"\n");
 "else"                        printf("Found \"else\"\n");
@@ -38,9 +38,6 @@
 "repeat"                      printf("Found \"repeat\"\n");
 "return"                      printf("Found \"return\"\n");
 "break"                       printf("Found \"break\"\n");
-"not"                         printf("Found logical \"not\"\n");
-"and"                         printf("Found logical \"and\"\n");
-"or"                          printf("Found logical \"or\"\n");
 "nil"                         printf("Found \"nil\"\n");
 "true"                        printf("Found \"true\" constant\n");
 "false"                       printf("Found \"false\" constant\n");
@@ -69,7 +66,15 @@
 "["                           printf("Found \"[\"\n");
 "]"                           printf("Found \"]\"\n");
 ";"                           printf("Found \";\"\n");
+"\n"						  printf("Found \"find new line symbol\"\n");
 ":"                           printf("Found \":\"\n");
+
+"int"						  printf("Found \"int\"\n");
+"char"						  printf("Found \"char\"\n");
+"string"					  printf("Found \"String\"\n");
+"Bool" 						  printf("Found \"bool\"\n");
+"float" 				      printf("Found \"float\"\n");
+"double" 					  printf("Found \"double\"\n");
 
 "0x"[A-F0-9]+                 printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
 [+-]?[0-9]+                   printf("Found decimal: %d\n",atoi(yytext));

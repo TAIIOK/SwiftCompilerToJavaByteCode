@@ -30,7 +30,26 @@ var __ = SD
 
 __ == "s"
 
+var trueBool:Bool = true
+var falseBool:Bool = false
+var int:int = 0
+var char:char = "s"
+var string:string = "string"
+var double:double = 0.1
+var float:float = 0.1
+
+
 var string = "testing string"
+
+if (trueBool | falseBool )
+{
+}
+
+if (trueBool && falseBool )
+{
+}
+
+&__
 
 if(varuble == constant){
 
