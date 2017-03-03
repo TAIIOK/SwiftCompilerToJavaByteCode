@@ -9,6 +9,7 @@
     char strconst[1281] = {0};
 	int convertOctalToDecimal(int octalNumber);
 	int convertBinaryToDecimal(int n);
+	void print (char *string);
 	
 %}
 
@@ -25,7 +26,7 @@
 
 "//".*                        printf("Found single line comment \n");
 
-\"([^\\\"]|\\.)*\"            printf("String %s\n",yytext);
+\"([^\\\"]|\\.)*\"            {	printf("Found String:");print(yytext);};
 
 "var"						  printf("Found key word \"var\"\n");
 "let"						  printf("Found key word \"let\"\n");
@@ -45,8 +46,6 @@
 "false"                       printf("Found \"false\" constant\n");
 "self"                        printf("Found \"self\" (like this pointer)");
 "error"                       printf("Found \"error\" call\n");
-"print"                       printf("Found \"print\" call\n");
-"readLine"					  printf("Found \"readLine\" call\n");
 "func"                        printf("Found \"function\" (function declaration)\n");
 ">"                           printf("Found \">\"\n");
 "<"                           printf("Found \"<\"\n");
@@ -89,12 +88,12 @@
 "default"					  printf("Found \"default\"\n");
 "break"						  printf("Found \"break\"\n");
 
-("!"[a-zA-Z])+[a-zA-Z0-9_]* 	  printf("Found \"not\" %s\"\n",yytext);
-"!"    printf("Found \"adduction type\"\n");
+
+"!"    						  printf("Found \"not\"\n");
 
 
-"0b"[01]+                 printf("Found binary: %d\n",convertBinaryToDecimal(atoi(yytext+2)));
-"0o"[0-7]+                 printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
+"0b"[01]+                     printf("Found binary: %d\n",convertBinaryToDecimal(atoi(yytext+2)));
+"0o"[0-7]+                    printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
 "0x"[A-F0-9]+                 printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
 [+-]?[0-9]+                   printf("Found decimal: %d\n",atoi(yytext));
 ([_]|[a-zA-Z])+[a-zA-Z0-9_]*  printf("Found identifier: %s\n",yytext);
@@ -144,4 +143,43 @@ int convertBinaryToDecimal(int n)
     return decimalNumber;
 }
 
+void print (char *string)
+{
+	   int l = strlen(string);
+
+	   	   for (int c = 0; c < l; c++)
+	   	   {
+		   	if(string[c] == '\\')
+		   {
+			   switch ( string[c+1] ) {
+			   case '\"':
+			   printf("\"");
+			   break;
+			   case '\\':
+			   printf("\\");
+			   break;
+			   case 'n':
+			   printf("\n");
+			   break;
+			   case 'r':
+			   printf("\r");
+			   break;
+			   case 't':
+			   printf("\t");
+			   break;
+			   default:
+			   printf("%c",string[c]);
+			   c--;  
+			   break;		 
+			   }
+			   c++;
+			   continue;
+		   	  		   
+		   }
+		   printf("%c",string[c]);	
+		   }
+		   printf("\n");
+	   
+   
+}
 
