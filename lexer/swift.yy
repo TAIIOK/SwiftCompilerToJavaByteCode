@@ -16,17 +16,29 @@
 %option noyywrap
 %option yylineno
 %x COMMENT
-
+%x STRING_Q
 %%
 
 "/*" {strcat(strconst," "); strcat(strconst,yytext); BEGIN(COMMENT); }
-<COMMENT>"*/" {strcat(strconst,yytext); printf("Found multiple line comment "); BEGIN(INITIAL);}
+<COMMENT>"*/" {strcat(strconst,yytext); printf("Found multiple line comment \n");  BEGIN(INITIAL);}
 <COMMENT>([^*]|\n)+|. {strcat(strconst,yytext);}
 <COMMENT><<EOF>> {printf("Unterminated comment\n");return 0;}
 
 "//".*                        printf("Found single line comment \n");
 
-\"([^\\\"]|\\.)*\"            {	printf("Found String:");print(yytext);};
+\"                            { BEGIN(STRING_Q); strcpy(strconst, ""); }
+<STRING_Q>\\                  strcat(strconst, "\\");
+<STRING_Q>\\\"                strcat(strconst, "\"");
+<STRING_Q>\\r                 strcat(strconst, "\r");
+<STRING_Q>\\t                 strcat(strconst, "\t");
+<STRING_Q>\\n                 strcat(strconst, "\n");
+<STRING_Q>\\\\                strcat(strconst, "\\");
+<STRING_Q>[^\\\n\"]+          strcat(strconst,yytext);
+<STRING_Q>\"                  {
+								 printf("Found String: %s \n",strconst);
+                                  BEGIN(INITIAL);
+                              }
+<STRING_Q>.|[\n\r\f\t\v]      ;
 
 "var"						  printf("Found key word \"var\"\n");
 "let"						  printf("Found key word \"let\"\n");
