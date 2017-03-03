@@ -754,16 +754,14 @@ char *yytext;
 	
     char strconst[1281] = {0};
 	int convertOctalToDecimal(int octalNumber);
-	int convertBinaryToDecimal(int n);
-	void print (char *string);
-	
+	int convertBinaryToDecimal(int n);	
 
 
-#line 763 "lex.yy.c"
+#line 761 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
-#define STRING_Q 2
+#define STRING 2
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -943,10 +941,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 20 "swift.yy"
+#line 18 "swift.yy"
 
 
-#line 950 "lex.yy.c"
+#line 948 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -1041,72 +1039,72 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "swift.yy"
-{strcat(strconst," "); strcat(strconst,yytext); BEGIN(COMMENT); }
+#line 20 "swift.yy"
+{BEGIN(COMMENT); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 23 "swift.yy"
-{strcat(strconst,yytext); printf("Found multiple line comment \n");  BEGIN(INITIAL);}
+#line 21 "swift.yy"
+{printf("Found multiple line comment \n");  BEGIN(INITIAL);}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 24 "swift.yy"
-{strcat(strconst,yytext);}
+#line 22 "swift.yy"
+{}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 25 "swift.yy"
+#line 23 "swift.yy"
 {printf("Unterminated comment\n");return 0;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 27 "swift.yy"
+#line 25 "swift.yy"
 printf("Found single line comment \n");
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 29 "swift.yy"
-{ BEGIN(STRING_Q); strcpy(strconst, ""); }
+#line 27 "swift.yy"
+{ BEGIN(STRING); strcpy(strconst, ""); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "swift.yy"
+#line 28 "swift.yy"
 strcat(strconst, "\\");
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 31 "swift.yy"
+#line 29 "swift.yy"
 strcat(strconst, "\"");
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 32 "swift.yy"
+#line 30 "swift.yy"
 strcat(strconst, "\r");
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 33 "swift.yy"
+#line 31 "swift.yy"
 strcat(strconst, "\t");
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 34 "swift.yy"
+#line 32 "swift.yy"
 strcat(strconst, "\n");
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 35 "swift.yy"
+#line 33 "swift.yy"
 strcat(strconst, "\\");
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 36 "swift.yy"
+#line 34 "swift.yy"
 strcat(strconst,yytext);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 37 "swift.yy"
+#line 35 "swift.yy"
 {
 								 printf("Found String: %s \n",strconst);
                                   BEGIN(INITIAL);
@@ -1115,342 +1113,342 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 41 "swift.yy"
+#line 39 "swift.yy"
 ;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 43 "swift.yy"
+#line 41 "swift.yy"
 printf("Found key word \"var\"\n");
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 44 "swift.yy"
+#line 42 "swift.yy"
 printf("Found key word \"let\"\n");
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 45 "swift.yy"
+#line 43 "swift.yy"
 printf("Found key word \"import\"\n");
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 46 "swift.yy"
+#line 44 "swift.yy"
 printf("Found key word \"while\"\n");
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 47 "swift.yy"
+#line 45 "swift.yy"
 printf("Found key word \"for\"\n");
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 48 "swift.yy"
+#line 46 "swift.yy"
 printf("Found key word \"in\"\n");
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 49 "swift.yy"
+#line 47 "swift.yy"
 printf("Found key word \"if\"\n");
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 50 "swift.yy"
+#line 48 "swift.yy"
 printf("Found key word \"else if\"\n");
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 51 "swift.yy"
+#line 49 "swift.yy"
 printf("Found key word \"else\"\n");
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 52 "swift.yy"
+#line 50 "swift.yy"
 printf("Found key word \"do\"\n");
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 53 "swift.yy"
+#line 51 "swift.yy"
 printf("Found range word  \"...\"\n");
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 54 "swift.yy"
+#line 52 "swift.yy"
 printf("Found key word \"repeat\"\n");
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 55 "swift.yy"
+#line 53 "swift.yy"
 printf("Found key word \"return\"\n");
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 56 "swift.yy"
+#line 54 "swift.yy"
 printf("Found key word \"nil\"\n");
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 57 "swift.yy"
+#line 55 "swift.yy"
 printf("Found \"true\" constant\n");
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 58 "swift.yy"
+#line 56 "swift.yy"
 printf("Found \"false\" constant\n");
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 59 "swift.yy"
+#line 57 "swift.yy"
 printf("Found \"self\" (like this pointer)");
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 60 "swift.yy"
+#line 58 "swift.yy"
 printf("Found \"error\" call\n");
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 61 "swift.yy"
+#line 59 "swift.yy"
 printf("Found \"function\" (function declaration)\n");
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 62 "swift.yy"
+#line 60 "swift.yy"
 printf("Found \">\"\n");
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 63 "swift.yy"
+#line 61 "swift.yy"
 printf("Found \"<\"\n");
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 64 "swift.yy"
+#line 62 "swift.yy"
 printf("Found \"-\"\n");
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 65 "swift.yy"
+#line 63 "swift.yy"
 printf("Found \"*\"\n");
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 66 "swift.yy"
+#line 64 "swift.yy"
 printf("Found \"/\"\n");
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 67 "swift.yy"
+#line 65 "swift.yy"
 printf("Found \"%\"\n");
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 68 "swift.yy"
+#line 66 "swift.yy"
 printf("Found \"==\"\n");
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 69 "swift.yy"
+#line 67 "swift.yy"
 printf("Found \"=>\"\n");
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 70 "swift.yy"
+#line 68 "swift.yy"
 printf("Found \"<=\"\n");
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 71 "swift.yy"
+#line 69 "swift.yy"
 printf("Found \"=\"\n");
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 72 "swift.yy"
+#line 70 "swift.yy"
 printf("Found \",\"\n");
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 73 "swift.yy"
+#line 71 "swift.yy"
 printf("Found \"+\"\n");
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 74 "swift.yy"
+#line 72 "swift.yy"
 printf("Found \".\"\n");
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 75 "swift.yy"
+#line 73 "swift.yy"
 printf("Found \"(\"\n");
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 76 "swift.yy"
+#line 74 "swift.yy"
 printf("Found \")\"\n");
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 77 "swift.yy"
+#line 75 "swift.yy"
 printf("Found \"{\"\n");
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 78 "swift.yy"
+#line 76 "swift.yy"
 printf("Found \"}\"\n");
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 79 "swift.yy"
+#line 77 "swift.yy"
 printf("Found \"[\"\n");
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 80 "swift.yy"
+#line 78 "swift.yy"
 printf("Found \"]\"\n");
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 81 "swift.yy"
+#line 79 "swift.yy"
 printf("Found \";\"\n");
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 82 "swift.yy"
+#line 80 "swift.yy"
 printf("Found \"find new line symbol\"\n");
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 83 "swift.yy"
+#line 81 "swift.yy"
 printf("Found \":\"\n");
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 85 "swift.yy"
+#line 83 "swift.yy"
 printf("Found \"function type arrow\"\n");
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 87 "swift.yy"
+#line 85 "swift.yy"
 printf("Found \"or\"\n");
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 88 "swift.yy"
+#line 86 "swift.yy"
 printf("Found \"and\"\n");
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 90 "swift.yy"
+#line 88 "swift.yy"
 printf("Found \"is equal\"\n");
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 91 "swift.yy"
+#line 89 "swift.yy"
 printf("Found \"Int type\"\n");
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 92 "swift.yy"
+#line 90 "swift.yy"
 printf("Found \"Char type\"\n");
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 93 "swift.yy"
+#line 91 "swift.yy"
 printf("Found \"String type\"\n");
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 94 "swift.yy"
+#line 92 "swift.yy"
 printf("Found \"Bool type\"\n");
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 95 "swift.yy"
+#line 93 "swift.yy"
 printf("Found \"Float type\"\n");
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 96 "swift.yy"
+#line 94 "swift.yy"
 printf("Found \"Double type\"\n");
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 98 "swift.yy"
+#line 96 "swift.yy"
 printf("Found \"switch\" \n");
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 99 "swift.yy"
+#line 97 "swift.yy"
 printf("Found \"case\" \n");
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 100 "swift.yy"
+#line 98 "swift.yy"
 printf("Found \"default\"\n");
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 101 "swift.yy"
+#line 99 "swift.yy"
 printf("Found \"break\"\n");
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 104 "swift.yy"
+#line 102 "swift.yy"
 printf("Found \"not\"\n");
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 107 "swift.yy"
+#line 105 "swift.yy"
 printf("Found binary: %d\n",convertBinaryToDecimal(atoi(yytext+2)));
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 108 "swift.yy"
+#line 106 "swift.yy"
 printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 109 "swift.yy"
+#line 107 "swift.yy"
 printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 110 "swift.yy"
+#line 108 "swift.yy"
 printf("Found decimal: %d\n",atoi(yytext));
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 111 "swift.yy"
+#line 109 "swift.yy"
 printf("Found identifier: %s\n",yytext);
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 112 "swift.yy"
+#line 110 "swift.yy"
 printf("Found double: %f\n",atof(yytext));
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(STRING_Q):
-#line 114 "swift.yy"
+case YY_STATE_EOF(STRING):
+#line 112 "swift.yy"
 { printf("<<END OF FILE>>\n"); return 0; };
 	YY_BREAK
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 116 "swift.yy"
+#line 114 "swift.yy"
 ;
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 117 "swift.yy"
+#line 115 "swift.yy"
 printf("Bad string %s\n", yytext);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 118 "swift.yy"
+#line 116 "swift.yy"
 ECHO;
 	YY_BREAK
-#line 1454 "lex.yy.c"
+#line 1452 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2457,7 +2455,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 118 "swift.yy"
+#line 116 "swift.yy"
 
 
 int main(int argc,char* argv[])
@@ -2499,44 +2497,5 @@ int convertBinaryToDecimal(int n)
     return decimalNumber;
 }
 
-void print (char *string)
-{
-	   int l = strlen(string);
-
-	   	   for (int c = 0; c < l; c++)
-	   	   {
-		   	if(string[c] == '\\')
-		   {
-			   switch ( string[c+1] ) {
-			   case '\"':
-			   printf("\"");
-			   break;
-			   case '\\':
-			   printf("\\");
-			   break;
-			   case 'n':
-			   printf("\n");
-			   break;
-			   case 'r':
-			   printf("\r");
-			   break;
-			   case 't':
-			   printf("\t");
-			   break;
-			   default:
-			   printf("%c",string[c]);
-			   c--;  
-			   break;		 
-			   }
-			   c++;
-			   continue;
-		   	  		   
-		   }
-		   printf("%c",string[c]);	
-		   }
-		   printf("\n");
-	   
-   
-}
 
 
