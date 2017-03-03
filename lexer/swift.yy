@@ -8,9 +8,7 @@
 	
     char strconst[1281] = {0};
 	int convertOctalToDecimal(int octalNumber);
-	int convertBinaryToDecimal(int n);
-	void print (char *string);
-	
+	int convertBinaryToDecimal(int n);	
 %}
 
 %option noyywrap
@@ -155,43 +153,4 @@ int convertBinaryToDecimal(int n)
     return decimalNumber;
 }
 
-void print (char *string)
-{
-	   int l = strlen(string);
-
-	   	   for (int c = 0; c < l; c++)
-	   	   {
-		   	if(string[c] == '\\')
-		   {
-			   switch ( string[c+1] ) {
-			   case '\"':
-			   printf("\"");
-			   break;
-			   case '\\':
-			   printf("\\");
-			   break;
-			   case 'n':
-			   printf("\n");
-			   break;
-			   case 'r':
-			   printf("\r");
-			   break;
-			   case 't':
-			   printf("\t");
-			   break;
-			   default:
-			   printf("%c",string[c]);
-			   c--;  
-			   break;		 
-			   }
-			   c++;
-			   continue;
-		   	  		   
-		   }
-		   printf("%c",string[c]);	
-		   }
-		   printf("\n");
-	   
-   
-}
 
