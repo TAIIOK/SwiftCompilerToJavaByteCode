@@ -18,7 +18,6 @@
 %token RETURN
 %token BREAK
 %token FUNCTION
-%token LOCAL
 %token STRING
 %token ID
 %token EQ
@@ -65,18 +64,17 @@ stmt:                 stmt_block
 ;
 stmt_block:           DO stmt_list END opt_endl                                 
 ;
-stmt_if:              IF expr THEN stmt_list elseif_list END opt_endl  
-                    | IF expr THEN stmt_list elseif_list ELSE stmt_list END opt_endl 
+stmt_if:              IF expr stmt_list elseif_list
+                    | IF expr stmt_list elseif_list ELSE stmt_list
 ;
 elseif_list:          /* empty */                                               
-                    | elseif_list ELSEIF expr THEN stmt_list                    
+                    | elseif_list ELSEIF expr stmt_list
 ;
 stmt_while:           WHILE expr stmt_block                                     
 ;
-stmt_for:             FOR alone_id '=' expr ',' expr          stmt_block        
-                    | FOR alone_id '=' expr ',' expr ',' expr stmt_block        
+stmt_for:             FOR alone_id  ',' expr stmt_block
 ;
-stmt_repeat:          REPEAT stmt_list UNTIL expr end_expr                      
+stmt_repeat:          REPEAT stmt_list WHILE expr end_expr
 ;
 /* == Expressions == */
 alone_id:             ID                                                        
