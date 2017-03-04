@@ -94,6 +94,7 @@
 "=="                          printf("Found \"==\"\n");
 ">="                          printf("Found \"=>\"\n");
 "<="                          printf("Found \"<=\"\n");
+"!="                          printf("Found \"!=\"\n");
 
 ","                           printf("Found \",\"\n");
 
