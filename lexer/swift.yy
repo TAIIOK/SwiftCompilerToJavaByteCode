@@ -17,75 +17,32 @@
 %x STRING
 %%
 
-"/*" {BEGIN(COMMENT); }
-<COMMENT>"*/" {printf("Found multiple line comment \n");  BEGIN(INITIAL);}
-<COMMENT>([^*]|\n)+|. {}
-<COMMENT><<EOF>> {printf("Unterminated comment\n");return 0;}
+"/*"                          {BEGIN(COMMENT); }
+<COMMENT>"*/"                 {printf("Found multiple line comment \n");  BEGIN(INITIAL);}
+<COMMENT>([^*]|\n)+|.         {}
+<COMMENT><<EOF>>              {printf("Unterminated comment\n");return 0;}
 
 "//".*                        printf("Found single line comment \n");
 
 \"                            { BEGIN(STRING); strcpy(strconst, ""); }
-<STRING>\\                  strcat(strconst, "\\");
-<STRING>\\\"                strcat(strconst, "\"");
-<STRING>\\r                 strcat(strconst, "\r");
-<STRING>\\t                 strcat(strconst, "\t");
-<STRING>\\n                 strcat(strconst, "\n");
-<STRING>\\\\                strcat(strconst, "\\");
-<STRING>[^\\\n\"]+          strcat(strconst,yytext);
-<STRING>\"                  {
-								 printf("Found String: %s \n",strconst);
-                                  BEGIN(INITIAL);
+<STRING>\\                    strcat(strconst, "\\");
+<STRING>\\\"                  strcat(strconst, "\"");
+<STRING>\\r                   strcat(strconst, "\r");
+<STRING>\\t                   strcat(strconst, "\t");
+<STRING>\\n                   strcat(strconst, "\n");
+<STRING>\\\\                  strcat(strconst, "\\");
+<STRING>[^\\\n\"]+            strcat(strconst,yytext);
+<STRING>\"                    {
+								printf("Found String: %s \n",strconst);
+                                BEGIN(INITIAL);
                               }
-<STRING>.|[\n\r\f\t\v]      ;
+<STRING>.|[\n\r\f\t\v]        ;
+
+"import"					  printf("Found key word \"import\"\n");
 
 "var"						  printf("Found key word \"var\"\n");
 "let"						  printf("Found key word \"let\"\n");
-"import"					  printf("Found key word \"import\"\n");
-"while"                       printf("Found key word \"while\"\n");
-"for"                         printf("Found key word \"for\"\n");
-"in"						  printf("Found key word \"in\"\n");
-"if"                          printf("Found key word \"if\"\n");
-"else if"                     printf("Found key word \"else if\"\n");
-"else"                        printf("Found key word \"else\"\n");
-"do"                          printf("Found key word \"do\"\n");
-"..."						  printf("Found range word  \"...\"\n");
-"repeat"                      printf("Found key word \"repeat\"\n");
-"return"                      printf("Found key word \"return\"\n");
-"nil"                         printf("Found key word \"nil\"\n");
-"true"                        printf("Found \"true\" constant\n");
-"false"                       printf("Found \"false\" constant\n");
-"self"                        printf("Found \"self\" (like this pointer)");
-"error"                       printf("Found \"error\" call\n");
-"func"                        printf("Found \"function\" (function declaration)\n");
-">"                           printf("Found \">\"\n");
-"<"                           printf("Found \"<\"\n");
-"-"                           printf("Found \"-\"\n");
-"\*"                          printf("Found \"*\"\n");
-"/"                           printf("Found \"/\"\n");
-"%"                           printf("Found \"%\"\n");
-"=="                          printf("Found \"==\"\n");
-">="                          printf("Found \"=>\"\n");
-"<="                          printf("Found \"<=\"\n");
-"="                           printf("Found \"=\"\n");
-","                           printf("Found \",\"\n");
-"+"                           printf("Found \"+\"\n");
-"."                           printf("Found \".\"\n");
-"("                           printf("Found \"(\"\n");
-")"                           printf("Found \")\"\n");
-"{"                           printf("Found \"{\"\n");
-"}"                           printf("Found \"}\"\n");
-"["                           printf("Found \"[\"\n");
-"]"                           printf("Found \"]\"\n");
-";"                           printf("Found \";\"\n");
-"\n"						  printf("Found \"find new line symbol\"\n");
-":"                           printf("Found \":\"\n");
 
-"->"                          printf("Found \"function type arrow\"\n");
-
-"||"                          printf("Found \"or\"\n");
-"&&"                          printf("Found \"and\"\n");
-
-"=="						  printf("Found \"is equal\"\n");
 "Int"						  printf("Found \"Int type\"\n");
 "Character"				      printf("Found \"Char type\"\n");
 "String"					  printf("Found \"String type\"\n");
@@ -93,14 +50,67 @@
 "Float" 				      printf("Found \"Float type\"\n");
 "Double" 					  printf("Found \"Double type\"\n");
 
+"true"                        printf("Found \"true\" constant\n");
+"false"                       printf("Found \"false\" constant\n");
+
+"repeat"                      printf("Found key word \"repeat\"\n");
+"while"                       printf("Found key word \"while\"\n");
+
+"for"                         printf("Found key word \"for\"\n");
+"in"						  printf("Found key word \"in\"\n");
+
+"if"                          printf("Found key word \"if\"\n");
+"else if"                     printf("Found key word \"else if\"\n");
+"else"                        printf("Found key word \"else\"\n");
+
 "switch"					  printf("Found \"switch\" \n");
 "case"						  printf("Found \"case\" \n");
 "default"					  printf("Found \"default\"\n");
 "break"						  printf("Found \"break\"\n");
 
 
-"!"    						  printf("Found \"not\"\n");
+"func"                        printf("Found \"function\" (function declaration)\n");
+"->"                          printf("Found \"function type arrow\"\n");
 
+"do"                          printf("Found key word \"do\"\n");
+"..."						  printf("Found range word  \"...\"\n");
+
+"return"                      printf("Found key word \"return\"\n");
+"nil"                         printf("Found key word \"nil\"\n");
+
+"."                           printf("Found \".\"\n");
+"self"                        printf("Found \"self\" (like this pointer)");
+"error"                       printf("Found \"error\" call\n");
+
+"-"                           printf("Found \"-\"\n");
+"\*"                          printf("Found \"*\"\n");
+"/"                           printf("Found \"/\"\n");
+"%"                           printf("Found \"%\"\n");
+"+"                           printf("Found \"+\"\n");
+"="                           printf("Found \"=\"\n");
+
+">"                           printf("Found \">\"\n");
+"<"                           printf("Found \"<\"\n");
+"=="                          printf("Found \"==\"\n");
+">="                          printf("Found \"=>\"\n");
+"<="                          printf("Found \"<=\"\n");
+
+","                           printf("Found \",\"\n");
+
+"("                           printf("Found \"(\"\n");
+")"                           printf("Found \")\"\n");
+"{"                           printf("Found \"{\"\n");
+"}"                           printf("Found \"}\"\n");
+"["                           printf("Found \"[\"\n");
+"]"                           printf("Found \"]\"\n");
+":"                           printf("Found \":\"\n");
+
+";"                           printf("Found \";\"\n");
+"\n"						  printf("Found \"find new line symbol\"\n");
+
+"||"                          printf("Found \"or\"\n");
+"&&"                          printf("Found \"and\"\n");
+"!"    						  printf("Found \"not\"\n");
 
 "0b"[01]+                     printf("Found binary: %d\n",convertBinaryToDecimal(atoi(yytext+2)));
 "0o"[0-7]+                    printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
@@ -111,8 +121,9 @@
 
 <<EOF>>                       { printf("<<END OF FILE>>\n"); return 0; };
 
-[\n\r\t\f\v ]                ;
-".*" 						  printf("Bad string %s\n", yytext);
+[\n\r\t\f\v ]                 ;
+
+. 						  printf("Bad string %s\n", yytext);
 %%
 int main(int argc,char* argv[])
 {
