@@ -31,11 +31,11 @@
 %token ENDL
 %left  OR
 %left  AND
-%left  '<' '>' LE GE EQ NE
+%left  '<' '>' LE GE EQ NE /* < > <= >= == != */
 %right CONCAT
 %left  '+' '-'
 %left  '*' '/' '%'
-%left  NOT UMINUS
+
 %%
 end_expr:             ENDL
                     | ';' opt_endl
