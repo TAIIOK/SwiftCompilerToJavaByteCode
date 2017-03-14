@@ -4,11 +4,11 @@
     #include <string.h>
     #include <unistd.h>
     #include <fcntl.h>
-	#include <math.h>
-	
+	  #include <math.h>
+
     char strconst[1281] = {0};
 	int convertOctalToDecimal(int octalNumber);
-	int convertBinaryToDecimal(int n);	
+	int convertBinaryToDecimal(int n);
 %}
 
 %option noyywrap
@@ -25,6 +25,9 @@
 "//".*                        printf("Found single line comment \n");
 
 \"                            { BEGIN(STRING); strcpy(strconst, ""); }
+
+
+
 <STRING>\\                    strcat(strconst, "\\");
 <STRING>\\\"                  strcat(strconst, "\"");
 <STRING>\\r                   strcat(strconst, "\r");
@@ -32,11 +35,14 @@
 <STRING>\\n                   strcat(strconst, "\n");
 <STRING>\\\\                  strcat(strconst, "\\");
 <STRING>[^\\\n\"]+            strcat(strconst,yytext);
+
 <STRING>\"                    {
 								printf("Found String: %s \n",strconst);
                                 BEGIN(INITIAL);
                               }
+<STRING>\\\(([^\)]*)\)  printf("Found Identifier String: %s \n",yytext);
 <STRING>.|[\n\r\f\t\v]        ;
+
 
 "import"					  printf("Found key word \"import\"\n");
 
@@ -117,7 +123,7 @@
 "0o"[0-7]+                    printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
 "0x"[A-F0-9]+                 printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
 [+-]?[0-9]+                   printf("Found decimal: %d\n",atoi(yytext));
-([_]|[a-zA-Z])+[a-zA-Z0-9_]*  printf("Found identifier: %s\n",yytext);
+([_]|[$a-zA-Z])+[a-zA-Z0-9_]*  printf("Found identifier: %s\n",yytext);
 [+-]?[0-9]+\.[0-9eE-]+        printf("Found double: %f\n",atof(yytext));
 
 <<EOF>>                       { printf("<<END OF FILE>>\n"); return 0; };
@@ -128,7 +134,7 @@
 %%
 int main(int argc,char* argv[])
 {
-    if (argc > 1) 
+    if (argc > 1)
     {
         yyin = fopen(argv[1], "r");
         yylex();
@@ -164,5 +170,3 @@ int convertBinaryToDecimal(int n)
     }
     return decimalNumber;
 }
-
-

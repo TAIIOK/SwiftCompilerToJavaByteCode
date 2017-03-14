@@ -15,8 +15,6 @@
  */
 import Foundation
 
-print("равны\(1+2+(1+2))")
-
 var line = readLine()
 print(line)
 
