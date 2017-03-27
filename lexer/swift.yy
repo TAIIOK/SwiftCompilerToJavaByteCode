@@ -6,28 +6,40 @@
     #include <fcntl.h>
 	  #include <math.h>
 
+    #include "swift.tab.h"
+
+    /*
+    #include "semantic_tables.h"
+    #include "codegen.h"
+    */
+    #include "tree_print.h"
+
+    #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
+
     char strconst[1281] = {0};
-	int convertOctalToDecimal(int octalNumber);
-	int convertBinaryToDecimal(int n);
+	  int convertOctalToDecimal(int octalNumber);
+	  int convertBinaryToDecimal(int n);
+
+    extern int yyparse(void);
+    extern void update_tree_stmtlist(NStmtList* list,NStmtList* root);
+    extern void update_tree_parent_func(struct NStmtList* root);
 %}
 
 %option noyywrap
 %option yylineno
+
 %x COMMENT
 %x STRING
 %%
 
 "/*"                          {BEGIN(COMMENT); }
-<COMMENT>"*/"                 {printf("Found multiple line comment \n");  BEGIN(INITIAL);}
+<COMMENT>"*/"                 {BEGIN(INITIAL);}
 <COMMENT>([^*]|\n)+|.         {}
 <COMMENT><<EOF>>              {printf("Unterminated comment\n");return 0;}
 
-"//".*                        printf("Found single line comment \n");
+"//".*                        ;
 
 \"                            { BEGIN(STRING); strcpy(strconst, ""); }
-
-
-
 <STRING>\\                    strcat(strconst, "\\");
 <STRING>\\\"                  strcat(strconst, "\"");
 <STRING>\\r                   strcat(strconst, "\r");
@@ -37,107 +49,135 @@
 <STRING>[^\\\n\"]+            strcat(strconst,yytext);
 
 <STRING>\"                    {
-								printf("Found String: %s \n",strconst);
-                                BEGIN(INITIAL);
+								              yylval.String = (char *)malloc(strlen(strconst) + 1);
+                              strcpy(yylval.String, strconst);
+                              BEGIN(INITIAL);
+                              return STRING;
                               }
-<STRING>\\\(([^\)]*)\)  printf("Found Identifier String: %s \n",yytext);
+<STRING>\\\(([^\)]*)\)        {
+                              yyval.Id = (char *)malloc(sizeof(yytext)+1);
+                              strcpy(yylval.Id, yytext);
+                              return ID;
+                              }
 <STRING>.|[\n\r\f\t\v]        ;
 
 
-"import"					  printf("Found key word \"import\"\n");
+"import"					            return IMPORT;
 
-"var"						  printf("Found key word \"var\"\n");
-"let"						  printf("Found key word \"let\"\n");
+"var"						              return VAR;
+"let"						              return LET;
 
-"Int"						  printf("Found \"Int type\"\n");
-"Character"				      printf("Found \"Char type\"\n");
-"String"					  printf("Found \"String type\"\n");
-"Bool" 						  printf("Found \"Bool type\"\n");
-"Float" 				      printf("Found \"Float type\"\n");
-"Double" 					  printf("Found \"Double type\"\n");
+"Int"						              return INT;
+"Character"				            return CHARACTER;
+"String"					            return STRINGT;
+"Bool" 						            return BOOL;
+"Float" 				              return FLOAT;
+"Double" 					            return DOUBLE;
 
-"true"                        printf("Found \"true\" constant\n");
-"false"                       printf("Found \"false\" constant\n");
+"true"                        return TRUE;
+"false"                       return FALSE;
 
-"repeat"                      printf("Found key word \"repeat\"\n");
-"while"                       printf("Found key word \"while\"\n");
+"repeat"                      return REPEAT;
+"while"                       return WHILE;
 
-"for"                         printf("Found key word \"for\"\n");
-"in"						  printf("Found key word \"in\"\n");
+"for"                         return FOR;
+"in"						              return IN;
 
-"if"                          printf("Found key word \"if\"\n");
-"else if"                     printf("Found key word \"else if\"\n");
-"else"                        printf("Found key word \"else\"\n");
+"if"                          return IF;
+"else if"                     return ELSEIF;
+"else"                        return ELSE;
 
-"switch"					  printf("Found \"switch\" \n");
-"case"						  printf("Found \"case\" \n");
-"default"					  printf("Found \"default\"\n");
-"break"						  printf("Found \"break\"\n");
+"switch"					            return SWITCH;
+"case"						            return CASE;
+"default"					            return DEFAULT;
+"break"						            return BREAK;
 
 
-"func"                        printf("Found \"function\" (function declaration)\n");
-"->"                          printf("Found \"function type arrow\"\n");
+"func"                        return FUNCTION;
+"->"                          return FUNCTIONARROW;
 
-"do"                          printf("Found key word \"do\"\n");
-"..."						  printf("Found range word  \"...\"\n");
+"do"                          return DO;
+"..."						              return RANGE;
 
-"return"                      printf("Found key word \"return\"\n");
-"nil"                         printf("Found key word \"nil\"\n");
+"return"                      return RETURN;
+"nil"                         return NIL;
 
-"."                           printf("Found \".\"\n");
-"self"                        printf("Found \"self\" (like this pointer)");
-"error"                       printf("Found \"error\" call\n");
+"."                           return '.';
+"self"                        return SELF;
+"error"                       return ERROR;
 
-"-"                           printf("Found \"-\"\n");
-"\*"                          printf("Found \"*\"\n");
-"/"                           printf("Found \"/\"\n");
-"%"                           printf("Found \"%\"\n");
-"+"                           printf("Found \"+\"\n");
-"="                           printf("Found \"=\"\n");
+"-"                           return '-';
+"\*"                          return '*';
+"/"                           return '/';
+"%"                           return '%';
+"+"                           return '+';
+"="                           return '=';
 
-">"                           printf("Found \">\"\n");
-"<"                           printf("Found \"<\"\n");
-"=="                          printf("Found \"==\"\n");
-">="                          printf("Found \"=>\"\n");
-"<="                          printf("Found \"<=\"\n");
-"!="                          printf("Found \"!=\"\n");
+">"                           return '>';
+"<"                           return '<';
+"=="                          return EQ;
+">="                          return GE;
+"<="                          return LE;
+"!="                          return NE;
 
-","                           printf("Found \",\"\n");
+","                           return ',';
 
-"("                           printf("Found \"(\"\n");
-")"                           printf("Found \")\"\n");
-"{"                           printf("Found \"{\"\n");
-"}"                           printf("Found \"}\"\n");
-"["                           printf("Found \"[\"\n");
-"]"                           printf("Found \"]\"\n");
-":"                           printf("Found \":\"\n");
+"("                           return '(';
+")"                           return ')';
+"{"                           return '{';
+"}"                           return '}';
+"["                           return '[';
+"]"                           return ']';
+":"                           return ':';
 
-";"                           printf("Found \";\"\n");
-"\n"						  printf("Found \"find new line symbol\"\n");
+";"                           return ';';
+"\n"						              return ENDL;
 
-"||"                          printf("Found \"or\"\n");
-"&&"                          printf("Found \"and\"\n");
-"!"    						  printf("Found \"not\"\n");
+"||"                          return OR;
+"&&"                          return AND;
+"!"    						            return '!';
 
-"0b"[01]+                     printf("Found binary: %d\n",convertBinaryToDecimal(atoi(yytext+2)));
-"0o"[0-7]+                    printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
-"0x"[A-F0-9]+                 printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
-[+-]?[0-9]+                   printf("Found decimal: %d\n",atoi(yytext));
-([_]|[$a-zA-Z])+[a-zA-Z0-9_]*  printf("Found identifier: %s\n",yytext);
-[+-]?[0-9]+\.[0-9eE-]+        printf("Found double: %f\n",atof(yytext));
+"0b"[01]+                     {
+                                  yylval.Int = convertBinaryToDecimal(atoi(yytext+2);
+                                  return INT;
+                              }
+"0o"[0-7]+                    {
+                                  yylval.Int = convertOctalToDecimal(atoi(yytext+2));
+                                  return INT;
+                              }
+"0x"[A-F0-9]+                 {
+                                  yylval.Int = strtol(yytext,NULL,16);
+                                  return INT;
+                              }
+[+-]?[0-9]+                   {
+                                  yylval.Int = atoi(yytext);
+                                  return INT;
+                              }
+([_]|[$a-zA-Z])+[a-zA-Z0-9_]* {
+                                  yyval.Id = (char *)malloc(sizeof(yytext)+1);
+                                  strcpy(yylval.Id, yytext);
+                                  return ID;
+                              }
+[+-]?[0-9]+\.[0-9eE-]+        {
+                                  yylval.Double = atof(yytext);
+                                  return DOUBLE;
+                              }
 
-<<EOF>>                       { printf("<<END OF FILE>>\n"); return 0; };
+<<EOF>>                       return 0;
 
 [\n\r\t\f\v ]                 ;
 
-. 						  printf("Bad string %s\n", yytext);
+. 						                printf("Bad symbol %s\n", yytext);
 %%
 int main(int argc,char* argv[])
 {
     if (argc > 1)
     {
         yyin = fopen(argv[1], "r");
-        yylex();
+        yyparse();
+        update_tree_parent_func(root);
+        update_tree_stmtlist(root,root);
+        print_tree(root);
     }
     return 0;
 }

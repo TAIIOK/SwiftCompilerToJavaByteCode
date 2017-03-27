@@ -1,36 +1,78 @@
 %{
     #include <stdio.h>
+    #include "swift.tab.h"
+    #include "tree_nodes_funcs.h"
 
+    extern int yylex(void);
+
+    void yyerror(const char *s)
+    {
+        fprintf(stderr,"Line %d: %s\n", yylloc.first_line, s);
+        exit(1);
+    }
+
+    struct NStmtList* root;
 %}
 
+%locations
+
+%start root
+
+
+%token STRING
+
+%token IMPORT
+
 %token INT
+%token CHARACTER
+%token STRINGT
 %token FLOAT
 %token DOUBLE
-%token STRING
-%token FOR
+%token BOOL
+
+%token TRUE
+%token FALSE
+
+%token REPEAT
 %token WHILE
+
+%token FOR
+%token IN
+
 %token IF
 %token ELSE
 %token ELSEIF
-%token DO
-%token REPEAT
-%token RETURN
+
+%token SWITCH
+%token CASE
+%token DEFAULT
 %token BREAK
+
 %token FUNCTION
+%token FUNCTIONARROW
+
+%token DO
+%token RANGE
+
+%token RETURN
+%token NIL
+
+%token SELF
+%token ERROR
+
 %token ID
 %token EQ
 %token NE
 %token LE
 %token GE
-%token CONCAT
-%token TRUE
-%token FALSE
-%token NIL
+%token NOT
+
 %token ENDL
+%token END
+
 %left  OR
 %left  AND
 %left  '<' '>' LE GE EQ NE /* < > <= >= == != */
-%right CONCAT
 %left  '+' '-'
 %left  '*' '/' '%'
 
@@ -41,6 +83,9 @@ end_expr:             ENDL
 opt_endl:             /* empty */
                     | ENDL
 ;
+;
+
+root:               stmt_list
 ;
 /* == Statements == */
 stmt_list:            /* empty */
@@ -107,7 +152,6 @@ expr:                 var
                     | expr LE  expr
                     | expr EQ  expr
                     | expr NE  expr
-                    | expr CONCAT expr
                     | '(' expr ')'
                     | func_call
 
