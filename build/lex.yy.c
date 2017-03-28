@@ -1037,7 +1037,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 36 "../lexer/swift.yy"
-{printf("Found multiple line comment \n");  BEGIN(INITIAL);}
+{BEGIN(INITIAL);}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
@@ -1052,7 +1052,7 @@ case YY_STATE_EOF(COMMENT):
 case 4:
 YY_RULE_SETUP
 #line 40 "../lexer/swift.yy"
-printf("Found single line comment \n");
+;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
@@ -1061,392 +1061,417 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "../lexer/swift.yy"
+#line 43 "../lexer/swift.yy"
 strcat(strconst, "\\");
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 47 "../lexer/swift.yy"
+#line 44 "../lexer/swift.yy"
 strcat(strconst, "\"");
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 48 "../lexer/swift.yy"
+#line 45 "../lexer/swift.yy"
 strcat(strconst, "\r");
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 49 "../lexer/swift.yy"
+#line 46 "../lexer/swift.yy"
 strcat(strconst, "\t");
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 50 "../lexer/swift.yy"
+#line 47 "../lexer/swift.yy"
 strcat(strconst, "\n");
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 51 "../lexer/swift.yy"
+#line 48 "../lexer/swift.yy"
 strcat(strconst, "\\");
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 52 "../lexer/swift.yy"
+#line 49 "../lexer/swift.yy"
 strcat(strconst,yytext);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 54 "../lexer/swift.yy"
+#line 51 "../lexer/swift.yy"
 {
-								printf("Found String: %s \n",strconst);
-                                BEGIN(INITIAL);
+								              yylval.String = (char *)malloc(strlen(strconst) + 1);
+                              strcpy(yylval.String, strconst);
+                              BEGIN(INITIAL);
+                              return STRING;
                               }
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 58 "../lexer/swift.yy"
-printf("Found Identifier String: %s \n",yytext);
+#line 57 "../lexer/swift.yy"
+{
+                              yylval.Id = (char *)malloc(sizeof(yytext)+1);
+                              strcpy(yylval.Id, yytext);
+                              return ID;
+                              }
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 59 "../lexer/swift.yy"
+#line 62 "../lexer/swift.yy"
 ;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 62 "../lexer/swift.yy"
-printf("Found key word \"import\"\n");
+#line 65 "../lexer/swift.yy"
+return IMPORT;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 64 "../lexer/swift.yy"
-printf("Found key word \"var\"\n");
+#line 67 "../lexer/swift.yy"
+return VAR;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 65 "../lexer/swift.yy"
-printf("Found key word \"let\"\n");
+#line 68 "../lexer/swift.yy"
+return LET;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 67 "../lexer/swift.yy"
-printf("Found \"Int type\"\n");
+#line 70 "../lexer/swift.yy"
+return INTT;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 68 "../lexer/swift.yy"
-printf("Found \"Char type\"\n");
+#line 71 "../lexer/swift.yy"
+return CHARACTERT;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 69 "../lexer/swift.yy"
-printf("Found \"String type\"\n");
+#line 72 "../lexer/swift.yy"
+return STRINGT;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 70 "../lexer/swift.yy"
-printf("Found \"Bool type\"\n");
+#line 73 "../lexer/swift.yy"
+return BOOLT;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 71 "../lexer/swift.yy"
-printf("Found \"Float type\"\n");
+#line 74 "../lexer/swift.yy"
+return FLOATT;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 72 "../lexer/swift.yy"
-printf("Found \"Double type\"\n");
+#line 75 "../lexer/swift.yy"
+return DOUBLET;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 74 "../lexer/swift.yy"
-printf("Found \"true\" constant\n");
+#line 77 "../lexer/swift.yy"
+return TRUE;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 75 "../lexer/swift.yy"
-printf("Found \"false\" constant\n");
+#line 78 "../lexer/swift.yy"
+return FALSE;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 77 "../lexer/swift.yy"
-printf("Found key word \"repeat\"\n");
+#line 80 "../lexer/swift.yy"
+return REPEAT;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 78 "../lexer/swift.yy"
-printf("Found key word \"while\"\n");
+#line 81 "../lexer/swift.yy"
+return WHILE;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 80 "../lexer/swift.yy"
-printf("Found key word \"for\"\n");
+#line 83 "../lexer/swift.yy"
+return FOR;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 81 "../lexer/swift.yy"
-printf("Found key word \"in\"\n");
+#line 84 "../lexer/swift.yy"
+return IN;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 83 "../lexer/swift.yy"
-printf("Found key word \"if\"\n");
+#line 86 "../lexer/swift.yy"
+return IF;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 84 "../lexer/swift.yy"
-printf("Found key word \"else if\"\n");
+#line 87 "../lexer/swift.yy"
+return ELSEIF;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 85 "../lexer/swift.yy"
-printf("Found key word \"else\"\n");
+#line 88 "../lexer/swift.yy"
+return ELSE;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 87 "../lexer/swift.yy"
-printf("Found \"switch\" \n");
+#line 90 "../lexer/swift.yy"
+return SWITCH;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 88 "../lexer/swift.yy"
-printf("Found \"case\" \n");
+#line 91 "../lexer/swift.yy"
+return CASE;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 89 "../lexer/swift.yy"
-printf("Found \"default\"\n");
+#line 92 "../lexer/swift.yy"
+return DEFAULT;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 90 "../lexer/swift.yy"
-printf("Found \"break\"\n");
+#line 93 "../lexer/swift.yy"
+return BREAK;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 93 "../lexer/swift.yy"
-printf("Found \"function\" (function declaration)\n");
+#line 96 "../lexer/swift.yy"
+return FUNCTION;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 94 "../lexer/swift.yy"
-printf("Found \"function type arrow\"\n");
+#line 97 "../lexer/swift.yy"
+return FUNCTIONARROW;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 96 "../lexer/swift.yy"
-printf("Found key word \"do\"\n");
+#line 99 "../lexer/swift.yy"
+return DO;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 97 "../lexer/swift.yy"
-printf("Found range word  \"...\"\n");
+#line 100 "../lexer/swift.yy"
+return RANGE;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 99 "../lexer/swift.yy"
-printf("Found key word \"return\"\n");
+#line 102 "../lexer/swift.yy"
+return RETURN;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 100 "../lexer/swift.yy"
-printf("Found key word \"nil\"\n");
+#line 103 "../lexer/swift.yy"
+return NIL;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 102 "../lexer/swift.yy"
-printf("Found \".\"\n");
+#line 105 "../lexer/swift.yy"
+return '.';
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 103 "../lexer/swift.yy"
-printf("Found \"self\" (like this pointer)");
+#line 106 "../lexer/swift.yy"
+return SELF;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 104 "../lexer/swift.yy"
-printf("Found \"error\" call\n");
+#line 107 "../lexer/swift.yy"
+return ERROR;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 106 "../lexer/swift.yy"
-printf("Found \"-\"\n");
+#line 109 "../lexer/swift.yy"
+return '-';
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 107 "../lexer/swift.yy"
-printf("Found \"*\"\n");
+#line 110 "../lexer/swift.yy"
+return '*';
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 108 "../lexer/swift.yy"
-printf("Found \"/\"\n");
+#line 111 "../lexer/swift.yy"
+return '/';
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 109 "../lexer/swift.yy"
-printf("Found \"%\"\n");
+#line 112 "../lexer/swift.yy"
+return '%';
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 110 "../lexer/swift.yy"
-printf("Found \"+\"\n");
+#line 113 "../lexer/swift.yy"
+return '+';
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 111 "../lexer/swift.yy"
-printf("Found \"=\"\n");
+#line 114 "../lexer/swift.yy"
+return '=';
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 113 "../lexer/swift.yy"
-printf("Found \">\"\n");
+#line 116 "../lexer/swift.yy"
+return '>';
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 114 "../lexer/swift.yy"
-printf("Found \"<\"\n");
+#line 117 "../lexer/swift.yy"
+return '<';
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 115 "../lexer/swift.yy"
-printf("Found \"==\"\n");
+#line 118 "../lexer/swift.yy"
+return EQ;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 116 "../lexer/swift.yy"
-printf("Found \"=>\"\n");
+#line 119 "../lexer/swift.yy"
+return GE;
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 117 "../lexer/swift.yy"
-printf("Found \"<=\"\n");
+#line 120 "../lexer/swift.yy"
+return LE;
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 118 "../lexer/swift.yy"
-printf("Found \"!=\"\n");
+#line 121 "../lexer/swift.yy"
+return NE;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 120 "../lexer/swift.yy"
-printf("Found \",\"\n");
+#line 123 "../lexer/swift.yy"
+return ',';
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 122 "../lexer/swift.yy"
-printf("Found \"(\"\n");
+#line 125 "../lexer/swift.yy"
+return '(';
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 123 "../lexer/swift.yy"
-printf("Found \")\"\n");
+#line 126 "../lexer/swift.yy"
+return ')';
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 124 "../lexer/swift.yy"
-printf("Found \"{\"\n");
+#line 127 "../lexer/swift.yy"
+return '{';
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 125 "../lexer/swift.yy"
-printf("Found \"}\"\n");
+#line 128 "../lexer/swift.yy"
+return '}';
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 126 "../lexer/swift.yy"
-printf("Found \"[\"\n");
+#line 129 "../lexer/swift.yy"
+return '[';
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 127 "../lexer/swift.yy"
-printf("Found \"]\"\n");
+#line 130 "../lexer/swift.yy"
+return ']';
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 128 "../lexer/swift.yy"
-printf("Found \":\"\n");
+#line 131 "../lexer/swift.yy"
+return ':';
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 130 "../lexer/swift.yy"
-printf("Found \";\"\n");
+#line 133 "../lexer/swift.yy"
+return ';';
 	YY_BREAK
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
-#line 131 "../lexer/swift.yy"
-printf("Found \"find new line symbol\"\n");
+#line 134 "../lexer/swift.yy"
+return ENDL;
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 133 "../lexer/swift.yy"
-printf("Found \"or\"\n");
+#line 136 "../lexer/swift.yy"
+return OR;
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 134 "../lexer/swift.yy"
-printf("Found \"and\"\n");
+#line 137 "../lexer/swift.yy"
+return AND;
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 135 "../lexer/swift.yy"
-printf("Found \"not\"\n");
+#line 138 "../lexer/swift.yy"
+return '!';
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 137 "../lexer/swift.yy"
-printf("Found binary: %d\n",convertBinaryToDecimal(atoi(yytext+2)));
+#line 140 "../lexer/swift.yy"
+{
+                                  yylval.Int = convertBinaryToDecimal(atoi(yytext+2));
+                                  return INT;
+                              }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 138 "../lexer/swift.yy"
-printf("Found octal: %d\n",convertOctalToDecimal(atoi(yytext+2)));
+#line 144 "../lexer/swift.yy"
+{
+                                  yylval.Int = convertOctalToDecimal(atoi(yytext+2));
+                                  return INT;
+                              }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 139 "../lexer/swift.yy"
-printf("Found hexadecimal: %ld\n",strtol(yytext,NULL,16));
+#line 148 "../lexer/swift.yy"
+{
+                                  yylval.Int = strtol(yytext,NULL,16);
+                                  return INT;
+                              }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 140 "../lexer/swift.yy"
-printf("Found decimal: %d\n",atoi(yytext));
+#line 152 "../lexer/swift.yy"
+{
+                                  yylval.Int = atoi(yytext);
+                                  return INT;
+                              }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 141 "../lexer/swift.yy"
-printf("Found identifier: %s\n",yytext);
+#line 156 "../lexer/swift.yy"
+{
+                                  yylval.Id = (char *)malloc(sizeof(yytext)+1);
+                                  strcpy(yylval.Id, yytext);
+                                  return ID;
+                              }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 142 "../lexer/swift.yy"
-printf("Found double: %f\n",atof(yytext));
+#line 161 "../lexer/swift.yy"
+{
+                                  yylval.Double = atof(yytext);
+                                  return DOUBLE;
+                              }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(STRING):
-#line 144 "../lexer/swift.yy"
-{ printf("<<END OF FILE>>\n"); return 0; };
+#line 166 "../lexer/swift.yy"
+return 0;
 	YY_BREAK
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 146 "../lexer/swift.yy"
+#line 168 "../lexer/swift.yy"
 ;
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 148 "../lexer/swift.yy"
-printf("Bad string %s\n", yytext);
+#line 170 "../lexer/swift.yy"
+printf("Bad symbol %s\n", yytext);
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 149 "../lexer/swift.yy"
+#line 171 "../lexer/swift.yy"
 ECHO;
 	YY_BREAK
-#line 1450 "lex.yy.c"
+#line 1475 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2453,7 +2478,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 149 "../lexer/swift.yy"
+#line 171 "../lexer/swift.yy"
 
 
 int main(int argc,char* argv[])
@@ -2462,9 +2487,9 @@ int main(int argc,char* argv[])
     {
         yyin = fopen(argv[1], "r");
         yyparse();
-        update_tree_parent_func(root);
-        update_tree_stmtlist(root,root);
-        print_tree(root);
+        //update_tree_parent_func(root);
+        //update_tree_stmtlist(root,root);
+        //print_tree(root);
     }
     return 0;
 }

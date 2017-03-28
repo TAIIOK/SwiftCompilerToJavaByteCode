@@ -55,7 +55,7 @@
                               return STRING;
                               }
 <STRING>\\\(([^\)]*)\)        {
-                              yyval.Id = (char *)malloc(sizeof(yytext)+1);
+                              yylval.Id = (char *)malloc(sizeof(yytext)+1);
                               strcpy(yylval.Id, yytext);
                               return ID;
                               }
@@ -67,12 +67,12 @@
 "var"						              return VAR;
 "let"						              return LET;
 
-"Int"						              return INT;
-"Character"				            return CHARACTER;
+"Int"						              return INTT;
+"Character"				            return CHARACTERT;
 "String"					            return STRINGT;
-"Bool" 						            return BOOL;
-"Float" 				              return FLOAT;
-"Double" 					            return DOUBLE;
+"Bool" 						            return BOOLT;
+"Float" 				              return FLOATT;
+"Double" 					            return DOUBLET;
 
 "true"                        return TRUE;
 "false"                       return FALSE;
@@ -138,7 +138,7 @@
 "!"    						            return '!';
 
 "0b"[01]+                     {
-                                  yylval.Int = convertBinaryToDecimal(atoi(yytext+2);
+                                  yylval.Int = convertBinaryToDecimal(atoi(yytext+2));
                                   return INT;
                               }
 "0o"[0-7]+                    {
@@ -154,7 +154,7 @@
                                   return INT;
                               }
 ([_]|[$a-zA-Z])+[a-zA-Z0-9_]* {
-                                  yyval.Id = (char *)malloc(sizeof(yytext)+1);
+                                  yylval.Id = (char *)malloc(sizeof(yytext)+1);
                                   strcpy(yylval.Id, yytext);
                                   return ID;
                               }
@@ -175,9 +175,9 @@ int main(int argc,char* argv[])
     {
         yyin = fopen(argv[1], "r");
         yyparse();
-        update_tree_parent_func(root);
-        update_tree_stmtlist(root,root);
-        print_tree(root);
+        //update_tree_parent_func(root);
+        //update_tree_stmtlist(root,root);
+        //print_tree(root);
     }
     return 0;
 }

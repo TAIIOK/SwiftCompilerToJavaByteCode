@@ -13,7 +13,7 @@ lex.yy.c:
 	flex ../lexer/swift.yy
 
 swift.tab.c:
-	bison -d ../bison/swift.y
+	bison -d -v ../bison/swift.y
 
 tree_nodes.h:
 	cp ../bison/tree_nodes.h ./

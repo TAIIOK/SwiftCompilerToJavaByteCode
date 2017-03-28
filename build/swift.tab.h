@@ -41,91 +41,126 @@
    enum yytokentype {
      IMPORT = 258,
      INT = 259,
-     CHARACTER = 260,
-     STRING = 261,
-     FLOAT = 262,
-     DOUBLE = 263,
-     BOOL = 264,
-     TRUE = 265,
-     FALSE = 266,
-     REPEAT = 267,
-     WHILE = 268,
-     FOR = 269,
-     IN = 270,
-     IF = 271,
-     ELSE = 272,
-     ELSEIF = 273,
-     SWITCH = 274,
-     CASE = 275,
-     DEFAULT = 276,
-     BREAK = 277,
-     FUNCTION = 278,
-     FUNCTIONARROW = 279,
-     DO = 280,
-     RANGE = 281,
-     RETURN = 282,
-     NIL = 283,
-     SELF = 284,
-     ERROR = 285,
-     ID = 286,
-     EQ = 287,
-     NE = 288,
-     LE = 289,
-     GE = 290,
-     CONCAT = 291,
-     NOT = 292,
-     ENDL = 293,
-     END = 294,
-     OR = 295,
-     AND = 296
+     FLOAT = 260,
+     DOUBLE = 261,
+     BOOL = 262,
+     STRING = 263,
+     STRINGT = 264,
+     CHARACTERT = 265,
+     INTT = 266,
+     FLOATT = 267,
+     DOUBLET = 268,
+     BOOLT = 269,
+     TRUE = 270,
+     FALSE = 271,
+     LET = 272,
+     VAR = 273,
+     REPEAT = 274,
+     WHILE = 275,
+     FOR = 276,
+     IN = 277,
+     IF = 278,
+     ELSE = 279,
+     ELSEIF = 280,
+     SWITCH = 281,
+     CASE = 282,
+     DEFAULT = 283,
+     BREAK = 284,
+     FUNCTION = 285,
+     FUNCTIONARROW = 286,
+     DO = 287,
+     RANGE = 288,
+     RETURN = 289,
+     NIL = 290,
+     SELF = 291,
+     ERROR = 292,
+     ID = 293,
+     EQ = 294,
+     NE = 295,
+     LE = 296,
+     GE = 297,
+     NOT = 298,
+     ENDL = 299,
+     OR = 300,
+     AND = 301
    };
 #endif
 /* Tokens.  */
 #define IMPORT 258
 #define INT 259
-#define CHARACTER 260
-#define STRING 261
-#define FLOAT 262
-#define DOUBLE 263
-#define BOOL 264
-#define TRUE 265
-#define FALSE 266
-#define REPEAT 267
-#define WHILE 268
-#define FOR 269
-#define IN 270
-#define IF 271
-#define ELSE 272
-#define ELSEIF 273
-#define SWITCH 274
-#define CASE 275
-#define DEFAULT 276
-#define BREAK 277
-#define FUNCTION 278
-#define FUNCTIONARROW 279
-#define DO 280
-#define RANGE 281
-#define RETURN 282
-#define NIL 283
-#define SELF 284
-#define ERROR 285
-#define ID 286
-#define EQ 287
-#define NE 288
-#define LE 289
-#define GE 290
-#define CONCAT 291
-#define NOT 292
-#define ENDL 293
-#define END 294
-#define OR 295
-#define AND 296
+#define FLOAT 260
+#define DOUBLE 261
+#define BOOL 262
+#define STRING 263
+#define STRINGT 264
+#define CHARACTERT 265
+#define INTT 266
+#define FLOATT 267
+#define DOUBLET 268
+#define BOOLT 269
+#define TRUE 270
+#define FALSE 271
+#define LET 272
+#define VAR 273
+#define REPEAT 274
+#define WHILE 275
+#define FOR 276
+#define IN 277
+#define IF 278
+#define ELSE 279
+#define ELSEIF 280
+#define SWITCH 281
+#define CASE 282
+#define DEFAULT 283
+#define BREAK 284
+#define FUNCTION 285
+#define FUNCTIONARROW 286
+#define DO 287
+#define RANGE 288
+#define RETURN 289
+#define NIL 290
+#define SELF 291
+#define ERROR 292
+#define ID 293
+#define EQ 294
+#define NE 295
+#define LE 296
+#define GE 297
+#define NOT 298
+#define ENDL 299
+#define OR 300
+#define AND 301
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+#line 18 "../bison/swift.y"
+{
+    int Int;
+    char* Id;
+    char* String;
+    double Double;
+    float Float;
+    bool Bool;
+    struct NWhile * While;
+    struct NExpr * Expr;
+    struct NFor * For;
+    struct NStmtList * SL;
+    struct NStmt * Stmt;
+    struct NFunc * Func;
+    struct NExprList * Args;
+    struct NIf * If;
+    struct NIfList * IfL;
+    struct NTable* Table;
+    struct NTblElem* TblElem;
+    struct NSwitch * Switch;
+    struct NImport * Import;
+}
+/* Line 1529 of yacc.c.  */
+#line 163 "swift.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
