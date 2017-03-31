@@ -124,9 +124,6 @@
 
 %nonassoc '[' ']' '{' '}' ')'
 
-
-
-
 %%
 
 end_expr:             ENDL        {;}
@@ -201,6 +198,7 @@ var:                  id_chain {;}
 var_list:             var {;}
                     | var_list ',' var {;}
 ;
+
 expr:                 var {;}
                     | INT {;}
                     | DOUBLE {;}
@@ -280,8 +278,7 @@ array_elems:            array_elem {;}
                     | array_elems ',' array_elem {;}
 ;
 
-array_elem:         /* empty */ {;}
-                    | expr {;}
+array_elem:          expr {;}
 ;
 
 %%
