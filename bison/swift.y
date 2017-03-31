@@ -13,6 +13,7 @@
     }
 
     struct NStmtList* root;
+
 %}
 
 %union {
@@ -38,76 +39,59 @@
 }
 
 %locations
-
 %start root
-
-
-
 %token IMPORT
-
 %token <Int> INT
 %token <Float>FLOAT
 %token <Double>DOUBLE
 %token <Bool>BOOL
 %token <String> STRING
-
 %token STRINGT
 %token CHARACTERT
 %token INTT
 %token FLOATT
 %token DOUBLET
 %token BOOLT
-
 %token TRUE
 %token FALSE
-
 %token LET
 %token VAR
-
 %token REPEAT
 %token WHILE
-
 %token FOR
 %token IN
-
 %token IF
 %token ELSE
 %token ELSEIF
-
 %token SWITCH
 %token CASE
 %token DEFAULT
 %token BREAK
-
 %token FUNCTION
 %token FUNCTIONARROW
-
 %token DO
 %token RANGE
-
 %token RETURN
 %token NIL
-
 %token SELF
 %token ERROR
-
 %token <Id> ID
 %token EQ
 %token NE
 %token LE
 %token GE
 %token NOT
-
 %token ENDL
 
 
-%type <SL> stmt_list
-%type <SL> root
-%type <SL> stmt_block
+
 %type <Expr> expr
 %type <Expr> var
 %type <Expr> alone_id
 %type <Expr> func_call
+%type <SL> stmt_list
+%type <SL> root
+%type <SL> stmt_block
 %type <While> stmt_while
 %type <While> stmt_repeat
 %type <Stmt> stmt
@@ -122,156 +106,182 @@
 %type <Args> args
 %type <Args> arg_list_decl
 %type <Args> args_decl
-
-
-/*
-%type <Func> func_decl_anon
-%type <Table> tableconstructor
-%type <Table> tbl_elem_list
-%type <Table> tbl_elems
-%type <TblElem> tbl_elem
-*/
+%type <Table> array_constructor
+%type <Table> array_elem_list
+%type <Table> array_elems
+%type <TblElem> array_elem
+%type <Import> stmt_import
+%type <Switch> stmt_switch
 
 %left  OR
 %left  AND
-%left  '<' '>' LE GE EQ NE RANGE /* < > <= >= == != */
+%left  '<' '>' LE GE EQ NE RANGE '=' /* < > <= >= == != */
 %left  '+' '-'
 %left  '*' '/' '%'
 %left  NOT
+%left ';' ENDL
 /*UMINUS*/
+
+%nonassoc '[' ']' '{' '}' ')'
+
+
 
 
 %%
 
-end_expr:             ENDL
-                    | ';'
+end_expr:             ENDL        {;}
+                    | ';'         {;}
 ;
 
-root:               stmt_list
+root:               stmt_list {;}
 ;
 
-stmt_import:          IMPORT ID ENDL
+stmt_import:          IMPORT alone_id end_expr {;}
 ;
 
 /* == Statements == */
 
-stmt_block:          '{' stmt_list '}' end_expr
-                    | stmt_list end_expr
+stmt_block:          '{' stmt_list '}' end_expr {;}
+                    | stmt_list end_expr {;}
 ;
 
-stmt_list:            /* empty */
-                    | stmt_list stmt end_expr
+stmt_list:            /* empty */ {;}
+                    | stmt_list stmt end_expr {;}
 ;
 
-stmt:                 stmt_if
-                    | stmt_while
-                    | stmt_for
-                    | stmt_repeat
-                    | stmt_switch
-                    | BREAK end_expr
-                    | RETURN end_expr
-                    | RETURN expr end_expr
-                    | expr end_expr
-                    | var '=' expr end_expr
-                    | func_decl_named
-                    | var_list '=' args
+stmt:                 stmt_if {;}
+                    | stmt_while {;}
+                    | stmt_for {;}
+                    | stmt_repeat {;}
+                    | stmt_switch {;}
+                    | BREAK end_expr {;}
+                    | RETURN end_expr {;}
+                    | RETURN expr end_expr {;}
+                    | expr end_expr {;}
+                    | var '=' expr end_expr {;}
+                    | func_decl_named {;}
+                    | var_list '=' args {;}
 ;
 
-stmt_if:              IF expr stmt_list elseif_list
-                    | IF expr stmt_list elseif_list ELSE stmt_list
+stmt_if:              IF expr stmt_block elseif_list {;}
+                    | IF expr stmt_block elseif_list ELSE stmt_list {;}
 ;
-elseif_list:          /* empty */
-                    | elseif_list ELSEIF expr stmt_list
+elseif_list:          /* empty */ {;}
+                    | elseif_list ELSEIF expr stmt_block {;}
 ;
 
-stmt_switch_block:    CASE alone_id ':'stmt_block BREAK
-                      | DEFAULT ':'stmt_block BREAK
-                      | stmt_switch_block ENDL CASE alone_id ':'stmt_block BREAK
+stmt_switch_block:    CASE alone_id ':'stmt_block BREAK {;}
+                      | DEFAULT ':'stmt_block BREAK {;}
+                      | stmt_switch_block CASE alone_id ':'stmt_block BREAK {;}
 ;
-stmt_switch:          SWITCH alone_id stmt_switch_block
+stmt_switch:          SWITCH alone_id stmt_switch_block {;}
 ;
-stmt_while:           WHILE expr stmt_block
+stmt_while:           WHILE expr stmt_block {;}
 ;
-stmt_for:             FOR alone_id IN expr stmt_block
+stmt_for:             FOR alone_id IN expr stmt_block {;}
 ;
-stmt_repeat:          REPEAT stmt_list WHILE expr end_expr
+stmt_repeat:          REPEAT stmt_block WHILE expr end_expr {;}
 ;
 /* == Expressions == */
-alone_id:             ID
+alone_id:             ID {;}
 ;
-id_chain:             alone_id
-                    | id_chain '.' alone_id
-;
-
-varlet:               VAR
-                    | LET
+id_chain:             alone_id {;}
+                    | id_chain '.' alone_id {;}
 ;
 
-var:                  id_chain
-                    | varlet id_chain
-                    | var '[' expr ']'
-                    | var ':' type
+varlet:               VAR {;}
+                    | LET {;}
 ;
-var_list:             var
-                    | var_list ',' var
+
+var:                  id_chain {;}
+                    | varlet id_chain {;}
+                    | var ':' '[' expr ']' {;}
+                    | var ':' type {;}
 ;
-expr:                 var
-                    | INT
-                    | DOUBLE
-                    | STRING
-                    | TRUE
-                    | FALSE
-                    | BOOL
-                    | FLOAT
-                    | NIL
-                    | NOT expr
-                    | expr AND expr
-                    | expr OR  expr
-                    | expr '+' expr
-                    | expr '-' expr
-                    | expr '*' expr
-                    | expr '/' expr
-                    | expr '%' expr
-                    | expr '>' expr
-                    | expr '<' expr
-                    | expr GE  expr
-                    | expr LE  expr
-                    | expr EQ  expr
-                    | expr NE  expr
-                    | expr RANGE expr
-                    | '(' expr ')'
-                    | func_call
+var_list:             var {;}
+                    | var_list ',' var {;}
+;
+expr:                 var {;}
+                    | INT {;}
+                    | DOUBLE {;}
+                    | STRING {;}
+                    | TRUE {;}
+                    | FALSE {;}
+                    | BOOL {;}
+                    | FLOAT {;}
+                    | NIL {;}
+                    | NOT expr {;}
+                    | expr AND expr {;}
+                    | expr OR  expr {;}
+                    | expr '+' expr {;}
+                    | expr '-' expr {;}
+                    | expr '*' expr {;}
+                    | expr '/' expr {;}
+                    | expr '%' expr {;}
+                    | expr '>' expr {;}
+                    | expr '<' expr {;}
+                    | expr GE  expr {;}
+                    | expr LE  expr {;}
+                    | expr EQ  expr {;}
+                    | expr NE  expr {;}
+                    | expr RANGE expr {;}
+                    | '(' expr ')' {;}
+                    | func_call {;}
+                    | array_constructor {;}
+                    | stmt_import {;}
 
 ;
 /* == Function call == */
-func_call:            var '(' arg_list ')'
-                    | var ':' alone_id '(' arg_list ')'
+func_call:            var '(' arg_list ')' {;}
+                    | var ':' alone_id '(' arg_list ')' {;}
 ;
-arg_list:             /* empty */
-                    | args
+arg_list:             /* empty */ {;}
+                    | args {;}
 ;
-args:                 ID ':' expr
-                    | args ',' ID ':' expr
+args:                 ID ':' expr {;}
+                    | args ',' ID ':' expr {;}
 ;
 
-type:                 INTT
-                    | STRINGT
-                    | FLOATT
-                    | DOUBLET
-                    | BOOLT
-                    | CHARACTERT
+type:                 INTT {;}
+                    | STRINGT {;}
+                    | FLOATT {;}
+                    | DOUBLET {;}
+                    | BOOLT {;}
+                    | CHARACTERT {;}
 ;
 /* == Function declaration == */
 
-func_decl_named:      FUNCTION id_chain  func_body
+func_decl_named:      FUNCTION id_chain  func_body {;}
 ;
-func_body:            '(' arg_list_decl ')' FUNCTIONARROW stmt_list
+func_body:            '(' arg_list_decl ')' FUNCTIONARROW stmt_list {;}
 ;
 
-arg_list_decl:        /* empty */
-                    | args_decl
+arg_list_decl:        /* empty */ {;}
+                    | args_decl {;}
 ;
-args_decl:            alone_id ':' type
-                    | args_decl ',' alone_id ':' type
+args_decl:            alone_id ':' type {;}
+                    | args_decl ',' alone_id ':' type {;}
 ;
+
+/* == Array declaration == */
+
+/* var massive:[Int] = []
+var someInts = [Int]() */
+
+
+array_constructor:  '[' array_elem_list ']' {;}
+;
+
+array_elem_list:        /* empty */ {;}
+                    | array_elems {;}
+;
+
+array_elems:            array_elem {;}
+                    | array_elems ',' array_elem {;}
+;
+
+array_elem:         /* empty */ {;}
+                    | expr {;}
+;
+
 %%

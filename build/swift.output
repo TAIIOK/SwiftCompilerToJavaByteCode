@@ -1,25 +1,13 @@
-Useless nonterminals
-
-   stmt_import
-
-
 Terminals which are not used
 
-   IMPORT
    DO
    SELF
    ERROR
 
 
-Useless rules
-
-   86 stmt_import: IMPORT ID ENDL
-
-
-State 34 conflicts: 1 shift/reduce
-State 40 conflicts: 1 shift/reduce
-State 85 conflicts: 1 shift/reduce
-State 120 conflicts: 2 shift/reduce
+State 25 conflicts: 1 reduce/reduce
+State 37 conflicts: 1 shift/reduce
+State 47 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -31,179 +19,194 @@ Grammar
 
     3 root: stmt_list
 
-    4 stmt_block: '{' stmt_list '}' end_expr
-    5           | stmt_list end_expr
+    4 stmt_import: IMPORT alone_id end_expr
 
-    6 stmt_list: /* empty */
-    7          | stmt_list stmt end_expr
+    5 stmt_block: '{' stmt_list '}' end_expr
+    6           | stmt_list end_expr
 
-    8 stmt: stmt_if
-    9     | stmt_while
-   10     | stmt_for
-   11     | stmt_repeat
-   12     | stmt_switch
-   13     | BREAK end_expr
-   14     | RETURN end_expr
-   15     | RETURN expr end_expr
-   16     | expr end_expr
-   17     | var '=' expr end_expr
-   18     | func_decl_named
-   19     | var_list '=' args
+    7 stmt_list: /* empty */
+    8          | stmt_list stmt end_expr
 
-   20 stmt_if: IF expr stmt_list elseif_list
-   21        | IF expr stmt_list elseif_list ELSE stmt_list
+    9 stmt: stmt_if
+   10     | stmt_while
+   11     | stmt_for
+   12     | stmt_repeat
+   13     | stmt_switch
+   14     | BREAK end_expr
+   15     | RETURN end_expr
+   16     | RETURN expr end_expr
+   17     | expr end_expr
+   18     | var '=' expr end_expr
+   19     | func_decl_named
+   20     | var_list '=' args
 
-   22 elseif_list: /* empty */
-   23            | elseif_list ELSEIF expr stmt_list
+   21 stmt_if: IF expr stmt_block elseif_list
+   22        | IF expr stmt_block elseif_list ELSE stmt_list
 
-   24 stmt_switch_block: CASE alone_id ':' stmt_block BREAK
-   25                  | DEFAULT ':' stmt_block BREAK
-   26                  | stmt_switch_block ENDL CASE alone_id ':' stmt_block BREAK
+   23 elseif_list: /* empty */
+   24            | elseif_list ELSEIF expr stmt_block
 
-   27 stmt_switch: SWITCH alone_id stmt_switch_block
+   25 stmt_switch_block: CASE alone_id ':' stmt_block BREAK
+   26                  | DEFAULT ':' stmt_block BREAK
+   27                  | stmt_switch_block CASE alone_id ':' stmt_block BREAK
 
-   28 stmt_while: WHILE expr stmt_block
+   28 stmt_switch: SWITCH alone_id stmt_switch_block
 
-   29 stmt_for: FOR alone_id IN expr stmt_block
+   29 stmt_while: WHILE expr stmt_block
 
-   30 stmt_repeat: REPEAT stmt_list WHILE expr end_expr
+   30 stmt_for: FOR alone_id IN expr stmt_block
 
-   31 alone_id: ID
+   31 stmt_repeat: REPEAT stmt_block WHILE expr end_expr
 
-   32 id_chain: alone_id
-   33         | id_chain '.' alone_id
+   32 alone_id: ID
 
-   34 varlet: VAR
-   35       | LET
+   33 id_chain: alone_id
+   34         | id_chain '.' alone_id
 
-   36 var: id_chain
-   37    | varlet id_chain
-   38    | var '[' expr ']'
-   39    | var ':' type
+   35 varlet: VAR
+   36       | LET
 
-   40 var_list: var
-   41         | var_list ',' var
+   37 var: id_chain
+   38    | varlet id_chain
+   39    | var ':' '[' expr ']'
+   40    | var ':' type
 
-   42 expr: var
-   43     | INT
-   44     | DOUBLE
-   45     | STRING
-   46     | TRUE
-   47     | FALSE
-   48     | BOOL
-   49     | FLOAT
-   50     | NIL
-   51     | NOT expr
-   52     | expr AND expr
-   53     | expr OR expr
-   54     | expr '+' expr
-   55     | expr '-' expr
-   56     | expr '*' expr
-   57     | expr '/' expr
-   58     | expr '%' expr
-   59     | expr '>' expr
-   60     | expr '<' expr
-   61     | expr GE expr
-   62     | expr LE expr
-   63     | expr EQ expr
-   64     | expr NE expr
-   65     | expr RANGE expr
-   66     | '(' expr ')'
-   67     | func_call
+   41 var_list: var
+   42         | var_list ',' var
 
-   68 func_call: var '(' arg_list ')'
-   69          | var ':' alone_id '(' arg_list ')'
+   43 expr: var
+   44     | INT
+   45     | DOUBLE
+   46     | STRING
+   47     | TRUE
+   48     | FALSE
+   49     | BOOL
+   50     | FLOAT
+   51     | NIL
+   52     | NOT expr
+   53     | expr AND expr
+   54     | expr OR expr
+   55     | expr '+' expr
+   56     | expr '-' expr
+   57     | expr '*' expr
+   58     | expr '/' expr
+   59     | expr '%' expr
+   60     | expr '>' expr
+   61     | expr '<' expr
+   62     | expr GE expr
+   63     | expr LE expr
+   64     | expr EQ expr
+   65     | expr NE expr
+   66     | expr RANGE expr
+   67     | '(' expr ')'
+   68     | func_call
+   69     | array_constructor
+   70     | stmt_import
 
-   70 arg_list: /* empty */
-   71         | args
+   71 func_call: var '(' arg_list ')'
+   72          | var ':' alone_id '(' arg_list ')'
 
-   72 args: ID ':' expr
-   73     | args ',' ID ':' expr
+   73 arg_list: /* empty */
+   74         | args
 
-   74 type: INTT
-   75     | STRINGT
-   76     | FLOATT
-   77     | DOUBLET
-   78     | BOOLT
-   79     | CHARACTERT
+   75 args: ID ':' expr
+   76     | args ',' ID ':' expr
 
-   80 func_decl_named: FUNCTION id_chain func_body
+   77 type: INTT
+   78     | STRINGT
+   79     | FLOATT
+   80     | DOUBLET
+   81     | BOOLT
+   82     | CHARACTERT
 
-   81 func_body: '(' arg_list_decl ')' FUNCTIONARROW stmt_list
+   83 func_decl_named: FUNCTION id_chain func_body
 
-   82 arg_list_decl: /* empty */
-   83              | args_decl
+   84 func_body: '(' arg_list_decl ')' FUNCTIONARROW stmt_list
 
-   84 args_decl: alone_id ':' type
-   85          | args_decl ',' alone_id ':' type
+   85 arg_list_decl: /* empty */
+   86              | args_decl
+
+   87 args_decl: alone_id ':' type
+   88          | args_decl ',' alone_id ':' type
+
+   89 array_constructor: '[' array_elem_list ']'
+
+   90 array_elem_list: /* empty */
+   91                | array_elems
+
+   92 array_elems: array_elem
+   93            | array_elems ',' array_elem
+
+   94 array_elem: /* empty */
+   95           | expr
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'%' (37) 58
-'(' (40) 66 68 69 81
-')' (41) 66 68 69 81
-'*' (42) 56
-'+' (43) 54
-',' (44) 41 73 85
-'-' (45) 55
-'.' (46) 33
-'/' (47) 57
-':' (58) 24 25 26 39 69 72 73 84 85
+'%' (37) 59
+'(' (40) 67 71 72 84
+')' (41) 67 71 72 84
+'*' (42) 57
+'+' (43) 55
+',' (44) 42 76 88 93
+'-' (45) 56
+'.' (46) 34
+'/' (47) 58
+':' (58) 25 26 27 39 40 72 75 76 87 88
 ';' (59) 2
-'<' (60) 60
-'=' (61) 17 19
-'>' (62) 59
-'[' (91) 38
-']' (93) 38
-'{' (123) 4
-'}' (125) 4
+'<' (60) 61
+'=' (61) 18 20
+'>' (62) 60
+'[' (91) 39 89
+']' (93) 39 89
+'{' (123) 5
+'}' (125) 5
 error (256)
-IMPORT (258)
-INT (259) 43
-FLOAT (260) 49
-DOUBLE (261) 44
-BOOL (262) 48
-STRING (263) 45
-STRINGT (264) 75
-CHARACTERT (265) 79
-INTT (266) 74
-FLOATT (267) 76
-DOUBLET (268) 77
-BOOLT (269) 78
-TRUE (270) 46
-FALSE (271) 47
-LET (272) 35
-VAR (273) 34
-REPEAT (274) 30
-WHILE (275) 28 30
-FOR (276) 29
-IN (277) 29
-IF (278) 20 21
-ELSE (279) 21
-ELSEIF (280) 23
-SWITCH (281) 27
-CASE (282) 24 26
-DEFAULT (283) 25
-BREAK (284) 13 24 25 26
-FUNCTION (285) 80
-FUNCTIONARROW (286) 81
+IMPORT (258) 4
+INT (259) 44
+FLOAT (260) 50
+DOUBLE (261) 45
+BOOL (262) 49
+STRING (263) 46
+STRINGT (264) 78
+CHARACTERT (265) 82
+INTT (266) 77
+FLOATT (267) 79
+DOUBLET (268) 80
+BOOLT (269) 81
+TRUE (270) 47
+FALSE (271) 48
+LET (272) 36
+VAR (273) 35
+REPEAT (274) 31
+WHILE (275) 29 31
+FOR (276) 30
+IN (277) 30
+IF (278) 21 22
+ELSE (279) 22
+ELSEIF (280) 24
+SWITCH (281) 28
+CASE (282) 25 27
+DEFAULT (283) 26
+BREAK (284) 14 25 26 27
+FUNCTION (285) 83
+FUNCTIONARROW (286) 84
 DO (287)
-RANGE (288) 65
-RETURN (289) 14 15
-NIL (290) 50
+RANGE (288) 66
+RETURN (289) 15 16
+NIL (290) 51
 SELF (291)
 ERROR (292)
-ID (293) 31 72 73
-EQ (294) 63
-NE (295) 64
-LE (296) 62
-GE (297) 61
-NOT (298) 51
-ENDL (299) 1 26
-OR (300) 53
-AND (301) 52
+ID (293) 32 75 76
+EQ (294) 64
+NE (295) 65
+LE (296) 63
+GE (297) 62
+NOT (298) 52
+ENDL (299) 1
+OR (300) 54
+AND (301) 53
 
 
 Nonterminals, with rules where they appear
@@ -211,66 +214,76 @@ Nonterminals, with rules where they appear
 $accept (65)
     on left: 0
 end_expr (66)
-    on left: 1 2, on right: 4 5 7 13 14 15 16 17 30
+    on left: 1 2, on right: 4 5 6 8 14 15 16 17 18 31
 root (67)
     on left: 3, on right: 0
-stmt_block (68)
-    on left: 4 5, on right: 24 25 26 28 29
-stmt_list (69)
-    on left: 6 7, on right: 3 4 5 7 20 21 23 30 81
-stmt (70)
-    on left: 8 9 10 11 12 13 14 15 16 17 18 19, on right: 7
-stmt_if (71)
-    on left: 20 21, on right: 8
-elseif_list (72)
-    on left: 22 23, on right: 20 21 23
-stmt_switch_block (73)
-    on left: 24 25 26, on right: 26 27
-stmt_switch (74)
-    on left: 27, on right: 12
-stmt_while (75)
-    on left: 28, on right: 9
-stmt_for (76)
+stmt_import (68)
+    on left: 4, on right: 70
+stmt_block (69)
+    on left: 5 6, on right: 21 22 24 25 26 27 29 30 31
+stmt_list (70)
+    on left: 7 8, on right: 3 5 6 8 22 84
+stmt (71)
+    on left: 9 10 11 12 13 14 15 16 17 18 19 20, on right: 8
+stmt_if (72)
+    on left: 21 22, on right: 9
+elseif_list (73)
+    on left: 23 24, on right: 21 22 24
+stmt_switch_block (74)
+    on left: 25 26 27, on right: 27 28
+stmt_switch (75)
+    on left: 28, on right: 13
+stmt_while (76)
     on left: 29, on right: 10
-stmt_repeat (77)
+stmt_for (77)
     on left: 30, on right: 11
-alone_id (78)
-    on left: 31, on right: 24 26 27 29 32 33 69 84 85
-id_chain (79)
-    on left: 32 33, on right: 33 36 37 80
-varlet (80)
-    on left: 34 35, on right: 37
-var (81)
-    on left: 36 37 38 39, on right: 17 38 39 40 41 42 68 69
-var_list (82)
-    on left: 40 41, on right: 19 41
-expr (83)
-    on left: 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59
-    60 61 62 63 64 65 66 67, on right: 15 16 17 20 21 23 28 29 30 38
-    51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 72 73
-func_call (84)
-    on left: 68 69, on right: 67
-arg_list (85)
-    on left: 70 71, on right: 68 69
-args (86)
-    on left: 72 73, on right: 19 71 73
-type (87)
-    on left: 74 75 76 77 78 79, on right: 39 84 85
-func_decl_named (88)
-    on left: 80, on right: 18
-func_body (89)
-    on left: 81, on right: 80
-arg_list_decl (90)
-    on left: 82 83, on right: 81
-args_decl (91)
-    on left: 84 85, on right: 83 85
+stmt_repeat (78)
+    on left: 31, on right: 12
+alone_id (79)
+    on left: 32, on right: 4 25 27 28 30 33 34 72 87 88
+id_chain (80)
+    on left: 33 34, on right: 34 37 38 83
+varlet (81)
+    on left: 35 36, on right: 38
+var (82)
+    on left: 37 38 39 40, on right: 18 39 40 41 42 43 71 72
+var_list (83)
+    on left: 41 42, on right: 20 42
+expr (84)
+    on left: 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60
+    61 62 63 64 65 66 67 68 69 70, on right: 16 17 18 21 22 24 29 30
+    31 39 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 75 76 95
+func_call (85)
+    on left: 71 72, on right: 68
+arg_list (86)
+    on left: 73 74, on right: 71 72
+args (87)
+    on left: 75 76, on right: 20 74 76
+type (88)
+    on left: 77 78 79 80 81 82, on right: 40 87 88
+func_decl_named (89)
+    on left: 83, on right: 19
+func_body (90)
+    on left: 84, on right: 83
+arg_list_decl (91)
+    on left: 85 86, on right: 84
+args_decl (92)
+    on left: 87 88, on right: 86 88
+array_constructor (93)
+    on left: 89, on right: 69
+array_elem_list (94)
+    on left: 90 91, on right: 89
+array_elems (95)
+    on left: 92 93, on right: 91 93
+array_elem (96)
+    on left: 94 95, on right: 92 93
 
 
 state 0
 
     0 $accept: . root $end
 
-    $default  reduce using rule 6 (stmt_list)
+    $default  reduce using rule 7 (stmt_list)
 
     root       go to state 1
     stmt_list  go to state 2
@@ -286,46 +299,50 @@ state 1
 state 2
 
     3 root: stmt_list .
-    7 stmt_list: stmt_list . stmt end_expr
+    8 stmt_list: stmt_list . stmt end_expr
 
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '('       shift, and go to state 24
+    IMPORT    shift, and go to state 4
+    INT       shift, and go to state 5
+    FLOAT     shift, and go to state 6
+    DOUBLE    shift, and go to state 7
+    BOOL      shift, and go to state 8
+    STRING    shift, and go to state 9
+    TRUE      shift, and go to state 10
+    FALSE     shift, and go to state 11
+    LET       shift, and go to state 12
+    VAR       shift, and go to state 13
+    REPEAT    shift, and go to state 14
+    WHILE     shift, and go to state 15
+    FOR       shift, and go to state 16
+    IF        shift, and go to state 17
+    SWITCH    shift, and go to state 18
+    BREAK     shift, and go to state 19
+    FUNCTION  shift, and go to state 20
+    RETURN    shift, and go to state 21
+    NIL       shift, and go to state 22
+    ID        shift, and go to state 23
+    NOT       shift, and go to state 24
+    '['       shift, and go to state 25
+    '('       shift, and go to state 26
 
     $default  reduce using rule 3 (root)
 
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
+    stmt_import        go to state 27
+    stmt               go to state 28
+    stmt_if            go to state 29
+    stmt_switch        go to state 30
+    stmt_while         go to state 31
+    stmt_for           go to state 32
+    stmt_repeat        go to state 33
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 37
+    var_list           go to state 38
+    expr               go to state 39
+    func_call          go to state 40
+    func_decl_named    go to state 41
+    array_constructor  go to state 42
 
 
 state 3
@@ -337,2769 +354,2954 @@ state 3
 
 state 4
 
-   43 expr: INT .
+    4 stmt_import: IMPORT . alone_id end_expr
 
-    $default  reduce using rule 43 (expr)
+    ID  shift, and go to state 23
+
+    alone_id  go to state 43
 
 
 state 5
 
-   49 expr: FLOAT .
-
-    $default  reduce using rule 49 (expr)
-
-
-state 6
-
-   44 expr: DOUBLE .
+   44 expr: INT .
 
     $default  reduce using rule 44 (expr)
 
 
+state 6
+
+   50 expr: FLOAT .
+
+    $default  reduce using rule 50 (expr)
+
+
 state 7
 
-   48 expr: BOOL .
-
-    $default  reduce using rule 48 (expr)
-
-
-state 8
-
-   45 expr: STRING .
+   45 expr: DOUBLE .
 
     $default  reduce using rule 45 (expr)
 
 
+state 8
+
+   49 expr: BOOL .
+
+    $default  reduce using rule 49 (expr)
+
+
 state 9
 
-   46 expr: TRUE .
+   46 expr: STRING .
 
     $default  reduce using rule 46 (expr)
 
 
 state 10
 
-   47 expr: FALSE .
+   47 expr: TRUE .
 
     $default  reduce using rule 47 (expr)
 
 
 state 11
 
-   35 varlet: LET .
+   48 expr: FALSE .
 
-    $default  reduce using rule 35 (varlet)
+    $default  reduce using rule 48 (expr)
 
 
 state 12
 
-   34 varlet: VAR .
+   36 varlet: LET .
 
-    $default  reduce using rule 34 (varlet)
+    $default  reduce using rule 36 (varlet)
 
 
 state 13
 
-   30 stmt_repeat: REPEAT . stmt_list WHILE expr end_expr
+   35 varlet: VAR .
 
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_list  go to state 39
+    $default  reduce using rule 35 (varlet)
 
 
 state 14
 
-   28 stmt_while: WHILE . expr stmt_block
+   31 stmt_repeat: REPEAT . stmt_block WHILE expr end_expr
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
+    '{'  shift, and go to state 44
 
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 41
-    func_call  go to state 37
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 45
+    stmt_list   go to state 46
 
 
 state 15
 
-   29 stmt_for: FOR . alone_id IN expr stmt_block
+   29 stmt_while: WHILE . expr stmt_block
 
-    ID  shift, and go to state 22
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
 
-    alone_id  go to state 42
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 48
+    func_call          go to state 40
+    array_constructor  go to state 42
 
 
 state 16
 
-   20 stmt_if: IF . expr stmt_list elseif_list
-   21        | IF . expr stmt_list elseif_list ELSE stmt_list
+   30 stmt_for: FOR . alone_id IN expr stmt_block
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
+    ID  shift, and go to state 23
 
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 43
-    func_call  go to state 37
+    alone_id  go to state 49
 
 
 state 17
 
-   27 stmt_switch: SWITCH . alone_id stmt_switch_block
+   21 stmt_if: IF . expr stmt_block elseif_list
+   22        | IF . expr stmt_block elseif_list ELSE stmt_list
 
-    ID  shift, and go to state 22
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
 
-    alone_id  go to state 44
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 50
+    func_call          go to state 40
+    array_constructor  go to state 42
 
 
 state 18
 
-   13 stmt: BREAK . end_expr
+   28 stmt_switch: SWITCH . alone_id stmt_switch_block
 
-    ENDL  shift, and go to state 45
-    ';'   shift, and go to state 46
+    ID  shift, and go to state 23
 
-    end_expr  go to state 47
+    alone_id  go to state 51
 
 
 state 19
 
-   80 func_decl_named: FUNCTION . id_chain func_body
+   14 stmt: BREAK . end_expr
 
-    ID  shift, and go to state 22
+    ENDL  shift, and go to state 52
+    ';'   shift, and go to state 53
 
-    alone_id  go to state 31
-    id_chain  go to state 48
+    end_expr  go to state 54
 
 
 state 20
 
-   14 stmt: RETURN . end_expr
-   15     | RETURN . expr end_expr
+   83 func_decl_named: FUNCTION . id_chain func_body
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    ENDL    shift, and go to state 45
-    ';'     shift, and go to state 46
-    '('     shift, and go to state 24
+    ID  shift, and go to state 23
 
-    end_expr   go to state 49
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 50
-    func_call  go to state 37
+    alone_id  go to state 34
+    id_chain  go to state 55
 
 
 state 21
 
-   50 expr: NIL .
+   15 stmt: RETURN . end_expr
+   16     | RETURN . expr end_expr
 
-    $default  reduce using rule 50 (expr)
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    ENDL    shift, and go to state 52
+    ';'     shift, and go to state 53
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    end_expr           go to state 56
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 57
+    func_call          go to state 40
+    array_constructor  go to state 42
 
 
 state 22
 
-   31 alone_id: ID .
+   51 expr: NIL .
 
-    $default  reduce using rule 31 (alone_id)
+    $default  reduce using rule 51 (expr)
 
 
 state 23
 
-   51 expr: NOT . expr
+   32 alone_id: ID .
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 51
-    func_call  go to state 37
+    $default  reduce using rule 32 (alone_id)
 
 
 state 24
 
-   66 expr: '(' . expr ')'
+   52 expr: NOT . expr
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
 
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 52
-    func_call  go to state 37
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 58
+    func_call          go to state 40
+    array_constructor  go to state 42
 
 
 state 25
 
-    7 stmt_list: stmt_list stmt . end_expr
+   89 array_constructor: '[' . array_elem_list ']'
 
-    ENDL  shift, and go to state 45
-    ';'   shift, and go to state 46
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
 
-    end_expr  go to state 53
+    ']'       reduce using rule 90 (array_elem_list)
+    ']'       [reduce using rule 94 (array_elem)]
+    ','       reduce using rule 94 (array_elem)
+    $default  reduce using rule 90 (array_elem_list)
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 59
+    func_call          go to state 40
+    array_constructor  go to state 42
+    array_elem_list    go to state 60
+    array_elems        go to state 61
+    array_elem         go to state 62
 
 
 state 26
 
-    8 stmt: stmt_if .
+   67 expr: '(' . expr ')'
 
-    $default  reduce using rule 8 (stmt)
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 63
+    func_call          go to state 40
+    array_constructor  go to state 42
 
 
 state 27
 
-   12 stmt: stmt_switch .
+   70 expr: stmt_import .
 
-    $default  reduce using rule 12 (stmt)
+    $default  reduce using rule 70 (expr)
 
 
 state 28
 
-    9 stmt: stmt_while .
+    8 stmt_list: stmt_list stmt . end_expr
 
-    $default  reduce using rule 9 (stmt)
+    ENDL  shift, and go to state 52
+    ';'   shift, and go to state 53
+
+    end_expr  go to state 64
 
 
 state 29
 
-   10 stmt: stmt_for .
+    9 stmt: stmt_if .
 
-    $default  reduce using rule 10 (stmt)
+    $default  reduce using rule 9 (stmt)
 
 
 state 30
 
-   11 stmt: stmt_repeat .
+   13 stmt: stmt_switch .
 
-    $default  reduce using rule 11 (stmt)
+    $default  reduce using rule 13 (stmt)
 
 
 state 31
 
-   32 id_chain: alone_id .
+   10 stmt: stmt_while .
 
-    $default  reduce using rule 32 (id_chain)
+    $default  reduce using rule 10 (stmt)
 
 
 state 32
 
-   33 id_chain: id_chain . '.' alone_id
-   36 var: id_chain .
+   11 stmt: stmt_for .
 
-    '.'  shift, and go to state 54
-
-    $default  reduce using rule 36 (var)
+    $default  reduce using rule 11 (stmt)
 
 
 state 33
 
-   37 var: varlet . id_chain
+   12 stmt: stmt_repeat .
 
-    ID  shift, and go to state 22
-
-    alone_id  go to state 31
-    id_chain  go to state 55
+    $default  reduce using rule 12 (stmt)
 
 
 state 34
 
-   17 stmt: var . '=' expr end_expr
-   38 var: var . '[' expr ']'
-   39    | var . ':' type
-   40 var_list: var .
-   42 expr: var .
-   68 func_call: var . '(' arg_list ')'
-   69          | var . ':' alone_id '(' arg_list ')'
+   33 id_chain: alone_id .
 
-    '='  shift, and go to state 56
-    ':'  shift, and go to state 57
-    '['  shift, and go to state 58
-    '('  shift, and go to state 59
-
-    '='       [reduce using rule 40 (var_list)]
-    ','       reduce using rule 40 (var_list)
-    $default  reduce using rule 42 (expr)
+    $default  reduce using rule 33 (id_chain)
 
 
 state 35
 
-   19 stmt: var_list . '=' args
-   41 var_list: var_list . ',' var
+   34 id_chain: id_chain . '.' alone_id
+   37 var: id_chain .
 
-    '='  shift, and go to state 60
-    ','  shift, and go to state 61
+    '.'  shift, and go to state 65
+
+    $default  reduce using rule 37 (var)
 
 
 state 36
 
-   16 stmt: expr . end_expr
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
+   38 var: varlet . id_chain
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    ENDL   shift, and go to state 45
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    ';'    shift, and go to state 46
+    ID  shift, and go to state 23
 
-    end_expr  go to state 76
+    alone_id  go to state 34
+    id_chain  go to state 66
 
 
 state 37
 
-   67 expr: func_call .
+   18 stmt: var . '=' expr end_expr
+   39 var: var . ':' '[' expr ']'
+   40    | var . ':' type
+   41 var_list: var .
+   43 expr: var .
+   71 func_call: var . '(' arg_list ')'
+   72          | var . ':' alone_id '(' arg_list ')'
 
-    $default  reduce using rule 67 (expr)
+    '='  shift, and go to state 67
+    ':'  shift, and go to state 68
+    '('  shift, and go to state 69
+
+    '='       [reduce using rule 41 (var_list)]
+    ','       reduce using rule 41 (var_list)
+    $default  reduce using rule 43 (expr)
 
 
 state 38
 
-   18 stmt: func_decl_named .
+   20 stmt: var_list . '=' args
+   42 var_list: var_list . ',' var
 
-    $default  reduce using rule 18 (stmt)
+    '='  shift, and go to state 70
+    ','  shift, and go to state 71
 
 
 state 39
 
-    7 stmt_list: stmt_list . stmt end_expr
-   30 stmt_repeat: REPEAT stmt_list . WHILE expr end_expr
+   17 stmt: expr . end_expr
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
 
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 77
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '('       shift, and go to state 24
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    ENDL   shift, and go to state 52
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    ';'    shift, and go to state 53
 
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
+    end_expr  go to state 86
 
 
 state 40
 
-   38 var: var . '[' expr ']'
-   39    | var . ':' type
-   42 expr: var .
-   68 func_call: var . '(' arg_list ')'
-   69          | var . ':' alone_id '(' arg_list ')'
+   68 expr: func_call .
 
-    ':'  shift, and go to state 57
-    '['  shift, and go to state 58
-    '('  shift, and go to state 59
-
-    '('       [reduce using rule 42 (expr)]
-    $default  reduce using rule 42 (expr)
+    $default  reduce using rule 68 (expr)
 
 
 state 41
 
-   28 stmt_while: WHILE expr . stmt_block
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
+   19 stmt: func_decl_named .
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    '{'    shift, and go to state 78
-
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_block  go to state 79
-    stmt_list   go to state 80
+    $default  reduce using rule 19 (stmt)
 
 
 state 42
 
-   29 stmt_for: FOR alone_id . IN expr stmt_block
+   69 expr: array_constructor .
 
-    IN  shift, and go to state 81
+    $default  reduce using rule 69 (expr)
 
 
 state 43
 
-   20 stmt_if: IF expr . stmt_list elseif_list
-   21        | IF expr . stmt_list elseif_list ELSE stmt_list
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
+    4 stmt_import: IMPORT alone_id . end_expr
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
+    ENDL  shift, and go to state 52
+    ';'   shift, and go to state 53
 
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_list  go to state 82
+    end_expr  go to state 87
 
 
 state 44
 
-   27 stmt_switch: SWITCH alone_id . stmt_switch_block
+    5 stmt_block: '{' . stmt_list '}' end_expr
 
-    CASE     shift, and go to state 83
-    DEFAULT  shift, and go to state 84
+    $default  reduce using rule 7 (stmt_list)
 
-    stmt_switch_block  go to state 85
+    stmt_list  go to state 88
 
 
 state 45
+
+   31 stmt_repeat: REPEAT stmt_block . WHILE expr end_expr
+
+    WHILE  shift, and go to state 89
+
+
+state 46
+
+    6 stmt_block: stmt_list . end_expr
+    8 stmt_list: stmt_list . stmt end_expr
+
+    IMPORT    shift, and go to state 4
+    INT       shift, and go to state 5
+    FLOAT     shift, and go to state 6
+    DOUBLE    shift, and go to state 7
+    BOOL      shift, and go to state 8
+    STRING    shift, and go to state 9
+    TRUE      shift, and go to state 10
+    FALSE     shift, and go to state 11
+    LET       shift, and go to state 12
+    VAR       shift, and go to state 13
+    REPEAT    shift, and go to state 14
+    WHILE     shift, and go to state 15
+    FOR       shift, and go to state 16
+    IF        shift, and go to state 17
+    SWITCH    shift, and go to state 18
+    BREAK     shift, and go to state 19
+    FUNCTION  shift, and go to state 20
+    RETURN    shift, and go to state 21
+    NIL       shift, and go to state 22
+    ID        shift, and go to state 23
+    NOT       shift, and go to state 24
+    ENDL      shift, and go to state 52
+    ';'       shift, and go to state 53
+    '['       shift, and go to state 25
+    '('       shift, and go to state 26
+
+    end_expr           go to state 90
+    stmt_import        go to state 27
+    stmt               go to state 28
+    stmt_if            go to state 29
+    stmt_switch        go to state 30
+    stmt_while         go to state 31
+    stmt_for           go to state 32
+    stmt_repeat        go to state 33
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 37
+    var_list           go to state 38
+    expr               go to state 39
+    func_call          go to state 40
+    func_decl_named    go to state 41
+    array_constructor  go to state 42
+
+
+state 47
+
+   39 var: var . ':' '[' expr ']'
+   40    | var . ':' type
+   43 expr: var .
+   71 func_call: var . '(' arg_list ')'
+   72          | var . ':' alone_id '(' arg_list ')'
+
+    ':'  shift, and go to state 68
+    '('  shift, and go to state 69
+
+    '('       [reduce using rule 43 (expr)]
+    $default  reduce using rule 43 (expr)
+
+
+state 48
+
+   29 stmt_while: WHILE expr . stmt_block
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    '{'    shift, and go to state 44
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 91
+    stmt_list   go to state 46
+
+
+state 49
+
+   30 stmt_for: FOR alone_id . IN expr stmt_block
+
+    IN  shift, and go to state 92
+
+
+state 50
+
+   21 stmt_if: IF expr . stmt_block elseif_list
+   22        | IF expr . stmt_block elseif_list ELSE stmt_list
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    '{'    shift, and go to state 44
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 93
+    stmt_list   go to state 46
+
+
+state 51
+
+   28 stmt_switch: SWITCH alone_id . stmt_switch_block
+
+    CASE     shift, and go to state 94
+    DEFAULT  shift, and go to state 95
+
+    stmt_switch_block  go to state 96
+
+
+state 52
 
     1 end_expr: ENDL .
 
     $default  reduce using rule 1 (end_expr)
 
 
-state 46
+state 53
 
     2 end_expr: ';' .
 
     $default  reduce using rule 2 (end_expr)
 
 
-state 47
+state 54
 
-   13 stmt: BREAK end_expr .
-
-    $default  reduce using rule 13 (stmt)
-
-
-state 48
-
-   33 id_chain: id_chain . '.' alone_id
-   80 func_decl_named: FUNCTION id_chain . func_body
-
-    '.'  shift, and go to state 54
-    '('  shift, and go to state 86
-
-    func_body  go to state 87
-
-
-state 49
-
-   14 stmt: RETURN end_expr .
+   14 stmt: BREAK end_expr .
 
     $default  reduce using rule 14 (stmt)
 
 
-state 50
-
-   15 stmt: RETURN expr . end_expr
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    ENDL   shift, and go to state 45
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    ';'    shift, and go to state 46
-
-    end_expr  go to state 88
-
-
-state 51
-
-   51 expr: NOT expr .
-   52     | expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    $default  reduce using rule 51 (expr)
-
-
-state 52
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-   66     | '(' expr . ')'
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    ')'    shift, and go to state 89
-
-
-state 53
-
-    7 stmt_list: stmt_list stmt end_expr .
-
-    $default  reduce using rule 7 (stmt_list)
-
-
-state 54
-
-   33 id_chain: id_chain '.' . alone_id
-
-    ID  shift, and go to state 22
-
-    alone_id  go to state 90
-
-
 state 55
 
-   33 id_chain: id_chain . '.' alone_id
-   37 var: varlet id_chain .
+   34 id_chain: id_chain . '.' alone_id
+   83 func_decl_named: FUNCTION id_chain . func_body
 
-    '.'  shift, and go to state 54
+    '.'  shift, and go to state 65
+    '('  shift, and go to state 97
 
-    $default  reduce using rule 37 (var)
+    func_body  go to state 98
 
 
 state 56
 
-   17 stmt: var '=' . expr end_expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 91
-    func_call  go to state 37
-
-
-state 57
-
-   39 var: var ':' . type
-   69 func_call: var ':' . alone_id '(' arg_list ')'
-
-    STRINGT     shift, and go to state 92
-    CHARACTERT  shift, and go to state 93
-    INTT        shift, and go to state 94
-    FLOATT      shift, and go to state 95
-    DOUBLET     shift, and go to state 96
-    BOOLT       shift, and go to state 97
-    ID          shift, and go to state 22
-
-    alone_id  go to state 98
-    type      go to state 99
-
-
-state 58
-
-   38 var: var '[' . expr ']'
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 100
-    func_call  go to state 37
-
-
-state 59
-
-   68 func_call: var '(' . arg_list ')'
-
-    ID  shift, and go to state 101
-
-    $default  reduce using rule 70 (arg_list)
-
-    arg_list  go to state 102
-    args      go to state 103
-
-
-state 60
-
-   19 stmt: var_list '=' . args
-
-    ID  shift, and go to state 101
-
-    args  go to state 104
-
-
-state 61
-
-   41 var_list: var_list ',' . var
-
-    LET  shift, and go to state 11
-    VAR  shift, and go to state 12
-    ID   shift, and go to state 22
-
-    alone_id  go to state 31
-    id_chain  go to state 32
-    varlet    go to state 33
-    var       go to state 105
-
-
-state 62
-
-   65 expr: expr RANGE . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 106
-    func_call  go to state 37
-
-
-state 63
-
-   63 expr: expr EQ . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 107
-    func_call  go to state 37
-
-
-state 64
-
-   64 expr: expr NE . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 108
-    func_call  go to state 37
-
-
-state 65
-
-   62 expr: expr LE . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 109
-    func_call  go to state 37
-
-
-state 66
-
-   61 expr: expr GE . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 110
-    func_call  go to state 37
-
-
-state 67
-
-   53 expr: expr OR . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 111
-    func_call  go to state 37
-
-
-state 68
-
-   52 expr: expr AND . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 112
-    func_call  go to state 37
-
-
-state 69
-
-   60 expr: expr '<' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 113
-    func_call  go to state 37
-
-
-state 70
-
-   59 expr: expr '>' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 114
-    func_call  go to state 37
-
-
-state 71
-
-   54 expr: expr '+' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 115
-    func_call  go to state 37
-
-
-state 72
-
-   55 expr: expr '-' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 116
-    func_call  go to state 37
-
-
-state 73
-
-   56 expr: expr '*' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 117
-    func_call  go to state 37
-
-
-state 74
-
-   57 expr: expr '/' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 118
-    func_call  go to state 37
-
-
-state 75
-
-   58 expr: expr '%' . expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 119
-    func_call  go to state 37
-
-
-state 76
-
-   16 stmt: expr end_expr .
-
-    $default  reduce using rule 16 (stmt)
-
-
-state 77
-
-   28 stmt_while: WHILE . expr stmt_block
-   30 stmt_repeat: REPEAT stmt_list WHILE . expr end_expr
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 120
-    func_call  go to state 37
-
-
-state 78
-
-    4 stmt_block: '{' . stmt_list '}' end_expr
-
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_list  go to state 121
-
-
-state 79
-
-   28 stmt_while: WHILE expr stmt_block .
-
-    $default  reduce using rule 28 (stmt_while)
-
-
-state 80
-
-    5 stmt_block: stmt_list . end_expr
-    7 stmt_list: stmt_list . stmt end_expr
-
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    ENDL      shift, and go to state 45
-    ';'       shift, and go to state 46
-    '('       shift, and go to state 24
-
-    end_expr         go to state 122
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
-
-
-state 81
-
-   29 stmt_for: FOR alone_id IN . expr stmt_block
-
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 123
-    func_call  go to state 37
-
-
-state 82
-
-    7 stmt_list: stmt_list . stmt end_expr
-   20 stmt_if: IF expr stmt_list . elseif_list
-   21        | IF expr stmt_list . elseif_list ELSE stmt_list
-
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '('       shift, and go to state 24
-
-    $default  reduce using rule 22 (elseif_list)
-
-    stmt             go to state 25
-    stmt_if          go to state 26
-    elseif_list      go to state 124
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
-
-
-state 83
-
-   24 stmt_switch_block: CASE . alone_id ':' stmt_block BREAK
-
-    ID  shift, and go to state 22
-
-    alone_id  go to state 125
-
-
-state 84
-
-   25 stmt_switch_block: DEFAULT . ':' stmt_block BREAK
-
-    ':'  shift, and go to state 126
-
-
-state 85
-
-   26 stmt_switch_block: stmt_switch_block . ENDL CASE alone_id ':' stmt_block BREAK
-   27 stmt_switch: SWITCH alone_id stmt_switch_block .
-
-    ENDL  shift, and go to state 127
-
-    ENDL      [reduce using rule 27 (stmt_switch)]
-    $default  reduce using rule 27 (stmt_switch)
-
-
-state 86
-
-   81 func_body: '(' . arg_list_decl ')' FUNCTIONARROW stmt_list
-
-    ID  shift, and go to state 22
-
-    $default  reduce using rule 82 (arg_list_decl)
-
-    alone_id       go to state 128
-    arg_list_decl  go to state 129
-    args_decl      go to state 130
-
-
-state 87
-
-   80 func_decl_named: FUNCTION id_chain func_body .
-
-    $default  reduce using rule 80 (func_decl_named)
-
-
-state 88
-
-   15 stmt: RETURN expr end_expr .
+   15 stmt: RETURN end_expr .
 
     $default  reduce using rule 15 (stmt)
 
 
-state 89
-
-   66 expr: '(' expr ')' .
-
-    $default  reduce using rule 66 (expr)
-
-
-state 90
-
-   33 id_chain: id_chain '.' alone_id .
-
-    $default  reduce using rule 33 (id_chain)
-
-
-state 91
-
-   17 stmt: var '=' expr . end_expr
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    ENDL   shift, and go to state 45
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    ';'    shift, and go to state 46
-
-    end_expr  go to state 131
-
-
-state 92
-
-   75 type: STRINGT .
-
-    $default  reduce using rule 75 (type)
-
-
-state 93
-
-   79 type: CHARACTERT .
-
-    $default  reduce using rule 79 (type)
-
-
-state 94
-
-   74 type: INTT .
-
-    $default  reduce using rule 74 (type)
-
-
-state 95
-
-   76 type: FLOATT .
-
-    $default  reduce using rule 76 (type)
-
-
-state 96
-
-   77 type: DOUBLET .
-
-    $default  reduce using rule 77 (type)
-
-
-state 97
-
-   78 type: BOOLT .
-
-    $default  reduce using rule 78 (type)
-
-
-state 98
-
-   69 func_call: var ':' alone_id . '(' arg_list ')'
-
-    '('  shift, and go to state 132
-
-
-state 99
-
-   39 var: var ':' type .
-
-    $default  reduce using rule 39 (var)
-
-
-state 100
-
-   38 var: var '[' expr . ']'
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    ']'    shift, and go to state 133
-
-
-state 101
-
-   72 args: ID . ':' expr
-
-    ':'  shift, and go to state 134
-
-
-state 102
-
-   68 func_call: var '(' arg_list . ')'
-
-    ')'  shift, and go to state 135
-
-
-state 103
-
-   71 arg_list: args .
-   73 args: args . ',' ID ':' expr
-
-    ','  shift, and go to state 136
-
-    $default  reduce using rule 71 (arg_list)
-
-
-state 104
-
-   19 stmt: var_list '=' args .
-   73 args: args . ',' ID ':' expr
-
-    ','  shift, and go to state 136
-
-    $default  reduce using rule 19 (stmt)
-
-
-state 105
-
-   38 var: var . '[' expr ']'
-   39    | var . ':' type
-   41 var_list: var_list ',' var .
-
-    ':'  shift, and go to state 137
-    '['  shift, and go to state 58
-
-    $default  reduce using rule 41 (var_list)
-
-
-state 106
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-   65     | expr RANGE expr .
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 65 (expr)
-
-
-state 107
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   63     | expr EQ expr .
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 63 (expr)
-
-
-state 108
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   64     | expr NE expr .
-   65     | expr . RANGE expr
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 64 (expr)
-
-
-state 109
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   62     | expr LE expr .
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 62 (expr)
-
-
-state 110
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   61     | expr GE expr .
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 61 (expr)
-
-
-state 111
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   53     | expr OR expr .
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-
-    $default  reduce using rule 53 (expr)
-
-
-state 112
-
-   52 expr: expr . AND expr
-   52     | expr AND expr .
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
+state 57
+
+   16 stmt: RETURN expr . end_expr
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    ENDL   shift, and go to state 52
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    ';'    shift, and go to state 53
+
+    end_expr  go to state 99
+
+
+state 58
+
+   52 expr: NOT expr .
+   53     | expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
 
     $default  reduce using rule 52 (expr)
 
 
-state 113
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   60     | expr '<' expr .
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 60 (expr)
-
-
-state 114
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   59     | expr '>' expr .
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '+'  shift, and go to state 71
-    '-'  shift, and go to state 72
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 59 (expr)
-
-
-state 115
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   54     | expr '+' expr .
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 54 (expr)
-
-
-state 116
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   55     | expr '-' expr .
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    '*'  shift, and go to state 73
-    '/'  shift, and go to state 74
-    '%'  shift, and go to state 75
-
-    $default  reduce using rule 55 (expr)
-
-
-state 117
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   56     | expr '*' expr .
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    $default  reduce using rule 56 (expr)
-
-
-state 118
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   57     | expr '/' expr .
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    $default  reduce using rule 57 (expr)
-
-
-state 119
-
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   58     | expr '%' expr .
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    $default  reduce using rule 58 (expr)
-
-
-state 120
-
-   28 stmt_while: WHILE expr . stmt_block
-   30 stmt_repeat: REPEAT stmt_list WHILE expr . end_expr
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    ENDL   shift, and go to state 45
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    ';'    shift, and go to state 46
-    '{'    shift, and go to state 78
-
-    ENDL      [reduce using rule 6 (stmt_list)]
-    ';'       [reduce using rule 6 (stmt_list)]
-    $default  reduce using rule 6 (stmt_list)
-
-    end_expr    go to state 138
-    stmt_block  go to state 79
-    stmt_list   go to state 80
-
-
-state 121
-
-    4 stmt_block: '{' stmt_list . '}' end_expr
-    7 stmt_list: stmt_list . stmt end_expr
-
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '}'       shift, and go to state 139
-    '('       shift, and go to state 24
-
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
-
-
-state 122
-
-    5 stmt_block: stmt_list end_expr .
-
-    $default  reduce using rule 5 (stmt_block)
-
+state 59
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+   95 array_elem: expr .
 
-state 123
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
 
-   29 stmt_for: FOR alone_id IN expr . stmt_block
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
+    $default  reduce using rule 95 (array_elem)
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-    '{'    shift, and go to state 78
 
-    $default  reduce using rule 6 (stmt_list)
+state 60
 
-    stmt_block  go to state 140
-    stmt_list   go to state 80
+   89 array_constructor: '[' array_elem_list . ']'
 
+    ']'  shift, and go to state 100
 
-state 124
 
-   20 stmt_if: IF expr stmt_list elseif_list .
-   21        | IF expr stmt_list elseif_list . ELSE stmt_list
-   23 elseif_list: elseif_list . ELSEIF expr stmt_list
+state 61
 
-    ELSE    shift, and go to state 141
-    ELSEIF  shift, and go to state 142
+   91 array_elem_list: array_elems .
+   93 array_elems: array_elems . ',' array_elem
 
-    $default  reduce using rule 20 (stmt_if)
+    ','  shift, and go to state 101
 
+    $default  reduce using rule 91 (array_elem_list)
 
-state 125
 
-   24 stmt_switch_block: CASE alone_id . ':' stmt_block BREAK
+state 62
 
-    ':'  shift, and go to state 143
+   92 array_elems: array_elem .
 
+    $default  reduce using rule 92 (array_elems)
 
-state 126
 
-   25 stmt_switch_block: DEFAULT ':' . stmt_block BREAK
+state 63
 
-    '{'  shift, and go to state 78
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+   67     | '(' expr . ')'
 
-    $default  reduce using rule 6 (stmt_list)
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    ')'    shift, and go to state 102
 
-    stmt_block  go to state 144
-    stmt_list   go to state 80
 
+state 64
 
-state 127
+    8 stmt_list: stmt_list stmt end_expr .
 
-   26 stmt_switch_block: stmt_switch_block ENDL . CASE alone_id ':' stmt_block BREAK
+    $default  reduce using rule 8 (stmt_list)
 
-    CASE  shift, and go to state 145
 
+state 65
 
-state 128
+   34 id_chain: id_chain '.' . alone_id
 
-   84 args_decl: alone_id . ':' type
+    ID  shift, and go to state 23
 
-    ':'  shift, and go to state 146
+    alone_id  go to state 103
 
 
-state 129
+state 66
 
-   81 func_body: '(' arg_list_decl . ')' FUNCTIONARROW stmt_list
+   34 id_chain: id_chain . '.' alone_id
+   38 var: varlet id_chain .
 
-    ')'  shift, and go to state 147
-
-
-state 130
-
-   83 arg_list_decl: args_decl .
-   85 args_decl: args_decl . ',' alone_id ':' type
-
-    ','  shift, and go to state 148
-
-    $default  reduce using rule 83 (arg_list_decl)
-
-
-state 131
-
-   17 stmt: var '=' expr end_expr .
-
-    $default  reduce using rule 17 (stmt)
-
-
-state 132
-
-   69 func_call: var ':' alone_id '(' . arg_list ')'
-
-    ID  shift, and go to state 101
-
-    $default  reduce using rule 70 (arg_list)
-
-    arg_list  go to state 149
-    args      go to state 103
-
-
-state 133
-
-   38 var: var '[' expr ']' .
+    '.'  shift, and go to state 65
 
     $default  reduce using rule 38 (var)
 
 
+state 67
+
+   18 stmt: var '=' . expr end_expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 104
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 68
+
+   39 var: var ':' . '[' expr ']'
+   40    | var ':' . type
+   72 func_call: var ':' . alone_id '(' arg_list ')'
+
+    STRINGT     shift, and go to state 105
+    CHARACTERT  shift, and go to state 106
+    INTT        shift, and go to state 107
+    FLOATT      shift, and go to state 108
+    DOUBLET     shift, and go to state 109
+    BOOLT       shift, and go to state 110
+    ID          shift, and go to state 23
+    '['         shift, and go to state 111
+
+    alone_id  go to state 112
+    type      go to state 113
+
+
+state 69
+
+   71 func_call: var '(' . arg_list ')'
+
+    ID  shift, and go to state 114
+
+    $default  reduce using rule 73 (arg_list)
+
+    arg_list  go to state 115
+    args      go to state 116
+
+
+state 70
+
+   20 stmt: var_list '=' . args
+
+    ID  shift, and go to state 114
+
+    args  go to state 117
+
+
+state 71
+
+   42 var_list: var_list ',' . var
+
+    LET  shift, and go to state 12
+    VAR  shift, and go to state 13
+    ID   shift, and go to state 23
+
+    alone_id  go to state 34
+    id_chain  go to state 35
+    varlet    go to state 36
+    var       go to state 118
+
+
+state 72
+
+   66 expr: expr RANGE . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 119
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 73
+
+   64 expr: expr EQ . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 120
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 74
+
+   65 expr: expr NE . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 121
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 75
+
+   63 expr: expr LE . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 122
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 76
+
+   62 expr: expr GE . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 123
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 77
+
+   54 expr: expr OR . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 124
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 78
+
+   53 expr: expr AND . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 125
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 79
+
+   61 expr: expr '<' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 126
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 80
+
+   60 expr: expr '>' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 127
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 81
+
+   55 expr: expr '+' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 128
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 82
+
+   56 expr: expr '-' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 129
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 83
+
+   57 expr: expr '*' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 130
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 84
+
+   58 expr: expr '/' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 131
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 85
+
+   59 expr: expr '%' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 132
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 86
+
+   17 stmt: expr end_expr .
+
+    $default  reduce using rule 17 (stmt)
+
+
+state 87
+
+    4 stmt_import: IMPORT alone_id end_expr .
+
+    $default  reduce using rule 4 (stmt_import)
+
+
+state 88
+
+    5 stmt_block: '{' stmt_list . '}' end_expr
+    8 stmt_list: stmt_list . stmt end_expr
+
+    IMPORT    shift, and go to state 4
+    INT       shift, and go to state 5
+    FLOAT     shift, and go to state 6
+    DOUBLE    shift, and go to state 7
+    BOOL      shift, and go to state 8
+    STRING    shift, and go to state 9
+    TRUE      shift, and go to state 10
+    FALSE     shift, and go to state 11
+    LET       shift, and go to state 12
+    VAR       shift, and go to state 13
+    REPEAT    shift, and go to state 14
+    WHILE     shift, and go to state 15
+    FOR       shift, and go to state 16
+    IF        shift, and go to state 17
+    SWITCH    shift, and go to state 18
+    BREAK     shift, and go to state 19
+    FUNCTION  shift, and go to state 20
+    RETURN    shift, and go to state 21
+    NIL       shift, and go to state 22
+    ID        shift, and go to state 23
+    NOT       shift, and go to state 24
+    '['       shift, and go to state 25
+    '}'       shift, and go to state 133
+    '('       shift, and go to state 26
+
+    stmt_import        go to state 27
+    stmt               go to state 28
+    stmt_if            go to state 29
+    stmt_switch        go to state 30
+    stmt_while         go to state 31
+    stmt_for           go to state 32
+    stmt_repeat        go to state 33
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 37
+    var_list           go to state 38
+    expr               go to state 39
+    func_call          go to state 40
+    func_decl_named    go to state 41
+    array_constructor  go to state 42
+
+
+state 89
+
+   31 stmt_repeat: REPEAT stmt_block WHILE . expr end_expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 134
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 90
+
+    6 stmt_block: stmt_list end_expr .
+
+    $default  reduce using rule 6 (stmt_block)
+
+
+state 91
+
+   29 stmt_while: WHILE expr stmt_block .
+
+    $default  reduce using rule 29 (stmt_while)
+
+
+state 92
+
+   30 stmt_for: FOR alone_id IN . expr stmt_block
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 135
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 93
+
+   21 stmt_if: IF expr stmt_block . elseif_list
+   22        | IF expr stmt_block . elseif_list ELSE stmt_list
+
+    $default  reduce using rule 23 (elseif_list)
+
+    elseif_list  go to state 136
+
+
+state 94
+
+   25 stmt_switch_block: CASE . alone_id ':' stmt_block BREAK
+
+    ID  shift, and go to state 23
+
+    alone_id  go to state 137
+
+
+state 95
+
+   26 stmt_switch_block: DEFAULT . ':' stmt_block BREAK
+
+    ':'  shift, and go to state 138
+
+
+state 96
+
+   27 stmt_switch_block: stmt_switch_block . CASE alone_id ':' stmt_block BREAK
+   28 stmt_switch: SWITCH alone_id stmt_switch_block .
+
+    CASE  shift, and go to state 139
+
+    $default  reduce using rule 28 (stmt_switch)
+
+
+state 97
+
+   84 func_body: '(' . arg_list_decl ')' FUNCTIONARROW stmt_list
+
+    ID  shift, and go to state 23
+
+    $default  reduce using rule 85 (arg_list_decl)
+
+    alone_id       go to state 140
+    arg_list_decl  go to state 141
+    args_decl      go to state 142
+
+
+state 98
+
+   83 func_decl_named: FUNCTION id_chain func_body .
+
+    $default  reduce using rule 83 (func_decl_named)
+
+
+state 99
+
+   16 stmt: RETURN expr end_expr .
+
+    $default  reduce using rule 16 (stmt)
+
+
+state 100
+
+   89 array_constructor: '[' array_elem_list ']' .
+
+    $default  reduce using rule 89 (array_constructor)
+
+
+state 101
+
+   93 array_elems: array_elems ',' . array_elem
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    $default  reduce using rule 94 (array_elem)
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 59
+    func_call          go to state 40
+    array_constructor  go to state 42
+    array_elem         go to state 143
+
+
+state 102
+
+   67 expr: '(' expr ')' .
+
+    $default  reduce using rule 67 (expr)
+
+
+state 103
+
+   34 id_chain: id_chain '.' alone_id .
+
+    $default  reduce using rule 34 (id_chain)
+
+
+state 104
+
+   18 stmt: var '=' expr . end_expr
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    ENDL   shift, and go to state 52
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    ';'    shift, and go to state 53
+
+    end_expr  go to state 144
+
+
+state 105
+
+   78 type: STRINGT .
+
+    $default  reduce using rule 78 (type)
+
+
+state 106
+
+   82 type: CHARACTERT .
+
+    $default  reduce using rule 82 (type)
+
+
+state 107
+
+   77 type: INTT .
+
+    $default  reduce using rule 77 (type)
+
+
+state 108
+
+   79 type: FLOATT .
+
+    $default  reduce using rule 79 (type)
+
+
+state 109
+
+   80 type: DOUBLET .
+
+    $default  reduce using rule 80 (type)
+
+
+state 110
+
+   81 type: BOOLT .
+
+    $default  reduce using rule 81 (type)
+
+
+state 111
+
+   39 var: var ':' '[' . expr ']'
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 145
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 112
+
+   72 func_call: var ':' alone_id . '(' arg_list ')'
+
+    '('  shift, and go to state 146
+
+
+state 113
+
+   40 var: var ':' type .
+
+    $default  reduce using rule 40 (var)
+
+
+state 114
+
+   75 args: ID . ':' expr
+
+    ':'  shift, and go to state 147
+
+
+state 115
+
+   71 func_call: var '(' arg_list . ')'
+
+    ')'  shift, and go to state 148
+
+
+state 116
+
+   74 arg_list: args .
+   76 args: args . ',' ID ':' expr
+
+    ','  shift, and go to state 149
+
+    $default  reduce using rule 74 (arg_list)
+
+
+state 117
+
+   20 stmt: var_list '=' args .
+   76 args: args . ',' ID ':' expr
+
+    ','  shift, and go to state 149
+
+    $default  reduce using rule 20 (stmt)
+
+
+state 118
+
+   39 var: var . ':' '[' expr ']'
+   40    | var . ':' type
+   42 var_list: var_list ',' var .
+
+    ':'  shift, and go to state 150
+
+    $default  reduce using rule 42 (var_list)
+
+
+state 119
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+   66     | expr RANGE expr .
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 66 (expr)
+
+
+state 120
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   64     | expr EQ expr .
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 64 (expr)
+
+
+state 121
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   65     | expr NE expr .
+   66     | expr . RANGE expr
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 65 (expr)
+
+
+state 122
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   63     | expr LE expr .
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 63 (expr)
+
+
+state 123
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   62     | expr GE expr .
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 62 (expr)
+
+
+state 124
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   54     | expr OR expr .
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+
+    $default  reduce using rule 54 (expr)
+
+
+state 125
+
+   53 expr: expr . AND expr
+   53     | expr AND expr .
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+
+    $default  reduce using rule 53 (expr)
+
+
+state 126
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   61     | expr '<' expr .
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 61 (expr)
+
+
+state 127
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   60     | expr '>' expr .
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '+'  shift, and go to state 81
+    '-'  shift, and go to state 82
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 60 (expr)
+
+
+state 128
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   55     | expr '+' expr .
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 55 (expr)
+
+
+state 129
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   56     | expr '-' expr .
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    '*'  shift, and go to state 83
+    '/'  shift, and go to state 84
+    '%'  shift, and go to state 85
+
+    $default  reduce using rule 56 (expr)
+
+
+state 130
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   57     | expr '*' expr .
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    $default  reduce using rule 57 (expr)
+
+
+state 131
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   58     | expr '/' expr .
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    $default  reduce using rule 58 (expr)
+
+
+state 132
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   59     | expr '%' expr .
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    $default  reduce using rule 59 (expr)
+
+
+state 133
+
+    5 stmt_block: '{' stmt_list '}' . end_expr
+
+    ENDL  shift, and go to state 52
+    ';'   shift, and go to state 53
+
+    end_expr  go to state 151
+
+
 state 134
 
-   72 args: ID ':' . expr
+   31 stmt_repeat: REPEAT stmt_block WHILE expr . end_expr
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 150
-    func_call  go to state 37
-
-
-state 135
-
-   68 func_call: var '(' arg_list ')' .
-
-    $default  reduce using rule 68 (func_call)
-
-
-state 136
-
-   73 args: args ',' . ID ':' expr
-
-    ID  shift, and go to state 151
-
-
-state 137
-
-   39 var: var ':' . type
-
-    STRINGT     shift, and go to state 92
-    CHARACTERT  shift, and go to state 93
-    INTT        shift, and go to state 94
-    FLOATT      shift, and go to state 95
-    DOUBLET     shift, and go to state 96
-    BOOLT       shift, and go to state 97
-
-    type  go to state 99
-
-
-state 138
-
-   30 stmt_repeat: REPEAT stmt_list WHILE expr end_expr .
-
-    $default  reduce using rule 30 (stmt_repeat)
-
-
-state 139
-
-    4 stmt_block: '{' stmt_list '}' . end_expr
-
-    ENDL  shift, and go to state 45
-    ';'   shift, and go to state 46
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    ENDL   shift, and go to state 52
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    ';'    shift, and go to state 53
 
     end_expr  go to state 152
 
 
+state 135
+
+   30 stmt_for: FOR alone_id IN expr . stmt_block
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    '{'    shift, and go to state 44
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 153
+    stmt_list   go to state 46
+
+
+state 136
+
+   21 stmt_if: IF expr stmt_block elseif_list .
+   22        | IF expr stmt_block elseif_list . ELSE stmt_list
+   24 elseif_list: elseif_list . ELSEIF expr stmt_block
+
+    ELSE    shift, and go to state 154
+    ELSEIF  shift, and go to state 155
+
+    $default  reduce using rule 21 (stmt_if)
+
+
+state 137
+
+   25 stmt_switch_block: CASE alone_id . ':' stmt_block BREAK
+
+    ':'  shift, and go to state 156
+
+
+state 138
+
+   26 stmt_switch_block: DEFAULT ':' . stmt_block BREAK
+
+    '{'  shift, and go to state 44
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 157
+    stmt_list   go to state 46
+
+
+state 139
+
+   27 stmt_switch_block: stmt_switch_block CASE . alone_id ':' stmt_block BREAK
+
+    ID  shift, and go to state 23
+
+    alone_id  go to state 158
+
+
 state 140
 
-   29 stmt_for: FOR alone_id IN expr stmt_block .
+   87 args_decl: alone_id . ':' type
 
-    $default  reduce using rule 29 (stmt_for)
+    ':'  shift, and go to state 159
 
 
 state 141
 
-   21 stmt_if: IF expr stmt_list elseif_list ELSE . stmt_list
+   84 func_body: '(' arg_list_decl . ')' FUNCTIONARROW stmt_list
 
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_list  go to state 153
+    ')'  shift, and go to state 160
 
 
 state 142
 
-   23 elseif_list: elseif_list ELSEIF . expr stmt_list
+   86 arg_list_decl: args_decl .
+   88 args_decl: args_decl . ',' alone_id ':' type
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
+    ','  shift, and go to state 161
 
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 154
-    func_call  go to state 37
+    $default  reduce using rule 86 (arg_list_decl)
 
 
 state 143
 
-   24 stmt_switch_block: CASE alone_id ':' . stmt_block BREAK
+   93 array_elems: array_elems ',' array_elem .
 
-    '{'  shift, and go to state 78
-
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_block  go to state 155
-    stmt_list   go to state 80
+    $default  reduce using rule 93 (array_elems)
 
 
 state 144
 
-   25 stmt_switch_block: DEFAULT ':' stmt_block . BREAK
+   18 stmt: var '=' expr end_expr .
 
-    BREAK  shift, and go to state 156
+    $default  reduce using rule 18 (stmt)
 
 
 state 145
 
-   26 stmt_switch_block: stmt_switch_block ENDL CASE . alone_id ':' stmt_block BREAK
+   39 var: var ':' '[' expr . ']'
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
 
-    ID  shift, and go to state 22
-
-    alone_id  go to state 157
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    ']'    shift, and go to state 162
 
 
 state 146
 
-   84 args_decl: alone_id ':' . type
+   72 func_call: var ':' alone_id '(' . arg_list ')'
 
-    STRINGT     shift, and go to state 92
-    CHARACTERT  shift, and go to state 93
-    INTT        shift, and go to state 94
-    FLOATT      shift, and go to state 95
-    DOUBLET     shift, and go to state 96
-    BOOLT       shift, and go to state 97
+    ID  shift, and go to state 114
 
-    type  go to state 158
+    $default  reduce using rule 73 (arg_list)
+
+    arg_list  go to state 163
+    args      go to state 116
 
 
 state 147
 
-   81 func_body: '(' arg_list_decl ')' . FUNCTIONARROW stmt_list
+   75 args: ID ':' . expr
 
-    FUNCTIONARROW  shift, and go to state 159
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 164
+    func_call          go to state 40
+    array_constructor  go to state 42
 
 
 state 148
 
-   85 args_decl: args_decl ',' . alone_id ':' type
+   71 func_call: var '(' arg_list ')' .
 
-    ID  shift, and go to state 22
-
-    alone_id  go to state 160
+    $default  reduce using rule 71 (func_call)
 
 
 state 149
 
-   69 func_call: var ':' alone_id '(' arg_list . ')'
+   76 args: args ',' . ID ':' expr
 
-    ')'  shift, and go to state 161
+    ID  shift, and go to state 165
 
 
 state 150
 
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-   72 args: ID ':' expr .
+   39 var: var ':' . '[' expr ']'
+   40    | var ':' . type
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
+    STRINGT     shift, and go to state 105
+    CHARACTERT  shift, and go to state 106
+    INTT        shift, and go to state 107
+    FLOATT      shift, and go to state 108
+    DOUBLET     shift, and go to state 109
+    BOOLT       shift, and go to state 110
+    '['         shift, and go to state 111
 
-    $default  reduce using rule 72 (args)
+    type  go to state 113
 
 
 state 151
 
-   73 args: args ',' ID . ':' expr
+    5 stmt_block: '{' stmt_list '}' end_expr .
 
-    ':'  shift, and go to state 162
+    $default  reduce using rule 5 (stmt_block)
 
 
 state 152
 
-    4 stmt_block: '{' stmt_list '}' end_expr .
+   31 stmt_repeat: REPEAT stmt_block WHILE expr end_expr .
 
-    $default  reduce using rule 4 (stmt_block)
+    $default  reduce using rule 31 (stmt_repeat)
 
 
 state 153
 
-    7 stmt_list: stmt_list . stmt end_expr
-   21 stmt_if: IF expr stmt_list elseif_list ELSE stmt_list .
+   30 stmt_for: FOR alone_id IN expr stmt_block .
 
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '('       shift, and go to state 24
-
-    $default  reduce using rule 21 (stmt_if)
-
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
+    $default  reduce using rule 30 (stmt_for)
 
 
 state 154
 
-   23 elseif_list: elseif_list ELSEIF expr . stmt_list
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
+   22 stmt_if: IF expr stmt_block elseif_list ELSE . stmt_list
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_list  go to state 163
-
-
-state 155
-
-   24 stmt_switch_block: CASE alone_id ':' stmt_block . BREAK
-
-    BREAK  shift, and go to state 164
-
-
-state 156
-
-   25 stmt_switch_block: DEFAULT ':' stmt_block BREAK .
-
-    $default  reduce using rule 25 (stmt_switch_block)
-
-
-state 157
-
-   26 stmt_switch_block: stmt_switch_block ENDL CASE alone_id . ':' stmt_block BREAK
-
-    ':'  shift, and go to state 165
-
-
-state 158
-
-   84 args_decl: alone_id ':' type .
-
-    $default  reduce using rule 84 (args_decl)
-
-
-state 159
-
-   81 func_body: '(' arg_list_decl ')' FUNCTIONARROW . stmt_list
-
-    $default  reduce using rule 6 (stmt_list)
+    $default  reduce using rule 7 (stmt_list)
 
     stmt_list  go to state 166
 
 
+state 155
+
+   24 elseif_list: elseif_list ELSEIF . expr stmt_block
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 167
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 156
+
+   25 stmt_switch_block: CASE alone_id ':' . stmt_block BREAK
+
+    '{'  shift, and go to state 44
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 168
+    stmt_list   go to state 46
+
+
+state 157
+
+   26 stmt_switch_block: DEFAULT ':' stmt_block . BREAK
+
+    BREAK  shift, and go to state 169
+
+
+state 158
+
+   27 stmt_switch_block: stmt_switch_block CASE alone_id . ':' stmt_block BREAK
+
+    ':'  shift, and go to state 170
+
+
+state 159
+
+   87 args_decl: alone_id ':' . type
+
+    STRINGT     shift, and go to state 105
+    CHARACTERT  shift, and go to state 106
+    INTT        shift, and go to state 107
+    FLOATT      shift, and go to state 108
+    DOUBLET     shift, and go to state 109
+    BOOLT       shift, and go to state 110
+
+    type  go to state 171
+
+
 state 160
 
-   85 args_decl: args_decl ',' alone_id . ':' type
+   84 func_body: '(' arg_list_decl ')' . FUNCTIONARROW stmt_list
 
-    ':'  shift, and go to state 167
+    FUNCTIONARROW  shift, and go to state 172
 
 
 state 161
 
-   69 func_call: var ':' alone_id '(' arg_list ')' .
+   88 args_decl: args_decl ',' . alone_id ':' type
 
-    $default  reduce using rule 69 (func_call)
+    ID  shift, and go to state 23
+
+    alone_id  go to state 173
 
 
 state 162
 
-   73 args: args ',' ID ':' . expr
+   39 var: var ':' '[' expr ']' .
 
-    INT     shift, and go to state 4
-    FLOAT   shift, and go to state 5
-    DOUBLE  shift, and go to state 6
-    BOOL    shift, and go to state 7
-    STRING  shift, and go to state 8
-    TRUE    shift, and go to state 9
-    FALSE   shift, and go to state 10
-    LET     shift, and go to state 11
-    VAR     shift, and go to state 12
-    NIL     shift, and go to state 21
-    ID      shift, and go to state 22
-    NOT     shift, and go to state 23
-    '('     shift, and go to state 24
-
-    alone_id   go to state 31
-    id_chain   go to state 32
-    varlet     go to state 33
-    var        go to state 40
-    expr       go to state 168
-    func_call  go to state 37
+    $default  reduce using rule 39 (var)
 
 
 state 163
 
-    7 stmt_list: stmt_list . stmt end_expr
-   23 elseif_list: elseif_list ELSEIF expr stmt_list .
+   72 func_call: var ':' alone_id '(' arg_list . ')'
 
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '('       shift, and go to state 24
-
-    $default  reduce using rule 23 (elseif_list)
-
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
+    ')'  shift, and go to state 174
 
 
 state 164
 
-   24 stmt_switch_block: CASE alone_id ':' stmt_block BREAK .
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+   75 args: ID ':' expr .
 
-    $default  reduce using rule 24 (stmt_switch_block)
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+
+    $default  reduce using rule 75 (args)
 
 
 state 165
 
-   26 stmt_switch_block: stmt_switch_block ENDL CASE alone_id ':' . stmt_block BREAK
+   76 args: args ',' ID . ':' expr
 
-    '{'  shift, and go to state 78
-
-    $default  reduce using rule 6 (stmt_list)
-
-    stmt_block  go to state 169
-    stmt_list   go to state 80
+    ':'  shift, and go to state 175
 
 
 state 166
 
-    7 stmt_list: stmt_list . stmt end_expr
-   81 func_body: '(' arg_list_decl ')' FUNCTIONARROW stmt_list .
+    8 stmt_list: stmt_list . stmt end_expr
+   22 stmt_if: IF expr stmt_block elseif_list ELSE stmt_list .
 
-    INT       shift, and go to state 4
-    FLOAT     shift, and go to state 5
-    DOUBLE    shift, and go to state 6
-    BOOL      shift, and go to state 7
-    STRING    shift, and go to state 8
-    TRUE      shift, and go to state 9
-    FALSE     shift, and go to state 10
-    LET       shift, and go to state 11
-    VAR       shift, and go to state 12
-    REPEAT    shift, and go to state 13
-    WHILE     shift, and go to state 14
-    FOR       shift, and go to state 15
-    IF        shift, and go to state 16
-    SWITCH    shift, and go to state 17
-    BREAK     shift, and go to state 18
-    FUNCTION  shift, and go to state 19
-    RETURN    shift, and go to state 20
-    NIL       shift, and go to state 21
-    ID        shift, and go to state 22
-    NOT       shift, and go to state 23
-    '('       shift, and go to state 24
+    IMPORT    shift, and go to state 4
+    INT       shift, and go to state 5
+    FLOAT     shift, and go to state 6
+    DOUBLE    shift, and go to state 7
+    BOOL      shift, and go to state 8
+    STRING    shift, and go to state 9
+    TRUE      shift, and go to state 10
+    FALSE     shift, and go to state 11
+    LET       shift, and go to state 12
+    VAR       shift, and go to state 13
+    REPEAT    shift, and go to state 14
+    WHILE     shift, and go to state 15
+    FOR       shift, and go to state 16
+    IF        shift, and go to state 17
+    SWITCH    shift, and go to state 18
+    BREAK     shift, and go to state 19
+    FUNCTION  shift, and go to state 20
+    RETURN    shift, and go to state 21
+    NIL       shift, and go to state 22
+    ID        shift, and go to state 23
+    NOT       shift, and go to state 24
+    '['       shift, and go to state 25
+    '('       shift, and go to state 26
 
-    $default  reduce using rule 81 (func_body)
+    $default  reduce using rule 22 (stmt_if)
 
-    stmt             go to state 25
-    stmt_if          go to state 26
-    stmt_switch      go to state 27
-    stmt_while       go to state 28
-    stmt_for         go to state 29
-    stmt_repeat      go to state 30
-    alone_id         go to state 31
-    id_chain         go to state 32
-    varlet           go to state 33
-    var              go to state 34
-    var_list         go to state 35
-    expr             go to state 36
-    func_call        go to state 37
-    func_decl_named  go to state 38
+    stmt_import        go to state 27
+    stmt               go to state 28
+    stmt_if            go to state 29
+    stmt_switch        go to state 30
+    stmt_while         go to state 31
+    stmt_for           go to state 32
+    stmt_repeat        go to state 33
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 37
+    var_list           go to state 38
+    expr               go to state 39
+    func_call          go to state 40
+    func_decl_named    go to state 41
+    array_constructor  go to state 42
 
 
 state 167
 
-   85 args_decl: args_decl ',' alone_id ':' . type
+   24 elseif_list: elseif_list ELSEIF expr . stmt_block
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
 
-    STRINGT     shift, and go to state 92
-    CHARACTERT  shift, and go to state 93
-    INTT        shift, and go to state 94
-    FLOATT      shift, and go to state 95
-    DOUBLET     shift, and go to state 96
-    BOOLT       shift, and go to state 97
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+    '{'    shift, and go to state 44
 
-    type  go to state 170
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 176
+    stmt_list   go to state 46
 
 
 state 168
 
-   52 expr: expr . AND expr
-   53     | expr . OR expr
-   54     | expr . '+' expr
-   55     | expr . '-' expr
-   56     | expr . '*' expr
-   57     | expr . '/' expr
-   58     | expr . '%' expr
-   59     | expr . '>' expr
-   60     | expr . '<' expr
-   61     | expr . GE expr
-   62     | expr . LE expr
-   63     | expr . EQ expr
-   64     | expr . NE expr
-   65     | expr . RANGE expr
-   73 args: args ',' ID ':' expr .
+   25 stmt_switch_block: CASE alone_id ':' stmt_block . BREAK
 
-    RANGE  shift, and go to state 62
-    EQ     shift, and go to state 63
-    NE     shift, and go to state 64
-    LE     shift, and go to state 65
-    GE     shift, and go to state 66
-    OR     shift, and go to state 67
-    AND    shift, and go to state 68
-    '<'    shift, and go to state 69
-    '>'    shift, and go to state 70
-    '+'    shift, and go to state 71
-    '-'    shift, and go to state 72
-    '*'    shift, and go to state 73
-    '/'    shift, and go to state 74
-    '%'    shift, and go to state 75
-
-    $default  reduce using rule 73 (args)
+    BREAK  shift, and go to state 177
 
 
 state 169
 
-   26 stmt_switch_block: stmt_switch_block ENDL CASE alone_id ':' stmt_block . BREAK
+   26 stmt_switch_block: DEFAULT ':' stmt_block BREAK .
 
-    BREAK  shift, and go to state 171
+    $default  reduce using rule 26 (stmt_switch_block)
 
 
 state 170
 
-   85 args_decl: args_decl ',' alone_id ':' type .
+   27 stmt_switch_block: stmt_switch_block CASE alone_id ':' . stmt_block BREAK
 
-    $default  reduce using rule 85 (args_decl)
+    '{'  shift, and go to state 44
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_block  go to state 178
+    stmt_list   go to state 46
 
 
 state 171
 
-   26 stmt_switch_block: stmt_switch_block ENDL CASE alone_id ':' stmt_block BREAK .
+   87 args_decl: alone_id ':' type .
 
-    $default  reduce using rule 26 (stmt_switch_block)
+    $default  reduce using rule 87 (args_decl)
+
+
+state 172
+
+   84 func_body: '(' arg_list_decl ')' FUNCTIONARROW . stmt_list
+
+    $default  reduce using rule 7 (stmt_list)
+
+    stmt_list  go to state 179
+
+
+state 173
+
+   88 args_decl: args_decl ',' alone_id . ':' type
+
+    ':'  shift, and go to state 180
+
+
+state 174
+
+   72 func_call: var ':' alone_id '(' arg_list ')' .
+
+    $default  reduce using rule 72 (func_call)
+
+
+state 175
+
+   76 args: args ',' ID ':' . expr
+
+    IMPORT  shift, and go to state 4
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 25
+    '('     shift, and go to state 26
+
+    stmt_import        go to state 27
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 47
+    expr               go to state 181
+    func_call          go to state 40
+    array_constructor  go to state 42
+
+
+state 176
+
+   24 elseif_list: elseif_list ELSEIF expr stmt_block .
+
+    $default  reduce using rule 24 (elseif_list)
+
+
+state 177
+
+   25 stmt_switch_block: CASE alone_id ':' stmt_block BREAK .
+
+    $default  reduce using rule 25 (stmt_switch_block)
+
+
+state 178
+
+   27 stmt_switch_block: stmt_switch_block CASE alone_id ':' stmt_block . BREAK
+
+    BREAK  shift, and go to state 182
+
+
+state 179
+
+    8 stmt_list: stmt_list . stmt end_expr
+   84 func_body: '(' arg_list_decl ')' FUNCTIONARROW stmt_list .
+
+    IMPORT    shift, and go to state 4
+    INT       shift, and go to state 5
+    FLOAT     shift, and go to state 6
+    DOUBLE    shift, and go to state 7
+    BOOL      shift, and go to state 8
+    STRING    shift, and go to state 9
+    TRUE      shift, and go to state 10
+    FALSE     shift, and go to state 11
+    LET       shift, and go to state 12
+    VAR       shift, and go to state 13
+    REPEAT    shift, and go to state 14
+    WHILE     shift, and go to state 15
+    FOR       shift, and go to state 16
+    IF        shift, and go to state 17
+    SWITCH    shift, and go to state 18
+    BREAK     shift, and go to state 19
+    FUNCTION  shift, and go to state 20
+    RETURN    shift, and go to state 21
+    NIL       shift, and go to state 22
+    ID        shift, and go to state 23
+    NOT       shift, and go to state 24
+    '['       shift, and go to state 25
+    '('       shift, and go to state 26
+
+    $default  reduce using rule 84 (func_body)
+
+    stmt_import        go to state 27
+    stmt               go to state 28
+    stmt_if            go to state 29
+    stmt_switch        go to state 30
+    stmt_while         go to state 31
+    stmt_for           go to state 32
+    stmt_repeat        go to state 33
+    alone_id           go to state 34
+    id_chain           go to state 35
+    varlet             go to state 36
+    var                go to state 37
+    var_list           go to state 38
+    expr               go to state 39
+    func_call          go to state 40
+    func_decl_named    go to state 41
+    array_constructor  go to state 42
+
+
+state 180
+
+   88 args_decl: args_decl ',' alone_id ':' . type
+
+    STRINGT     shift, and go to state 105
+    CHARACTERT  shift, and go to state 106
+    INTT        shift, and go to state 107
+    FLOATT      shift, and go to state 108
+    DOUBLET     shift, and go to state 109
+    BOOLT       shift, and go to state 110
+
+    type  go to state 183
+
+
+state 181
+
+   53 expr: expr . AND expr
+   54     | expr . OR expr
+   55     | expr . '+' expr
+   56     | expr . '-' expr
+   57     | expr . '*' expr
+   58     | expr . '/' expr
+   59     | expr . '%' expr
+   60     | expr . '>' expr
+   61     | expr . '<' expr
+   62     | expr . GE expr
+   63     | expr . LE expr
+   64     | expr . EQ expr
+   65     | expr . NE expr
+   66     | expr . RANGE expr
+   76 args: args ',' ID ':' expr .
+
+    RANGE  shift, and go to state 72
+    EQ     shift, and go to state 73
+    NE     shift, and go to state 74
+    LE     shift, and go to state 75
+    GE     shift, and go to state 76
+    OR     shift, and go to state 77
+    AND    shift, and go to state 78
+    '<'    shift, and go to state 79
+    '>'    shift, and go to state 80
+    '+'    shift, and go to state 81
+    '-'    shift, and go to state 82
+    '*'    shift, and go to state 83
+    '/'    shift, and go to state 84
+    '%'    shift, and go to state 85
+
+    $default  reduce using rule 76 (args)
+
+
+state 182
+
+   27 stmt_switch_block: stmt_switch_block CASE alone_id ':' stmt_block BREAK .
+
+    $default  reduce using rule 27 (stmt_switch_block)
+
+
+state 183
+
+   88 args_decl: args_decl ',' alone_id ':' type .
+
+    $default  reduce using rule 88 (args_decl)

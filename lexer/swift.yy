@@ -8,11 +8,13 @@
 
     #include "swift.tab.h"
 
-    /*
+    #include "tree_print.h"
     #include "semantic_tables.h"
+
+    /*
     #include "codegen.h"
     */
-    #include "tree_print.h"
+
 
     #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 

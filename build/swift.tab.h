@@ -136,7 +136,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 18 "../bison/swift.y"
+#line 19 "../bison/swift.y"
 {
     int Int;
     char* Id;
