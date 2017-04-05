@@ -4,12 +4,13 @@
     #include <string.h>
     #include <unistd.h>
     #include <fcntl.h>
+    #include <netinet/in.h>
 	  #include <math.h>
 
     #include "swift.tab.h"
-
-    #include "tree_print.h"
     #include "semantic_tables.h"
+    #include "tree_print.h"
+
 
     /*
     #include "codegen.h"
@@ -31,7 +32,7 @@
 %option yylineno
 
 %x COMMENT
-%x STRING
+%x STRING_A
 %%
 
 "/*"                          {BEGIN(COMMENT); }
@@ -41,27 +42,27 @@
 
 "//".*                        ;
 
-\"                            { BEGIN(STRING); strcpy(strconst, ""); }
-<STRING>\\                    strcat(strconst, "\\");
-<STRING>\\\"                  strcat(strconst, "\"");
-<STRING>\\r                   strcat(strconst, "\r");
-<STRING>\\t                   strcat(strconst, "\t");
-<STRING>\\n                   strcat(strconst, "\n");
-<STRING>\\\\                  strcat(strconst, "\\");
-<STRING>[^\\\n\"]+            strcat(strconst,yytext);
+\"                            { BEGIN(STRING_A); strcpy(strconst, ""); }
+<STRING_A>\\                    strcat(strconst, "\\");
+<STRING_A>\\\"                  strcat(strconst, "\"");
+<STRING_A>\\r                   strcat(strconst, "\r");
+<STRING_A>\\t                   strcat(strconst, "\t");
+<STRING_A>\\n                   strcat(strconst, "\n");
+<STRING_A>\\\\                  strcat(strconst, "\\");
+<STRING_A>[^\\\n\"]+            strcat(strconst,yytext);
 
-<STRING>\"                    {
+<STRING_A>\"                    {
 								              yylval.String = (char *)malloc(strlen(strconst) + 1);
                               strcpy(yylval.String, strconst);
                               BEGIN(INITIAL);
                               return STRING;
                               }
-<STRING>\\\(([^\)]*)\)        {
+<STRING_A>\\\(([^\)]*)\)        {
                               yylval.Id = (char *)malloc(sizeof(yytext)+1);
                               strcpy(yylval.Id, yytext);
                               return ID;
                               }
-<STRING>.|[\n\r\f\t\v]        ;
+<STRING_A>.|[\n\r\f\t\v]        ;
 
 
 "import"					            return IMPORT;
@@ -137,7 +138,7 @@
 
 "||"                          return OR;
 "&&"                          return AND;
-"!"    						            return '!';
+"!"    						            return NOT;
 
 "0b"[01]+                     {
                                   yylval.Int = convertBinaryToDecimal(atoi(yytext+2));
@@ -165,17 +166,18 @@
                                   return DOUBLE;
                               }
 
+[^ \f\n\r\t\v]                printf("Unknown symbol: %s\n",yytext);
+
+.|[\r\t\f\v]                  {;};
+
 <<EOF>>                       return 0;
-
-[\n\r\t\f\v ]                 ;
-
-. 						                printf("Bad symbol %s\n", yytext);
 %%
 int main(int argc,char* argv[])
 {
     if (argc > 1)
     {
         yyin = fopen(argv[1], "r");
+
         yyparse();
         //update_tree_parent_func(root);
         //update_tree_stmtlist(root,root);

@@ -115,38 +115,39 @@
 
 %left  OR
 %left  AND
-%left  '<' '>' LE GE EQ NE RANGE '=' /* < > <= >= == != */
+%left  '<' '>' LE GE EQ NE RANGE  /* < > <= >= == != */
 %left  '+' '-'
 %left  '*' '/' '%'
-%left  NOT
-%left ';' ENDL
-/*UMINUS*/
+%left NOT
 
-%nonassoc '[' ']' '{' '}' ')'
 
 %%
 
-end_expr:             ENDL        {;}
-                    | ';'         {;}
+end_expr:             ENDL  {;}
+                      | ';' opt_endl {;}
+;
+
+opt_endl:             /* empty */ {;}
+                      | ENDL {;}
 ;
 
 root:               stmt_list {;}
 ;
 
-stmt_import:          IMPORT alone_id end_expr {;}
+stmt_import:          IMPORT var {printf("import found\n");}
 ;
 
 /* == Statements == */
 
-stmt_block:          '{' stmt_list '}' end_expr {;}
-                    | stmt_list end_expr {;}
+stmt_block:          '{' stmt_list '}'  opt_endl  {printf("block found\n");}
 ;
 
-stmt_list:            /* empty */ {;}
-                    | stmt_list stmt end_expr {;}
+stmt_list:            /* empty */ { printf("stmt list null found\n");}
+                    | stmt_list stmt opt_endl  {printf("stmt list not null\n");}
 ;
 
-stmt:                 stmt_if {;}
+stmt:                 stmt_block {;}
+                    | stmt_if {;}
                     | stmt_while {;}
                     | stmt_for {;}
                     | stmt_repeat {;}
@@ -155,29 +156,36 @@ stmt:                 stmt_if {;}
                     | RETURN end_expr {;}
                     | RETURN expr end_expr {;}
                     | expr end_expr {;}
-                    | var '=' expr end_expr {;}
+                    | var '=' expr end_expr {printf("line with eq\n");}
                     | func_decl_named {;}
+                    | end_expr {;}
                     | var_list '=' args {;}
 ;
 
-stmt_if:              IF expr stmt_block elseif_list {;}
-                    | IF expr stmt_block elseif_list ELSE stmt_list {;}
+stmt_if:              IF expr opt_endl stmt_block elseif_list opt_endl {;}
+                    | IF expr opt_endl stmt_block elseif_list ELSE stmt_block opt_endl {;}
 ;
 elseif_list:          /* empty */ {;}
                     | elseif_list ELSEIF expr stmt_block {;}
 ;
 
-stmt_switch_block:    CASE alone_id ':'stmt_block BREAK {;}
-                      | DEFAULT ':'stmt_block BREAK {;}
-                      | stmt_switch_block CASE alone_id ':'stmt_block BREAK {;}
+stmt_switch:          SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' {;}
 ;
-stmt_switch:          SWITCH alone_id stmt_switch_block {;}
+switch_cases:         /* nothing */ {;}
+                      | switch_cases switch_case {;}
 ;
+switch_case:          case_label stmt_list {;}
+                      | default_label stmt_list {;}
+;
+case_label:           CASE expr ':' {;}
+;
+default_label:        DEFAULT ':' {;}
+
 stmt_while:           WHILE expr stmt_block {;}
 ;
 stmt_for:             FOR alone_id IN expr stmt_block {;}
 ;
-stmt_repeat:          REPEAT stmt_block WHILE expr end_expr {;}
+stmt_repeat:          REPEAT stmt_block WHILE expr   {;}
 ;
 /* == Expressions == */
 alone_id:             ID {;}
@@ -192,7 +200,8 @@ varlet:               VAR {;}
 
 var:                  id_chain {;}
                     | varlet id_chain {;}
-                    | var ':' '[' expr ']' {;}
+                    | '[' type ']' '(' ')' {;}
+                    | var ':' '[' type ']' {;}
                     | var ':' type {;}
 ;
 var_list:             var {;}
@@ -208,7 +217,8 @@ expr:                 var {;}
                     | BOOL {;}
                     | FLOAT {;}
                     | NIL {;}
-                    | NOT expr {;}
+                    | NOT expr {printf("not ");}
+                    | expr NOT
                     | expr AND expr {;}
                     | expr OR  expr {;}
                     | expr '+' expr {;}
@@ -236,7 +246,8 @@ func_call:            var '(' arg_list ')' {;}
 arg_list:             /* empty */ {;}
                     | args {;}
 ;
-args:                 ID ':' expr {;}
+args:                id_chain
+                    |  ID ':' expr {;}
                     | args ',' ID ':' expr {;}
 ;
 
@@ -251,13 +262,13 @@ type:                 INTT {;}
 
 func_decl_named:      FUNCTION id_chain  func_body {;}
 ;
-func_body:            '(' arg_list_decl ')' FUNCTIONARROW stmt_list {;}
+func_body:            '(' arg_list_decl ')' FUNCTIONARROW type stmt_block {;}
 ;
 
 arg_list_decl:        /* empty */ {;}
                     | args_decl {;}
 ;
-args_decl:            alone_id ':' type {;}
+args_decl:            id_chain ':' type {;}
                     | args_decl ',' alone_id ':' type {;}
 ;
 

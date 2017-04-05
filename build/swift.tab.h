@@ -1,13 +1,14 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Bison interface for Yacc-like parsers in C
+/* Skeleton interface for Bison's Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,7 +16,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -30,75 +33,111 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_SWIFT_TAB_H_INCLUDED
-# define YY_YY_SWIFT_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    IMPORT = 258,
-    INT = 259,
-    FLOAT = 260,
-    DOUBLE = 261,
-    BOOL = 262,
-    STRING = 263,
-    STRINGT = 264,
-    CHARACTERT = 265,
-    INTT = 266,
-    FLOATT = 267,
-    DOUBLET = 268,
-    BOOLT = 269,
-    TRUE = 270,
-    FALSE = 271,
-    LET = 272,
-    VAR = 273,
-    REPEAT = 274,
-    WHILE = 275,
-    FOR = 276,
-    IN = 277,
-    IF = 278,
-    ELSE = 279,
-    ELSEIF = 280,
-    SWITCH = 281,
-    CASE = 282,
-    DEFAULT = 283,
-    BREAK = 284,
-    FUNCTION = 285,
-    FUNCTIONARROW = 286,
-    DO = 287,
-    RANGE = 288,
-    RETURN = 289,
-    NIL = 290,
-    SELF = 291,
-    ERROR = 292,
-    ID = 293,
-    EQ = 294,
-    NE = 295,
-    LE = 296,
-    GE = 297,
-    NOT = 298,
-    ENDL = 299,
-    OR = 300,
-    AND = 301
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     IMPORT = 258,
+     INT = 259,
+     FLOAT = 260,
+     DOUBLE = 261,
+     BOOL = 262,
+     STRING = 263,
+     STRINGT = 264,
+     CHARACTERT = 265,
+     INTT = 266,
+     FLOATT = 267,
+     DOUBLET = 268,
+     BOOLT = 269,
+     TRUE = 270,
+     FALSE = 271,
+     LET = 272,
+     VAR = 273,
+     REPEAT = 274,
+     WHILE = 275,
+     FOR = 276,
+     IN = 277,
+     IF = 278,
+     ELSE = 279,
+     ELSEIF = 280,
+     SWITCH = 281,
+     CASE = 282,
+     DEFAULT = 283,
+     BREAK = 284,
+     FUNCTION = 285,
+     FUNCTIONARROW = 286,
+     DO = 287,
+     RANGE = 288,
+     RETURN = 289,
+     NIL = 290,
+     SELF = 291,
+     ERROR = 292,
+     ID = 293,
+     EQ = 294,
+     NE = 295,
+     LE = 296,
+     GE = 297,
+     NOT = 298,
+     ENDL = 299,
+     OR = 300,
+     AND = 301
+   };
 #endif
+/* Tokens.  */
+#define IMPORT 258
+#define INT 259
+#define FLOAT 260
+#define DOUBLE 261
+#define BOOL 262
+#define STRING 263
+#define STRINGT 264
+#define CHARACTERT 265
+#define INTT 266
+#define FLOATT 267
+#define DOUBLET 268
+#define BOOLT 269
+#define TRUE 270
+#define FALSE 271
+#define LET 272
+#define VAR 273
+#define REPEAT 274
+#define WHILE 275
+#define FOR 276
+#define IN 277
+#define IF 278
+#define ELSE 279
+#define ELSEIF 280
+#define SWITCH 281
+#define CASE 282
+#define DEFAULT 283
+#define BREAK 284
+#define FUNCTION 285
+#define FUNCTIONARROW 286
+#define DO 287
+#define RANGE 288
+#define RETURN 289
+#define NIL 290
+#define SELF 291
+#define ERROR 292
+#define ID 293
+#define EQ 294
+#define NE 295
+#define LE 296
+#define GE 297
+#define NOT 298
+#define ENDL 299
+#define OR 300
+#define AND 301
 
-/* Value type.  */
+
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+typedef union YYSTYPE
+#line 19 "../bison/swift.y"
 {
-#line 19 "../bison/swift.y" /* yacc.c:1909  */
-
     int Int;
     char* Id;
     char* String;
@@ -118,32 +157,28 @@ union YYSTYPE
     struct NTblElem* TblElem;
     struct NSwitch * Switch;
     struct NImport * Import;
-
-#line 123 "swift.tab.h" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+}
+/* Line 1529 of yacc.c.  */
+#line 163 "swift.tab.h"
+	YYSTYPE;
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
-/* Location type.  */
+extern YYSTYPE yylval;
+
 #if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
+typedef struct YYLTYPE
 {
   int first_line;
   int first_column;
   int last_line;
   int last_column;
-};
+} YYLTYPE;
+# define yyltype YYLTYPE /* obsolescent; will be withdrawn */
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1
 #endif
 
-
-extern YYSTYPE yylval;
 extern YYLTYPE yylloc;
-int yyparse (void);
-
-#endif /* !YY_YY_SWIFT_TAB_H_INCLUDED  */
