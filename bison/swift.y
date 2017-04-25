@@ -82,7 +82,7 @@
 %token GE
 %token NOT
 %token ENDL
-
+%token FOUNDATIONI
 
 
 %type <Expr> expr
@@ -101,7 +101,6 @@
 %type <Func> func_decl_named
 %type <Func> func_body
 %type <Args> id_chain
-%type <Args> var_list
 %type <Args> arg_list
 %type <Args> args
 %type <Args> arg_list_decl
@@ -131,7 +130,11 @@ opt_endl:             /* empty */ {;}
                       | ENDL {;}
 ;
 
-root:               stmt_list {;}
+root:               stmt_list {printf("root\n");}
+;
+
+stmt_Foundation:      FOUNDATIONI {printf("foundation\n");}
+
 ;
 
 stmt_import:          IMPORT var {printf("import found\n");}
@@ -146,130 +149,127 @@ stmt_list:            /* empty */ { printf("stmt list null found\n");}
                     | stmt_list stmt opt_endl  {printf("stmt list not null\n");}
 ;
 
-stmt:                 stmt_block {;}
-                    | stmt_if {;}
-                    | stmt_while {;}
-                    | stmt_for {;}
-                    | stmt_repeat {;}
-                    | stmt_switch {;}
-                    | BREAK end_expr {;}
-                    | RETURN end_expr {;}
-                    | RETURN expr end_expr {;}
-                    | expr end_expr {;}
+stmt:                 stmt_block {printf("stmt_block\n");}
+                    | stmt_if {printf("stmt_if\n");}
+                    | stmt_while {printf("stmt_while\n");}
+                    | stmt_for {printf("stmt_for\n");}
+                    | stmt_repeat {printf("stmt_repeat\n");}
+                    | stmt_switch {printf("stmt_switch\n");}
+                    | BREAK end_expr {printf("stmt_break\n");}
+                    | RETURN end_expr {printf("stmt_return\n");}
+                    | RETURN expr end_expr {printf("stmt_return end\n");}
+                    | expr end_expr {printf("stmt_expr\n");}
                     | var '=' expr end_expr {printf("line with eq\n");}
-                    | func_decl_named {;}
-                    | end_expr {;}
-                    | var_list '=' args {;}
+                    | func_decl_named {printf("stmt_func decl\n");}
+                    | end_expr {printf("end_expr\n");}
 ;
 
-stmt_if:              IF expr opt_endl stmt_block elseif_list opt_endl {;}
-                    | IF expr opt_endl stmt_block elseif_list ELSE stmt_block opt_endl {;}
+stmt_if:              IF expr opt_endl stmt_block elseif_list opt_endl {printf("stmt_if_1\n");}
+                    | IF expr opt_endl stmt_block elseif_list ELSE stmt_block opt_endl {printf("stmt_if_2\n");}
 ;
-elseif_list:          /* empty */ {;}
-                    | elseif_list ELSEIF expr stmt_block {;}
+elseif_list:          /* empty */ {printf("empty else if\n");}
+                    | elseif_list ELSEIF expr stmt_block {printf("else_if\n");}
 ;
 
-stmt_switch:          SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' {;}
+stmt_switch:          SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' {printf("stmt_switch\n");}
 ;
-switch_cases:         /* nothing */ {;}
-                      | switch_cases switch_case {;}
+switch_cases:         /* nothing */ {printf("empty case\n");}
+                      | switch_cases switch_case {printf("switch cases\n");}
 ;
-switch_case:          case_label stmt_list {;}
-                      | default_label stmt_list {;}
+switch_case:          case_label stmt_list {printf("switch case\n");}
+                      | default_label stmt_list {printf("switch case 2\n");}
 ;
-case_label:           CASE expr ':' {;}
+case_label:           CASE expr ':' {printf("case label\n");}
 ;
-default_label:        DEFAULT ':' {;}
+default_label:        DEFAULT ':' {printf("default label \n");}
 
-stmt_while:           WHILE expr stmt_block {;}
+stmt_while:           WHILE expr stmt_block {printf("stmt_while\n");}
 ;
-stmt_for:             FOR alone_id IN expr stmt_block {;}
+stmt_for:             FOR alone_id IN expr stmt_block {printf("stmt_for\n");}
 ;
-stmt_repeat:          REPEAT stmt_block WHILE expr   {;}
+stmt_repeat:          REPEAT stmt_block WHILE expr   {printf("stmt_repeat\n");}
 ;
 /* == Expressions == */
-alone_id:             ID {;}
+alone_id:             ID {printf("alone_id\n");}
 ;
-id_chain:             alone_id {;}
-                    | id_chain '.' alone_id {;}
-;
-
-varlet:               VAR {;}
-                    | LET {;}
+id_chain:             alone_id {printf("id-chain\n");}
+                    | id_chain '.' alone_id {printf("id chain class\n");}
 ;
 
-var:                  id_chain {;}
-                    | varlet id_chain {;}
-                    | '[' type ']' '(' ')' {;}
-                    | var ':' '[' type ']' {;}
-                    | var ':' type {;}
-;
-var_list:             var {;}
-                    | var_list ',' var {;}
+varlet:               VAR {printf("var \n");}
+                    | LET {printf("let\n");}
 ;
 
-expr:                 var {;}
-                    | INT {;}
-                    | DOUBLE {;}
-                    | STRING {;}
-                    | TRUE {;}
-                    | FALSE {;}
-                    | BOOL {;}
-                    | FLOAT {;}
-                    | NIL {;}
-                    | NOT expr {printf("not ");}
-                    | expr NOT
-                    | expr AND expr {;}
-                    | expr OR  expr {;}
-                    | expr '+' expr {;}
-                    | expr '-' expr {;}
-                    | expr '*' expr {;}
-                    | expr '/' expr {;}
-                    | expr '%' expr {;}
-                    | expr '>' expr {;}
-                    | expr '<' expr {;}
-                    | expr GE  expr {;}
-                    | expr LE  expr {;}
-                    | expr EQ  expr {;}
-                    | expr NE  expr {;}
-                    | expr RANGE expr {;}
-                    | '(' expr ')' {;}
-                    | func_call {;}
-                    | array_constructor {;}
-                    | stmt_import {;}
+var:                  id_chain {printf("varuble 1\n");}
+                    | varlet id_chain {printf("varuble 2\n");}
+                    | '[' type ']' '(' ')' {printf("varuble 3\n");}
+                    | var ':' '[' type ']' {printf("varuble 4\n");}
+                    | var ':' type {printf("varuble 5\n");}
+;
+
+
+expr:                 var {printf("expr var\n");}
+                    | INT {printf("expr INT\n");}
+                    | DOUBLE {printf("expr DOUBLE\n");}
+                    | STRING {printf("expr STRING\n");}
+                    | TRUE {printf("expr TRUE\n");}
+                    | FALSE {printf("expr FALSE\n");}
+                    | BOOL {printf("expr BOOL\n");}
+                    | FLOAT {printf("expr FLOAT\n");}
+                    | NIL {printf("expr NIL\n");}
+                    | NOT expr {printf("not expr ");}
+                    | expr NOT {printf("expr not type\n");}
+                    | expr AND expr {printf("expr and expr\n");}
+                    | expr OR  expr {printf("expr or expr\n");}
+                    | expr '+' expr {printf("expr + expr\n");}
+                    | expr '-' expr {printf("expr - expr\n");}
+                    | expr '*' expr {printf("expr * expr\n");}
+                    | expr '/' expr {printf("expr / expr\n");}
+                    | expr '%' expr {printf("expr % expr\n");}
+                    | expr '>' expr {printf("expr > expr\n");}
+                    | expr '<' expr {printf("expr < expr\n");}
+                    | expr GE  expr {printf("expr GE expr\n");}
+                    | expr LE  expr {printf("expr LE expr\n");}
+                    | expr EQ  expr {printf("expr EQ expr\n");}
+                    | expr NE  expr {printf("expr NE expr\n");}
+                    | expr RANGE expr {printf("expr RANGE expr\n");}
+                    | '(' expr ')' {printf("(expr)\n");}
+                    | func_call {printf("expr func_call\n");}
+                    | array_constructor {printf("expr array_constructor\n");}
+                    | stmt_import {printf("expr stmt_import\n");}
+                    | stmt_Foundation {printf("expr stmt_Foundation\n");}
 
 ;
 /* == Function call == */
-func_call:            var '(' arg_list ')' {;}
-                    | var ':' alone_id '(' arg_list ')' {;}
+func_call:            var '(' arg_list ')' {printf("function call\n");}
 ;
-arg_list:             /* empty */ {;}
-                    | args {;}
+arg_list:             /* empty */ {printf("arg_list empty\n");}
+                    | args {printf("arg_list args \n");}
 ;
-args:                id_chain
-                    |  ID ':' expr {;}
-                    | args ',' ID ':' expr {;}
+args:                 expr  {printf("args expr\n");}
+                    | alone_id ':' expr {printf("args id : expr\n");}
+                    | args ',' alone_id ':' expr {printf("args , id : expr\n");}
 ;
 
-type:                 INTT {;}
-                    | STRINGT {;}
-                    | FLOATT {;}
-                    | DOUBLET {;}
-                    | BOOLT {;}
-                    | CHARACTERT {;}
+type:                 INTT {printf("int type\n");}
+                    | STRINGT {printf("string type\n");}
+                    | FLOATT {printf("float type\n");}
+                    | DOUBLET {printf("double type\n");}
+                    | BOOLT {printf("bool type\n");}
+                    | CHARACTERT {printf("character type\n");}
 ;
 /* == Function declaration == */
 
-func_decl_named:      FUNCTION id_chain  func_body {;}
+func_decl_named:      FUNCTION id_chain  func_body {printf("func decl name\n");}
 ;
-func_body:            '(' arg_list_decl ')' FUNCTIONARROW type stmt_block {;}
+func_body:            '(' arg_list_decl ')' FUNCTIONARROW type stmt_block {printf("function body\n");}
 ;
 
-arg_list_decl:        /* empty */ {;}
-                    | args_decl {;}
+arg_list_decl:        /* empty */ {printf("arg list decl empty\n");}
+                    | args_decl {;} {printf("arg list decl \n");}
 ;
-args_decl:            id_chain ':' type {;}
-                    | args_decl ',' alone_id ':' type {;}
+args_decl:            alone_id ':' type {printf("args decl 1 \n");}
+                    | args_decl ',' alone_id ':' type { printf("args decl 2 \n");}
 ;
 
 /* == Array declaration == */
@@ -278,18 +278,18 @@ args_decl:            id_chain ':' type {;}
 var someInts = [Int]() */
 
 
-array_constructor:  '[' array_elem_list ']' {;}
+array_constructor:  '[' array_elem_list ']' {printf("array constructor");}
 ;
 
-array_elem_list:        /* empty */ {;}
-                    | array_elems {;}
+array_elem_list:        /* empty */ {printf("array elem list empty \n");}
+                    | array_elems {printf("array elems list \n");}
 ;
 
-array_elems:            array_elem {;}
-                    | array_elems ',' array_elem {;}
+array_elems:            array_elem {printf("array elem 1 \n");}
+                    | array_elems ',' array_elem {printf("array elem more \n");}
 ;
 
-array_elem:          expr {;}
+array_elem:          expr {printf("array elem array elem \n");}
 ;
 
 %%

@@ -26,6 +26,19 @@
     extern int yyparse(void);
     extern void update_tree_stmtlist(NStmtList* list,NStmtList* root);
     extern void update_tree_parent_func(struct NStmtList* root);
+
+    /*
+    <STRING_A>\\\(([^\)]*)\)        {
+                                  yylval.Id = (char *)malloc(sizeof(yytext)+1);
+                                  strcpy(yylval.Id, yytext);
+                                  return ID;
+                                  }
+  */
+  static int staticplus = 0;
+  static int statictoken = 0;
+  static char staticstring[1281] = {0};
+
+
 %}
 
 %option noyywrap
@@ -33,7 +46,24 @@
 
 %x COMMENT
 %x STRING_A
+
 %%
+
+  if(statictoken == 1)
+  {
+  statictoken = 0;
+  return '+';
+  }
+
+  if(staticplus == 1)
+  {
+    staticplus = 0;
+    statictoken = 1;
+    yylval.Id = (char *)malloc(sizeof(staticstring)+1);
+    strcpy(yylval.Id, staticstring);
+    return ID;
+
+  }
 
 "/*"                          {BEGIN(COMMENT); }
 <COMMENT>"*/"                 {BEGIN(INITIAL);}
@@ -50,20 +80,23 @@
 <STRING_A>\\n                   strcat(strconst, "\n");
 <STRING_A>\\\\                  strcat(strconst, "\\");
 <STRING_A>[^\\\n\"]+            strcat(strconst,yytext);
-
+<STRING_A>\\\(([^\)]*)\)        {
+                              strcat(staticstring, yytext);
+                              statictoken = 1;
+                              staticplus = 1;
+                              yylval.String = (char *)malloc(strlen(strconst) + 1);
+                              strcpy(yylval.String, strconst);
+                              return STRING;
+                              }
 <STRING_A>\"                    {
 								              yylval.String = (char *)malloc(strlen(strconst) + 1);
                               strcpy(yylval.String, strconst);
                               BEGIN(INITIAL);
                               return STRING;
                               }
-<STRING_A>\\\(([^\)]*)\)        {
-                              yylval.Id = (char *)malloc(sizeof(yytext)+1);
-                              strcpy(yylval.Id, yytext);
-                              return ID;
-                              }
 <STRING_A>.|[\n\r\f\t\v]        ;
 
+"import Foundation"           return FOUNDATIONI;
 
 "import"					            return IMPORT;
 

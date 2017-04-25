@@ -81,8 +81,9 @@
      GE = 297,
      NOT = 298,
      ENDL = 299,
-     OR = 300,
-     AND = 301
+     FOUNDATIONI = 300,
+     OR = 301,
+     AND = 302
    };
 #endif
 /* Tokens.  */
@@ -128,8 +129,9 @@
 #define GE 297
 #define NOT 298
 #define ENDL 299
-#define OR 300
-#define AND 301
+#define FOUNDATIONI 300
+#define OR 301
+#define AND 302
 
 
 
@@ -159,7 +161,7 @@ typedef union YYSTYPE
     struct NImport * Import;
 }
 /* Line 1529 of yacc.c.  */
-#line 163 "swift.tab.h"
+#line 165 "swift.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
