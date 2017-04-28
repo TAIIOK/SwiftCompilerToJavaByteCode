@@ -2,6 +2,20 @@
 #define _H_TREE_NODES_
 
 typedef struct st_const STConst;
+enum NVarEnumType{
+  STRING,
+  INT,
+  DOUBLE,
+  FLOAT,
+  BOOL,
+  CHARACTER,
+  VOID
+};
+
+enum NConstantEnum{
+  VAR,
+  LET
+};
 
 enum NStmtType {
     STMT_WHILE,
@@ -18,7 +32,8 @@ enum NStmtType {
     STMT_LASSIGN_MAS,
     STMT_LASSIGN,
     STMT_IF,
-    STMT_ENDL
+    STMT_ENDL,
+    STMT_SWITCH
 };
 
 enum NExprType {
@@ -49,9 +64,18 @@ enum NExprType {
     EXPR_UMIN,
     EXPR_FUNC_DEC_ANON,
     EXPR_TABLE,
-    EXPR_ID_LIST
+    EXPR_ID_LIST,
+    EXPR_IMPORT
+};
+struct NImport
+{
+    char * name;
 };
 
+struct NConstant
+{
+  enum NConstantEnum constant;
+};
 struct NWhile
 {
     struct NExpr * condition;
@@ -67,6 +91,7 @@ struct NFor
     struct NStmtList * body;
 };
 
+
 struct NExpr
 {
     char * name;
@@ -75,15 +100,22 @@ struct NExpr
     int Int;
     double Double;
     enum NExprType type;
+    struct NConstant varconstant;
+    struct NVarType vartype;
     struct NExpr * next;
     struct NExprList* idlist;
     struct NTable* table;
     struct NFunc* func;
-    
+
     // Attributes
     int constant_index;
     bool clojure;
     NExpr * origin;
+};
+
+struct NVarType
+{
+    enum NVarEnumType type;
 };
 
 struct NStmt
@@ -97,6 +129,7 @@ struct NStmt
     struct NFor * for_loop;
     struct NWhile * while_loop;
     struct NIf * if_tree;
+    struct NSwitch * switch_tree;
 };
 
 struct NStmtList
@@ -110,8 +143,10 @@ struct NFunc
     struct NExprList* name;
     struct NExprList* args;
     struct NStmtList* body;
-    
+
     // Attributes
+    struct NVarType vartype;
+
     STConst * const_table;
     STConst * const_last;
     char * classname;
@@ -125,7 +160,25 @@ struct NExprList
     struct NExpr * first;
     struct NExpr * last;
 };
+struct NSwitch
+{
+  struct NExpr* Name;
+  struct NCase* defaultlist;
+  struct NCaseList* caselist;
 
+};
+
+struct NCase
+{
+  struct NExpr* name;
+  struct NStmtList* boby;
+};
+
+struct NCaseList
+{
+    struct NCase* first;
+    struct NCase* last;
+};
 struct NIf
 {
     struct NExpr* condition;
@@ -144,6 +197,7 @@ struct NIfList
 struct NTable
 {
     struct NTblElem * first;
+    enum NVarType vartype;
     struct NTblElem * last;
 };
 

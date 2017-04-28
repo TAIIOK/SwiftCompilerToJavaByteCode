@@ -116,7 +116,7 @@ struct NExprList * get_vars(struct NStmt* stmt)
                 cur = cur->next;
                 free(list1);
             }
-            
+
             struct NIf * ift = stmt->if_tree->elseiflist->first;
             while (ift != NULL)
             {
@@ -173,7 +173,7 @@ struct NExprList * get_vars(struct NStmt* stmt)
     }
     else if(stmt->type == STMT_LASSIGN)
     {
-    
+
         if(list->first == NULL)
         {
             list->first = get_clone_for_clojure(stmt->var);
@@ -227,7 +227,7 @@ struct NExprList * compare_tables(struct NExprList * parent, struct NExprList * 
     {
         isFind = false;
         pexpr = parent->first;
-        while (pexpr != NULL && !isFind) 
+        while (pexpr != NULL && !isFind)
         {
             if(compare_var_names(pexpr,cexpr))
             {
@@ -490,7 +490,7 @@ void set_parent_func(struct NStmt* child, struct NFunc* parent)
                 set_parent_func(cur,parent);
                 cur = cur->next;
             }
-            
+
             struct NIf * ift = child->if_tree->elseiflist->first;
             while (ift != NULL)
             {
@@ -540,6 +540,8 @@ void set_null_field_expr(struct NExpr* expr)
     expr->left = NULL;
     expr->right = NULL;
     expr->next = NULL;
+    expr->vartype = NULL;
+    expr->varconstant = NULL;
     expr->idlist = NULL;
     expr->table = NULL;
     expr->func = NULL;
@@ -637,14 +639,11 @@ struct NExpr* create_expr_nil()
     return result;
 }
 
-struct NStmt* create_stmt_func(struct NFunc* func, int local)
+struct NStmt* create_stmt_func(struct NFunc* func)
 {
     struct NStmt* result = (NStmt*)malloc(sizeof(NStmt));
     result->func = func;
-    if (local)
-        result->type = STMT_LFUNC;
-    else
-        result->type = STMT_FUNC;
+    result->type = STMT_FUNC;
     return result;
 }
 
@@ -771,6 +770,37 @@ struct NWhile* create_while(struct NExpr* condition, struct NStmtList* body)
     return result;
 }
 
+struct NSwitch* create_switch(struct NExpr* condition, struct NCase* defaultC, struct NCaseList* caselist)
+{
+    struct NSwitch* result = (NSwitch*)malloc(sizeof(NSwitch));
+    result->name = condition;
+    result->defaultlist = defaultC;
+    result->caselist = caselist;
+    return result;
+}
+
+struct NSwitchList* create_case_list(struct NCase* element)
+{
+    struct NSwitchList* result = (NSwitchList*)malloc(sizeof(NSwitchList));
+    result->first = element;
+    result->last = element;
+    return result;
+}
+struct NSwitchList* add_case_to_list(struct NSwitchList* list, struct NCase* element)
+{
+    if(list->first == NULL)
+    {
+        list->first = element;
+    }
+    else
+    {
+        list->last->next = element;
+    }
+    list->last = element;
+    return list;
+}
+
+
 struct NIf* create_if(struct NExpr* condition, struct NStmtList* body, struct NIfList* elseif_list, struct NStmtList* elsebody)
 {
     struct NIf* result = (NIf*)malloc(sizeof(NIf));
@@ -812,11 +842,12 @@ struct NTblElem* create_tbl_elem(struct NExpr* key, struct NExpr* value)
     return result;
 }
 
-struct NTable* create_table(struct NTblElem* first)
+struct NTable* create_table(struct NTblElem* first, struct NVarType type)
 {
     struct NTable* result = (NTable*)malloc(sizeof(NTable));
     result->first = first;
     result->last = first;
+    result->vartype = type;
     return result;
 }
 
@@ -834,10 +865,11 @@ struct NTable* add_elem_to_table(struct NTable* list, struct NTblElem* element)
     return list;
 }
 
-struct NFunc* create_func(struct NExprList* args, struct NStmtList* body)
+struct NFunc* create_func(struct NExprList* args, struct NStmtList* body, struct NVarType type)
 {
     struct NFunc* result = (NFunc*)malloc(sizeof(NFunc));
     result->name = NULL;
+    result->vartype = type;
     result->args = args;
     result->body = body;
     result->locals_list = get_local_var_table(result);
@@ -848,6 +880,20 @@ struct NFunc* set_func_name(struct NExprList* name, struct NFunc* result)
 {
     result->name = name;
     return result;
+}
+
+struct NConstant create_var_constant_type(NConstantEnum varEnumType)
+{
+  struct NConstant* result = (NConstant*)malloc(sizeof(NConstant));
+  result->constant = varEnumType;
+  return result;
+}
+
+struct NVarType create_var_type(NVarEnumType varEnumType)
+{
+  struct NVarType* result = (NVarType*)malloc(sizeof(NVarType));
+  result->type = varEnumType;
+  return result;
 }
 
 struct NStmt* create_stmt_return(struct NExpr* expr)
