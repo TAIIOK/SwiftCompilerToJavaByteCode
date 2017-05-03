@@ -225,7 +225,7 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | TRUE {printf("expr TRUE\n"); $$ = create_expr_boolean(1);}
                     | FALSE {printf("expr FALSE\n"); $$ = create_expr_boolean(0); }
                     | BOOL {printf("expr BOOL\n");}
-                    | FLOAT {printf("expr FLOAT\n");}
+                    | FLOAT {printf("expr FLOAT\n");$$ = create_expr_float(yylval.Double);}
                     | NIL {printf("expr NIL\n");$$ = create_expr_nil(); }
                     | NOT expr {printf("not expr "); $$ = create_op_expr(EXPR_NOT, $2, NULL);}
                     | expr NOT {printf("expr not type\n");}
