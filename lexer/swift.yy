@@ -8,7 +8,7 @@
 	  #include <math.h>
 
     #include "swift.tab.h"
-    #include "semantic_tables.h"
+    //#include "semantic_tables.h"
     #include "tree_print.h"
 
 
@@ -96,7 +96,6 @@
                               }
 <STRING_A>.|[\n\r\f\t\v]        ;
 
-"import Foundation"           return FOUNDATIONI;
 
 "import"					            return IMPORT;
 
@@ -162,9 +161,9 @@
 ")"                           return ')';
 "{"                           return '{';
 "}"                           return '}';
-"["                           return '[';
-"]"                           return ']';
-":"                           return ':';
+"["                           {printf("[");return '[';}
+"]"                           {printf("]");return ']';}
+":"                           {printf(":");return ':';}
 
 ";"                           return ';';
 "\n"						              return ENDL;

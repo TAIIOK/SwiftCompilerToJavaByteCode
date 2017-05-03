@@ -44,7 +44,7 @@ __ = "s"
 
 var $ = 5
 
-var massive:[Int] = []
+//var massive:[Int] = []
 var someInts = [Int]()
 
 print("array size\(someInts.count)")

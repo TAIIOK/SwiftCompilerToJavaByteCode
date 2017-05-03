@@ -38,6 +38,7 @@
     struct NImport * Import;
     struct NConstant * Constant;
     struct NCase * Case;
+    struct NLabelCase * LabelCase;
     struct NCaseList * CaseL;
     struct NVarType * VarType;
 
@@ -87,8 +88,6 @@
 %token GE
 %token NOT
 %token ENDL
-%token FOUNDATIONI
-
 
 %type <Expr> expr
 %type <Expr> var
@@ -116,6 +115,12 @@
 %type <TblElem> array_elem
 %type <Import> stmt_import
 %type <Switch> stmt_switch
+%type <VarType> type
+%type <Constant> varlet
+%type <Case> switch_case
+%type <CaseL> switch_cases
+%type <LabelCase> case_label
+%type <LabelCase> default_label
 
 %left  OR
 %left  AND
@@ -138,11 +143,7 @@ opt_endl:             /* empty */ {;}
 root:               stmt_list {printf("root\n");root=$1; $$=$1;}
 ;
 
-stmt_Foundation:      FOUNDATIONI {printf("foundation\n");}
-
-;
-
-stmt_import:          IMPORT var {printf("import found\n");}
+stmt_import:          IMPORT var {printf("import found\n");$$ = create_import($2);}
 ;
 
 /* == Statements == */
@@ -159,14 +160,15 @@ stmt:                 stmt_block {printf("stmt_block\n");$$ = create_stmt_block(
                     | stmt_while {printf("stmt_while\n");$$ = create_stmt_while($1, 0);}
                     | stmt_for {printf("stmt_for\n");$$ = create_stmt_for($1);}
                     | stmt_repeat {printf("stmt_repeat\n");$$ = create_stmt_while($1, 1);}
-                    | stmt_switch {printf("stmt_switch\n");}
+                    | stmt_switch {printf("stmt_switch\n");$$ = create_stmt_switch($1);}
                     | BREAK end_expr {printf("stmt_break\n");$$ = create_stmt_spec(0);}
                     | RETURN end_expr {printf("stmt_return\n");$$ = create_stmt_spec(1);}
                     | RETURN expr end_expr {printf("stmt_return end\n");$$ = create_stmt_return($2);}
                     | expr end_expr {printf("stmt_expr\n");$$ = create_stmt_expr($1);}
                     | var '=' expr end_expr {printf("line with eq\n"); $$ = create_stmt_assign($1, $3, 0);}
-                    | func_decl_named {printf("stmt_func decl\n");$$ = create_stmt_func($1, 0);}
+                    | func_decl_named {printf("stmt_func decl\n");$$ = create_stmt_func($1);}
                     | end_expr {printf("end_expr\n");$$ = create_stmt_spec(2);}
+                    | stmt_import {printf("stmt_import\n");$$ = create_stmt_import($1);}
 ;
 
 stmt_if:              IF expr opt_endl stmt_block elseif_list opt_endl {printf("stmt_if_1\n");$$ = create_if($2, $4, $5, create_stmt_list(NULL));}
@@ -176,21 +178,21 @@ elseif_list:          /* empty */ {printf("empty else if\n");$$ = create_if_list
                     | elseif_list ELSEIF expr stmt_block {printf("else_if\n");$$ = add_if_to_list($1, create_if($3, $4, create_if_list(NULL), create_stmt_list(NULL)));}
 ;
 
-stmt_switch:          SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' {printf("stmt_switch\n");}
+stmt_switch:          SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' {printf("stmt_switch\n");$$ = create_switch($2,$6);}
 ;
-switch_cases:         /* nothing */ {printf("empty case\n");}
-                      | switch_cases switch_case {printf("switch cases\n");}
+switch_cases:         /* nothing */ {printf("empty case\n");$$ = create_case_list(NULL);}
+                      | switch_cases switch_case {printf("switch cases\n");$$ = add_case_to_list($1,$2);}
 ;
-switch_case:          case_label stmt_list {printf("switch case\n");}
-                      | default_label stmt_list {printf("switch case 2\n");}
+switch_case:          case_label stmt_list {printf("switch case\n");$$ = create_case($1,$2);}
+                      | default_label stmt_list {printf("switch case 2\n");$$ = create_case($1,$2);}
 ;
-case_label:           CASE expr ':' {printf("case label\n");}
+case_label:           CASE expr ':' {printf("case label\n");$$ = create_label_case($2,DIFFERENT);}
 ;
-default_label:        DEFAULT ':' {printf("default label \n");}
+default_label:        DEFAULT ':' {printf("default label \n");$$ = create_label_case(NULL,DEFAULTT);}
 
 stmt_while:           WHILE expr stmt_block {printf("stmt_while\n");$$ = create_while($2, $3);}
 ;
-stmt_for:             FOR alone_id IN expr stmt_block {printf("stmt_for\n");//$$ = create_for($2, $4, $5, create_expr_int(1), $7);}
+stmt_for:             FOR alone_id IN expr stmt_block {printf("stmt_for\n");$$ = create_for($2, $4, $5, create_expr_int(1));}
 ;
 stmt_repeat:          REPEAT stmt_block WHILE expr   {printf("stmt_repeat\n");$$ = create_while($4, $2); }
 ;
@@ -201,14 +203,18 @@ id_chain:             alone_id {printf("id-chain\n");$$ = create_expr_list($1);}
                     | id_chain '.' alone_id {printf("id chain class\n");$$ = add_expr_to_list($1, $3); }
 ;
 
-varlet:               VAR {printf("var \n"); $$ = create_var_constant_type(VAR);}
-                    | LET {printf("let\n"); $$ = create_var_constant_type(LET);}
+varlet:               VAR {printf("var \n"); $$ = create_var_constant_type(VART);}
+                    | LET {printf("let\n"); $$ = create_var_constant_type(LETT);}
 ;
 
 var:                  id_chain {printf("varuble 1\n"); $$ = create_expr_exprlist($1); }
                     | varlet id_chain {printf("varuble 2\n");$$ = create_expr_exprlist($2); }
-                    | var ':' '[' type ']' {printf("varuble 4\n");//$$ = create_op_expr(EXPR_MAS, $1, $3);}
-                    | var ':' type {printf("varuble 5\n");$$ = create_expr_exprlist($1);}
+                    | '[' type ']' '(' ')' {printf("varuble 3\n");}
+                    | var ':' '[' type ']' {printf("varuble 4\n");}
+                    | varlet id_chain ':' type {printf("varuble 5\n");$$ = create_expr_exprlist($2);}
+
+
+
 ;
 
 
@@ -236,13 +242,10 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | expr LE  expr {printf("expr LE expr\n"); $$ = create_op_expr(EXPR_LE, $1, $3);}
                     | expr EQ  expr {printf("expr EQ expr\n"); $$ = create_op_expr(EXPR_EQ, $1, $3);}
                     | expr NE  expr {printf("expr NE expr\n"); $$ = create_op_expr(EXPR_NQ, $1, $3);}
-                    | expr RANGE expr {printf("expr RANGE expr\n"); $$ = create_op_expr(EXPR_CONC, $1, $3);}
+                    | expr RANGE expr {printf("expr RANGE expr\n"); $$ = create_op_expr(EXPR_RANGE, $1, $3);}
                     | '(' expr ')' {printf("(expr)\n"); $$ = $2;}
                     | func_call {printf("expr func_call\n"); $$ = $1;}
-                    | '[' type ']' '(' ')' {printf("varuble 3\n");//$$ = create_op_expr(EXPR_MAS, $1, $3);}
                     | array_constructor {printf("expr array_constructor\n"); $$ = create_expr_table($1);}
-                    | stmt_import {printf("expr stmt_import\n");}
-                    | stmt_Foundation {printf("expr stmt_Foundation\n");}
 
 ;
 /* == Function call == */
@@ -252,22 +255,23 @@ arg_list:             /* empty */ {printf("arg_list empty\n");$$ = create_expr_l
                     | args {printf("arg_list args \n");$$ = $1;}
 ;
 args:                 expr  {printf("args expr\n"); $$ = create_expr_list($1);}
-                    | alone_id ':' expr {printf("args id : expr\n");$$ = add_expr_to_list($1, $3);}
+                    | id_chain ':' expr {printf("args id : expr\n");$$ = add_expr_to_list($1, $3);}
                     | args ',' alone_id ':' expr {printf("args , id : expr\n");$$ = add_expr_to_list($1, $3);}
 ;
 
-type:                 INTT {printf("int type\n");$$ = create_var_type(INT);}
-                    | STRINGT {printf("string type\n");$$ = create_var_type(STRING);}
-                    | FLOATT {printf("float type\n");$$ = create_var_type(FLOAT);}
-                    | DOUBLET {printf("double type\n");$$ = create_var_type(DOUBLE);}
-                    | BOOLT {printf("bool type\n");$$ = create_var_type(BOOL);}
-                    | CHARACTERT {printf("character type\n");$$ = create_var_type(CHARACTER);}
+type:                 INTT {printf("int type\n");$$ = create_var_type(INTTy);}
+                    | STRINGT {printf("string type\n");$$ = create_var_type(STRINGTy);}
+                    | FLOATT {printf("float type\n");$$ = create_var_type(FLOATTy);}
+                    | DOUBLET {printf("double type\n");$$ = create_var_type(DOUBLETy);}
+                    | BOOLT {printf("bool type\n");$$ = create_var_type(BOOLTy);}
+                    | CHARACTERT {printf("character type\n");$$ = create_var_type(CHARACTERTy);}
 ;
 /* == Function declaration == */
 
 func_decl_named:      FUNCTION id_chain  func_body {printf("func decl name\n");$$ = set_func_name($2, $3);}
 ;
-func_body:            '(' arg_list_decl ')' FUNCTIONARROW type stmt_block {printf("function body\n");//$$ = create_func($2, $4);}
+func_body:            '(' arg_list_decl ')' FUNCTIONARROW type stmt_block {printf("function body\n");$$ = create_func($2, $6,$5);}
+                    |  '(' arg_list_decl ')'  stmt_block {printf("function body\n");$$ = create_func($2, $4,create_var_type(VOIDTy));}
 ;
 
 arg_list_decl:        /* empty */ {printf("arg list decl empty\n");$$ = create_expr_list(NULL);}
