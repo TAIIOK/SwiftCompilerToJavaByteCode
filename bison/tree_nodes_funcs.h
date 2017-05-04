@@ -689,17 +689,7 @@ struct NStmt* create_stmt_while(struct NWhile* While, int rep)
         result->type = STMT_WHILE;
     return result;
 }
-struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int local)
-{
-    struct NStmt* result = (NStmt*)malloc(sizeof(NStmt));
-    result->var = var;
-    result->expr = expr;
-    if (local)
-        result->type = STMT_LASSIGN;
-    else
-        result->type = STMT_ASSIGN;
-    return result;
-}
+
 
 
 struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int local)

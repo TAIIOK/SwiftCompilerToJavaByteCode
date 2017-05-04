@@ -209,7 +209,6 @@ varlet:               VAR {printf("var \n"); $$ = create_var_constant_type(VART)
 
 var:                  id_chain {printf("varuble 1\n"); $$ = create_expr_exprlist($1); }
                     | varlet id_chain {printf("varuble 2\n");$$ = create_expr_exprlist($2); }
-                    | '[' type ']' '(' ')' {printf("varuble 3\n");}
                     | var ':' '[' type ']' {printf("varuble 4\n");}
                     | varlet id_chain ':' type {printf("varuble 5\n");$$ = create_expr_exprlist($2);}
 
@@ -244,6 +243,7 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | expr NE  expr {printf("expr NE expr\n"); $$ = create_op_expr(EXPR_NQ, $1, $3);}
                     | expr RANGE expr {printf("expr RANGE expr\n"); $$ = create_op_expr(EXPR_RANGE, $1, $3);}
                     | '(' expr ')' {printf("(expr)\n"); $$ = $2;}
+                    | '[' type ']' '(' ')' {printf("varuble 3\n");}
                     | func_call {printf("expr func_call\n"); $$ = $1;}
                     | array_constructor {printf("expr array_constructor\n"); $$ = create_expr_table($1);}
 
