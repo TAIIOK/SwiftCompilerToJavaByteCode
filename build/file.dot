@@ -1,0 +1,33 @@
+graph graphname {
+root;
+expr0[label = "1"];
+root--expr0;
+expr1[label = "-1"];
+root--expr1;
+assign0[label = "="];
+root--assign0;
+expr2[label = "id"];
+assign0--expr2;
+expr3[label = "line"];
+expr2--expr3;
+expr4[label = "fcall"];
+assign0--expr4;
+expr4name[label = "name"];
+expr5[label = "readLine"];
+expr4name--expr5;
+expr4--expr4name;
+expr4args[label = " args "];
+expr4 -- expr4args;
+expr6[label = "fcall"];
+root--expr6;
+expr6name[label = "name"];
+expr7[label = "print"];
+expr6name--expr7;
+expr6--expr6name;
+expr6args[label = " args "];
+expr6 -- expr6args;
+expr8[label = "id"];
+expr6args--expr8;
+expr9[label = "line"];
+expr8--expr9;
+}

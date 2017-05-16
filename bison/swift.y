@@ -115,7 +115,7 @@
 %type <TblElem> array_elem
 %type <Import> stmt_import
 %type <Switch> stmt_switch
-%type <VarType> type
+%type <VarType> varubleType
 %type <Constant> varlet
 %type <Case> switch_case
 %type <CaseL> switch_cases
@@ -207,13 +207,10 @@ varlet:               VAR {printf("var \n"); $$ = create_var_constant_type(VART)
                     | LET {printf("let\n"); $$ = create_var_constant_type(LETT);}
 ;
 
-var:                  id_chain {printf("varuble 1\n"); $$ = create_expr_exprlist($1); }
-                    | varlet id_chain {printf("varuble 2\n");$$ = create_expr_exprlist($2); }
-                    | var ':' '[' type ']' {printf("varuble 4\n");}
-                    | varlet id_chain ':' type {printf("varuble 5\n");$$ = create_expr_exprlist($2);}
-
-
-
+var:                  id_chain {printf("varuble 1\n"); $$ = create_expr_exprlist($1,NULL,NULL); }
+                    | varlet id_chain {printf("varuble 2\n");$$ = create_expr_exprlist($2,NULL,$1); }
+                    | varlet id_chain  ':' '[' varubleType ']' {printf("varuble 4\n");$$ = create_expr_exprlist($2,$5,$1); }
+                    | varlet id_chain ':' varubleType {printf("varuble 5\n");$$ = create_expr_exprlist($2,$4,$1);}
 ;
 
 
@@ -243,13 +240,13 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | expr NE  expr {printf("expr NE expr\n"); $$ = create_op_expr(EXPR_NQ, $1, $3);}
                     | expr RANGE expr {printf("expr RANGE expr\n"); $$ = create_op_expr(EXPR_RANGE, $1, $3);}
                     | '(' expr ')' {printf("(expr)\n"); $$ = $2;}
-                    | '[' type ']' '(' ')' {printf("varuble 3\n");}
+                    | '[' varubleType ']' '(' ')' {printf("varuble 3\n");$$ = create_expr_table(NULL, $2);}
                     | func_call {printf("expr func_call\n"); $$ = $1;}
-                    | array_constructor {printf("expr array_constructor\n"); $$ = create_expr_table($1);}
+                    | array_constructor {printf("expr array_constructor\n"); $$ = create_expr_table($1, NULL);}
 
 ;
 /* == Function call == */
-func_call:            var '(' arg_list ')' {printf("function call\n"); $$ = create_op_expr(EXPR_MET, $1, create_expr_exprlist($3));}
+func_call:            var '(' arg_list ')' {printf("function call\n"); $$ = create_op_expr(EXPR_MET, $1, create_expr_exprlist($3,NULL,NULL));}
 ;
 arg_list:             /* empty */ {printf("arg_list empty\n");$$ = create_expr_list(NULL);}
                     | args {printf("arg_list args \n");$$ = $1;}
@@ -259,7 +256,7 @@ args:                 expr  {printf("args expr\n"); $$ = create_expr_list($1);}
                     | args ',' alone_id ':' expr {printf("args , id : expr\n");$$ = add_expr_to_list($1, $3);}
 ;
 
-type:                 INTT {printf("int type\n");$$ = create_var_type(INTTy);}
+varubleType:                 INTT {printf("int type\n");$$ = create_var_type(INTTy);}
                     | STRINGT {printf("string type\n");$$ = create_var_type(STRINGTy);}
                     | FLOATT {printf("float type\n");$$ = create_var_type(FLOATTy);}
                     | DOUBLET {printf("double type\n");$$ = create_var_type(DOUBLETy);}
@@ -270,15 +267,15 @@ type:                 INTT {printf("int type\n");$$ = create_var_type(INTTy);}
 
 func_decl_named:      FUNCTION id_chain  func_body {printf("func decl name\n");$$ = set_func_name($2, $3);}
 ;
-func_body:            '(' arg_list_decl ')' FUNCTIONARROW type stmt_block {printf("function body\n");$$ = create_func($2, $6,$5);}
+func_body:            '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block {printf("function body\n");$$ = create_func($2, $6,$5);}
                     |  '(' arg_list_decl ')'  stmt_block {printf("function body\n");$$ = create_func($2, $4,create_var_type(VOIDTy));}
 ;
 
 arg_list_decl:        /* empty */ {printf("arg list decl empty\n");$$ = create_expr_list(NULL);}
                     | args_decl {;} {printf("arg list decl \n");$$ = $1;}
 ;
-args_decl:            alone_id ':' type {printf("args decl 1 \n");$$ = create_expr_list($1);}
-                    | args_decl ',' alone_id ':' type { printf("args decl 2 \n"); $$ = add_expr_to_list($1, $3);}
+args_decl:            alone_id ':' varubleType {printf("args decl 1 \n");$$ = create_expr_list($1);}
+                    | args_decl ',' alone_id ':' varubleType { printf("args decl 2 \n"); $$ = add_expr_to_list($1, $3);}
 ;
 
 /* == Array declaration == */

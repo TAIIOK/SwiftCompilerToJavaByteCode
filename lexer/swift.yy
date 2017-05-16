@@ -211,9 +211,9 @@ int main(int argc,char* argv[])
         yyin = fopen(argv[1], "r");
 
         yyparse();
-        //update_tree_parent_func(root);
-        //update_tree_stmtlist(root,root);
-        //print_tree(root);
+        update_tree_parent_func(root);
+        update_tree_stmtlist(root,root);
+        print_tree(root);
     }
     return 0;
 }

@@ -58,6 +58,7 @@ enum NExprType {
     EXPR_ID,
     EXPR_INT,
     EXPR_DOUBLE,
+    EXPR_FLOAT,
     EXPR_RANGE,
     EXPR_STR,
     EXPR_MET,
@@ -108,6 +109,7 @@ struct NExpr
     struct NExpr * right;
     int Int;
     double Double;
+    float Float;
     enum NExprType type;
     struct NConstant* varconstant;
     struct NVarType* vartype;

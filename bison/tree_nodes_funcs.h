@@ -628,20 +628,23 @@ struct NExpr* create_expr_boolean(int value)
     return result;
 }
 
-struct NExpr* create_expr_exprlist(struct NExprList* value)
+struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varubltype ,struct NConstant* varlet)
 {
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
     result->idlist = value;
+    result->varconstant = varlet;
+    result->vartype = varubltype;
     result->type = EXPR_ID_LIST;
     return result;
 }
 
-struct NExpr* create_expr_table(struct NTable* value)
+struct NExpr* create_expr_table(struct NTable* value, struct NVarType* varubltype)
 {
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
     result->table = value;
+    result->vartype = varubltype;
     result->type = EXPR_TABLE;
     return result;
 }

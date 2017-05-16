@@ -595,6 +595,15 @@ struct NExpr* create_expr_double(double value)
     return result;
 }
 
+struct NExpr* create_expr_float(float value)
+{
+    NExpr* result = (NExpr*)malloc(sizeof(NExpr));
+    set_null_field_expr(result);
+    result->Float = value;
+    result->type = EXPR_FLOAT;
+    return result;
+}
+
 struct NImport* create_import(struct NExpr* func)
 {
   struct NImport* result = (NImport*)malloc(sizeof(NImport));
@@ -619,20 +628,23 @@ struct NExpr* create_expr_boolean(int value)
     return result;
 }
 
-struct NExpr* create_expr_exprlist(struct NExprList* value)
+struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varubltype ,struct NConstant* varlet)
 {
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
     result->idlist = value;
+    result->varconstant = varlet;
+    result->vartype = varubltype;
     result->type = EXPR_ID_LIST;
     return result;
 }
 
-struct NExpr* create_expr_table(struct NTable* value)
+struct NExpr* create_expr_table(struct NTable* value, struct NVarType* varubltype)
 {
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
     result->table = value;
+    result->vartype = varubltype;
     result->type = EXPR_TABLE;
     return result;
 }
@@ -680,6 +692,8 @@ struct NStmt* create_stmt_while(struct NWhile* While, int rep)
         result->type = STMT_WHILE;
     return result;
 }
+
+
 
 struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int local)
 {
