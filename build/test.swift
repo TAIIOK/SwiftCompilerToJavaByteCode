@@ -35,7 +35,7 @@ var string:String = "string"
 var doublevar:Double = 0.1
 var float:Float = 0.1
 
-var stressline = "new line \n \\ !@#$%^&*() \"\" \" ' ' ' ' ' ' ' " + " \\\\ \n\r\t 1234567890 "  + line! + "\(hex)"
+
 
 var SD = "SD"
 
@@ -45,7 +45,7 @@ __ = "s"
 var $ = 5
 
 var massive:[Int] = []
-var someInts = [Int]()
+
 
 print("array size\(someInts.count)")
 
@@ -89,7 +89,9 @@ func myFuncMoreThanOneParam(dad:Int,str:String,bo:Bool) -> Bool {
     return true
 }
 
+
 var resultone = myFuncOneParam(dad: 1)
+
 var resultsecond = myFuncMoreThanOneParam(dad: 1, str: "", bo: true)
 
 switch trueBool {

@@ -8,6 +8,7 @@
 
 extern struct NStmtList *root;
 // Counters
+int var_constant_count;
 int while_count;
 int for_count;
 int expr_count;
@@ -15,6 +16,8 @@ int stmt_count;
 int func_count;
 int table_count;
 int if_count;
+int import_count;
+int type_count;
 FILE* output;
 
 void print_while(char* parent, struct NWhile* while_loop);
@@ -30,7 +33,212 @@ void print_table_elem(char* parent, struct NTblElem* elem, int num);
 void print_if_list(char* parent, struct NIfList* iflist);
 void print_tree(struct NStmtList* stmtlist);
 void print_func_name(char* parent, struct NExprList* exprlist);
+void print_import(char* parent, struct NImport* stmt_import);
+void print_switch(char* parent, struct NSwitch* switch_loop);
+void print_varuble_type(char* parent, struct NExpr* expr);
+void print_varuble_constant(char* parent, struct NExpr* expr);
 
+void print_varuble_constant(char* parent, struct NExpr* expr)
+{
+
+  char* current_node = (char*)malloc(sizeof(char)*33);
+  char* buffer = (char*)malloc(sizeof(char)*33);
+  char* buffer1 = (char*)malloc(sizeof(char)*33);
+  char* current;
+
+  if( expr->vartype != NULL)
+  {
+
+      switch (expr->varconstant->constant)
+      {
+          case VART:
+          current = (char*)malloc(sizeof(char)*4);
+          strcpy(current,"Var");
+                break;
+          case LETT:
+              current = (char*)malloc(sizeof(char)*4);
+          strcpy(current,"Let");
+                break;
+
+      }
+
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      current_node = (char*)malloc(sizeof(char)*33);
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(current_node,"consttype");
+      sprintf(buffer1, "%d", var_constant_count);
+      strcat(current_node,buffer1);
+      strcpy(buffer, current_node);
+      strcat(buffer, "[label = \"");
+      strcat(buffer, "Constant Type");
+      strcat(buffer, "\"];\n");
+      fprintf(output,"%s", buffer);
+
+
+      buffer = (char*)malloc(sizeof(char)*33);
+      current_node = (char*)malloc(sizeof(char)*33);
+      strcat(buffer, "consttype");
+      strcat(buffer,buffer1);
+      strcat(buffer, "--");
+      strcat(buffer, "expr");
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      sprintf(buffer1, "%d", expr_count-1);
+      strcat(buffer,buffer1);
+      strcat(buffer,";\n");
+      fprintf(output,"%s", buffer);
+
+      buffer = (char*)malloc(sizeof(char)*33);
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      current_node = (char*)malloc(sizeof(char)*33);
+      strcpy(current_node,"consttype");
+      sprintf(buffer1, "%d", var_constant_count+1);
+      strcat(current_node, buffer1);
+      strcpy(buffer, current_node);
+      strcat(buffer, "[label = \"");
+      strcat(buffer, current);
+      strcat(buffer, "\"];\n");
+      fprintf(output,"%s", buffer);
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(buffer, "consttype");
+      strcat(buffer, buffer1);
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      strcat(buffer, "--");
+      strcat(buffer, "consttype");
+      sprintf(buffer1, "%d", var_constant_count);
+      strcat(buffer, buffer1);
+      strcat(buffer, ";\n");
+      fprintf(output,"%s", buffer);
+  }
+  var_constant_count = var_constant_count + 2;
+}
+void print_varuble_type(char* parent, struct NExpr* expr)
+{
+  char* current_node = (char*)malloc(sizeof(char)*33);
+  char* buffer = (char*)malloc(sizeof(char)*33);
+  char* buffer1 = (char*)malloc(sizeof(char)*33);
+  char* current;
+
+  if( expr->vartype != NULL)
+  {
+
+      switch (expr->vartype->type)
+      {
+          case STRINGTy:
+          current = (char*)malloc(sizeof(char)*7);
+          strcpy(current,"String");
+                break;
+          case INTTy:
+              current = (char*)malloc(sizeof(char)*4);
+          strcpy(current,"Int");
+                break;
+          case DOUBLETy:
+          current = (char*)malloc(sizeof(char)*7);
+          strcpy(current,"Double");
+                break;
+          case FLOATTy:
+              current = (char*)malloc(sizeof(char)*6);
+              strcpy(current,"Float");
+                break;
+          case BOOLTy:
+          current = (char*)malloc(sizeof(char)*5);
+          strcpy(current,"Bool");
+                break;
+          case CHARACTERTy:
+          current = (char*)malloc(sizeof(char)*10);
+          strcpy(current,"Character");
+                break;
+          case VOIDTy:
+          current = (char*)malloc(sizeof(char)*5);
+          strcpy(current,"Void");
+                break;
+      }
+
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      current_node = (char*)malloc(sizeof(char)*33);
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(current_node,"type");
+      sprintf(buffer1, "%d", type_count);
+      strcat(current_node,buffer1);
+      strcpy(buffer, current_node);
+      strcat(buffer, "[label = \"");
+      strcat(buffer, "Varuble Type");
+      strcat(buffer, "\"];\n");
+      fprintf(output,"%s", buffer);
+
+
+      buffer = (char*)malloc(sizeof(char)*33);
+      current_node = (char*)malloc(sizeof(char)*33);
+      strcat(buffer, "type");
+      strcat(buffer,buffer1);
+      strcat(buffer, "--");
+      strcat(buffer, "expr");
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      sprintf(buffer1, "%d", expr_count-1);
+      strcat(buffer,buffer1);
+      strcat(buffer,";\n");
+      fprintf(output,"%s", buffer);
+
+      buffer = (char*)malloc(sizeof(char)*33);
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      current_node = (char*)malloc(sizeof(char)*33);
+      strcpy(current_node,"type");
+      sprintf(buffer1, "%d", type_count+1);
+      strcat(current_node, buffer1);
+      strcpy(buffer, current_node);
+      strcat(buffer, "[label = \"");
+      strcat(buffer, current);
+      strcat(buffer, "\"];\n");
+      fprintf(output,"%s", buffer);
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(buffer, "type");
+      strcat(buffer, buffer1);
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      strcat(buffer, "--");
+      strcat(buffer, "type");
+      sprintf(buffer1, "%d", type_count);
+      strcat(buffer, buffer1);
+      strcat(buffer, ";\n");
+      fprintf(output,"%s", buffer);
+  }
+  type_count = type_count + 2;
+}
+
+void print_import(char* parent, struct NImport* stmt_import)
+{
+  char* current_node = (char*)malloc(sizeof(char)*33);
+  char* buffer = (char*)malloc(sizeof(char)*33);
+  char* buffer1 = (char*)malloc(sizeof(char)*33);
+  strcpy(current_node, "import");
+  sprintf(buffer, "%d", import_count);
+  strcat(current_node, buffer);
+  buffer = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer, current_node);
+  fprintf(output,"%s",strcat(buffer, "[label = \"import\"];\n"));
+  buffer = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer, parent);
+  strcat(buffer, "--");
+  strcat(buffer, current_node);
+  strcat(buffer, ";\n");
+  fprintf(output,"%s", buffer);
+  import_count++;
+  if( stmt_import->name != NULL)
+  {
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(buffer, current_node);
+      strcat(buffer, "name");
+      strcpy(buffer1, buffer);
+      strcat(buffer1, "[label = \"import_name\"];\n");
+      fprintf(output,"%s", buffer1);
+      print_expr(buffer, stmt_import->name);
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      strcpy(buffer1, current_node);
+      strcat(buffer1, "--");
+      strcat(buffer1, buffer);
+      strcat(buffer1, ";\n");
+      fprintf(output,"%s", buffer1);
+
+  }
+}
 
 void print_while(char* parent, struct NWhile* while_loop)
 {
@@ -135,7 +343,13 @@ void print_for(char* parent, struct NFor* for_loop)
     strcat(buffer1,buffer);
     strcat(buffer1,";");
     fprintf(output, "%s", buffer1);
-    print_expr(buffer, for_loop->start);
+    if(for_loop->start->left == NULL)
+    {
+      print_expr(buffer, for_loop->start);
+    }
+    else{
+    print_expr(buffer, for_loop->start->left);
+    }
     buffer = (char*)malloc(sizeof(char)*33);
     strcpy(buffer, current_node);
     strcat(buffer, "end");
@@ -148,7 +362,13 @@ void print_for(char* parent, struct NFor* for_loop)
     strcat(buffer1,buffer);
     strcat(buffer1,";");
     fprintf(output, "%s", buffer1);
-    print_expr(buffer, for_loop->start);
+    if(for_loop->start->right == NULL)
+    {
+      print_expr(buffer, for_loop->start);
+    }
+    else{
+    print_expr(buffer, for_loop->start->right);
+    }
     buffer = (char*)malloc(sizeof(char)*33);
     strcpy(buffer, current_node);
     strcat(buffer, "step");
@@ -279,6 +499,7 @@ char* print_expr(char* parent, struct NExpr* expr)
             strcpy(current,"tableconstruct");
             break;
     }
+
     current_node = (char*)malloc(sizeof(char)*33);
     buffer = (char*)malloc(sizeof(char)*33);
     sprintf(buffer, "%d", expr_count);
@@ -297,6 +518,7 @@ char* print_expr(char* parent, struct NExpr* expr)
     strcat(buffer, ";\n");
     fprintf(output,"%s",buffer);
     expr_count++;
+
     if (expr->type == EXPR_EQ || expr->type == EXPR_NQ || expr->type == EXPR_PLUS || expr->type == EXPR_MINUS || expr->type == EXPR_DIV || expr->type == EXPR_MUL
         || expr->type == EXPR_LE || expr->type == EXPR_GE || expr->type == EXPR_LT || expr->type == EXPR_GT || expr->type == EXPR_MOD || expr->type == EXPR_RANGE
         || expr->type == EXPR_AND || expr->type == EXPR_OR)
@@ -376,7 +598,15 @@ char* print_expr(char* parent, struct NExpr* expr)
         print_table(current_node, expr->table);
     } else if (expr->type == EXPR_ID_LIST)
     {
-        print_expr_list(current_node, expr->idlist);
+      if(expr->vartype != NULL){
+      print_varuble_type(current_node, expr);
+      }
+      if(expr->varconstant != NULL){
+      print_varuble_constant(current_node, expr);
+      }
+
+      print_expr_list(current_node, expr->idlist);
+
     }
     return current_node;
 }
@@ -386,6 +616,9 @@ void print_stmt(char* parent, struct NStmt* stmt)
     char* current_node, * buffer = (char*)malloc(sizeof(char)*33);
     switch(stmt->type)
     {
+        case STMT_IMPORT:
+            print_import(parent,stmt->import);
+            break;
         case STMT_WHILE:
             print_while(parent,stmt->while_loop);
             break;
@@ -771,6 +1004,9 @@ void print_tree(struct NStmtList* stmtlist)
     func_count = 0;
     table_count = 0;
     if_count = 0;
+    type_count = 0;
+    import_count = 0;
+    var_constant_count = 0;
     char* start = (char*)malloc(sizeof(char)*5);
     strcpy(start, "root");
     output = fopen("file.dot","w");

@@ -59,8 +59,10 @@
   {
     staticplus = 0;
     statictoken = 1;
+
     yylval.Id = (char *)malloc(sizeof(staticstring)+1);
     strcpy(yylval.Id, staticstring);
+    *staticstring = '\0';
     return ID;
 
   }
@@ -86,6 +88,7 @@
                               staticplus = 1;
                               yylval.String = (char *)malloc(strlen(strconst) + 1);
                               strcpy(yylval.String, strconst);
+                              *strconst = '\0';
                               return STRING;
                               }
 <STRING_A>\"                    {

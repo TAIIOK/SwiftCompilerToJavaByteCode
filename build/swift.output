@@ -7,15 +7,16 @@ Terminals which are not used
 
 State 26 conflicts: 1 shift/reduce
 State 33 conflicts: 1 shift/reduce
-State 49 conflicts: 1 shift/reduce
+State 47 conflicts: 1 shift/reduce
+State 49 conflicts: 2 shift/reduce
 State 76 conflicts: 1 shift/reduce
-State 103 conflicts: 1 shift/reduce
-State 129 conflicts: 1 shift/reduce
-State 132 conflicts: 1 shift/reduce
-State 146 conflicts: 1 shift/reduce
-State 166 conflicts: 1 shift/reduce
-State 182 conflicts: 1 shift/reduce
-State 183 conflicts: 1 shift/reduce
+State 104 conflicts: 1 shift/reduce
+State 131 conflicts: 1 shift/reduce
+State 134 conflicts: 1 shift/reduce
+State 149 conflicts: 1 shift/reduce
+State 169 conflicts: 1 shift/reduce
+State 185 conflicts: 1 shift/reduce
+State 186 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -85,117 +86,118 @@ Grammar
    42       | LET
 
    43 var: id_chain
-   44    | varlet id_chain
-   45    | varlet id_chain ':' '[' varubleType ']'
-   46    | varlet id_chain ':' varubleType
+   44    | var '[' expr ']'
+   45    | varlet id_chain
+   46    | varlet id_chain ':' '[' varubleType ']'
+   47    | varlet id_chain ':' varubleType
 
-   47 expr: var
-   48     | INT
-   49     | DOUBLE
-   50     | STRING
-   51     | TRUE
-   52     | FALSE
-   53     | BOOL
-   54     | FLOAT
-   55     | NIL
-   56     | NOT expr
-   57     | expr NOT
-   58     | expr AND expr
-   59     | expr OR expr
-   60     | expr '+' expr
-   61     | expr '-' expr
-   62     | expr '*' expr
-   63     | expr '/' expr
-   64     | expr '%' expr
-   65     | expr '>' expr
-   66     | expr '<' expr
-   67     | expr GE expr
-   68     | expr LE expr
-   69     | expr EQ expr
-   70     | expr NE expr
-   71     | expr RANGE expr
-   72     | '(' expr ')'
-   73     | '[' varubleType ']' '(' ')'
-   74     | func_call
-   75     | array_constructor
+   48 expr: var
+   49     | INT
+   50     | DOUBLE
+   51     | STRING
+   52     | TRUE
+   53     | FALSE
+   54     | BOOL
+   55     | FLOAT
+   56     | NIL
+   57     | NOT expr
+   58     | expr NOT
+   59     | expr AND expr
+   60     | expr OR expr
+   61     | expr '+' expr
+   62     | expr '-' expr
+   63     | expr '*' expr
+   64     | expr '/' expr
+   65     | expr '%' expr
+   66     | expr '>' expr
+   67     | expr '<' expr
+   68     | expr GE expr
+   69     | expr LE expr
+   70     | expr EQ expr
+   71     | expr NE expr
+   72     | expr RANGE expr
+   73     | '(' expr ')'
+   74     | '[' varubleType ']' '(' ')'
+   75     | func_call
+   76     | array_constructor
 
-   76 func_call: var '(' arg_list ')'
+   77 func_call: var '(' arg_list ')'
 
-   77 arg_list: /* empty */
-   78         | args
+   78 arg_list: /* empty */
+   79         | args
 
-   79 args: expr
-   80     | id_chain ':' expr
-   81     | args ',' alone_id ':' expr
+   80 args: expr
+   81     | id_chain ':' expr
+   82     | args ',' alone_id ':' expr
 
-   82 varubleType: INTT
-   83            | STRINGT
-   84            | FLOATT
-   85            | DOUBLET
-   86            | BOOLT
-   87            | CHARACTERT
+   83 varubleType: INTT
+   84            | STRINGT
+   85            | FLOATT
+   86            | DOUBLET
+   87            | BOOLT
+   88            | CHARACTERT
 
-   88 func_decl_named: FUNCTION id_chain func_body
+   89 func_decl_named: FUNCTION id_chain func_body
 
-   89 func_body: '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block
-   90          | '(' arg_list_decl ')' stmt_block
+   90 func_body: '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block
+   91          | '(' arg_list_decl ')' stmt_block
 
-   91 arg_list_decl: /* empty */
+   92 arg_list_decl: /* empty */
 
-   92 @1: /* empty */
+   93 @1: /* empty */
 
-   93 arg_list_decl: args_decl @1
+   94 arg_list_decl: args_decl @1
 
-   94 args_decl: alone_id ':' varubleType
-   95          | args_decl ',' alone_id ':' varubleType
+   95 args_decl: alone_id ':' varubleType
+   96          | args_decl ',' alone_id ':' varubleType
 
-   96 array_constructor: '[' array_elem_list ']'
+   97 array_constructor: '[' array_elem_list ']'
 
-   97 array_elem_list: /* empty */
-   98                | array_elems
+   98 array_elem_list: /* empty */
+   99                | array_elems
 
-   99 array_elems: array_elem
-  100            | array_elems ',' array_elem
+  100 array_elems: array_elem
+  101            | array_elems ',' array_elem
 
-  101 array_elem: expr
+  102 array_elem: expr
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'%' (37) 64
-'(' (40) 72 73 76 89 90
-')' (41) 72 73 76 89 90
-'*' (42) 62
-'+' (43) 60
-',' (44) 81 95 100
-'-' (45) 61
+'%' (37) 65
+'(' (40) 73 74 77 90 91
+')' (41) 73 74 77 90 91
+'*' (42) 63
+'+' (43) 61
+',' (44) 82 96 101
+'-' (45) 62
 '.' (46) 40
-'/' (47) 63
-':' (58) 33 34 45 46 80 81 94 95
+'/' (47) 64
+':' (58) 33 34 46 47 81 82 95 96
 ';' (59) 2
-'<' (60) 66
+'<' (60) 67
 '=' (61) 20
-'>' (62) 65
-'[' (91) 45 73 96
-']' (93) 45 73 96
+'>' (62) 66
+'[' (91) 44 46 74 97
+']' (93) 44 46 74 97
 '{' (123) 7 28
 '}' (125) 7 28
 error (256)
 IMPORT (258) 6
-INT (259) 48
-FLOAT (260) 54
-DOUBLE (261) 49
-BOOL (262) 53
-STRING (263) 50
-STRINGT (264) 83
-CHARACTERT (265) 87
-INTT (266) 82
-FLOATT (267) 84
-DOUBLET (268) 85
-BOOLT (269) 86
-TRUE (270) 51
-FALSE (271) 52
+INT (259) 49
+FLOAT (260) 55
+DOUBLE (261) 50
+BOOL (262) 54
+STRING (263) 51
+STRINGT (264) 84
+CHARACTERT (265) 88
+INTT (266) 83
+FLOATT (267) 85
+DOUBLET (268) 86
+BOOLT (269) 87
+TRUE (270) 52
+FALSE (271) 53
 LET (272) 42
 VAR (273) 41
 REPEAT (274) 37
@@ -209,23 +211,23 @@ SWITCH (281) 28
 CASE (282) 33
 DEFAULT (283) 34
 BREAK (284) 16
-FUNCTION (285) 88
-FUNCTIONARROW (286) 89
+FUNCTION (285) 89
+FUNCTIONARROW (286) 90
 DO (287)
-RANGE (288) 71
+RANGE (288) 72
 RETURN (289) 17 18
-NIL (290) 55
+NIL (290) 56
 SELF (291)
 ERROR (292)
 ID (293) 38
-EQ (294) 69
-NE (295) 70
-LE (296) 68
-GE (297) 67
-NOT (298) 56 57
+EQ (294) 70
+NE (295) 71
+LE (296) 69
+GE (297) 68
+NOT (298) 57 58
 ENDL (299) 1 4
-OR (300) 59
-AND (301) 58
+OR (300) 60
+AND (301) 59
 
 
 Nonterminals, with rules where they appear
@@ -241,7 +243,7 @@ root (68)
 stmt_import (69)
     on left: 6, on right: 23
 stmt_block (70)
-    on left: 7, on right: 10 24 25 27 35 36 37 89 90
+    on left: 7, on right: 10 24 25 27 35 36 37 90 91
 stmt_list (71)
     on left: 8 9, on right: 5 7 9 31 32
 stmt (72)
@@ -268,44 +270,44 @@ stmt_for (81)
 stmt_repeat (82)
     on left: 37, on right: 14
 alone_id (83)
-    on left: 38, on right: 36 39 40 81 94 95
+    on left: 38, on right: 36 39 40 82 95 96
 id_chain (84)
-    on left: 39 40, on right: 40 43 44 45 46 80 88
+    on left: 39 40, on right: 40 43 45 46 47 81 89
 varlet (85)
-    on left: 41 42, on right: 44 45 46
+    on left: 41 42, on right: 45 46 47
 var (86)
-    on left: 43 44 45 46, on right: 6 20 47 76
+    on left: 43 44 45 46 47, on right: 6 20 44 48 77
 expr (87)
-    on left: 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64
-    65 66 67 68 69 70 71 72 73 74 75, on right: 18 19 20 24 25 27 28
-    33 35 36 37 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72
-    79 80 81 101
+    on left: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65
+    66 67 68 69 70 71 72 73 74 75 76, on right: 18 19 20 24 25 27 28
+    33 35 36 37 44 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72
+    73 80 81 82 102
 func_call (88)
-    on left: 76, on right: 74
+    on left: 77, on right: 75
 arg_list (89)
-    on left: 77 78, on right: 76
+    on left: 78 79, on right: 77
 args (90)
-    on left: 79 80 81, on right: 78 81
+    on left: 80 81 82, on right: 79 82
 varubleType (91)
-    on left: 82 83 84 85 86 87, on right: 45 46 73 89 94 95
+    on left: 83 84 85 86 87 88, on right: 46 47 74 90 95 96
 func_decl_named (92)
-    on left: 88, on right: 21
+    on left: 89, on right: 21
 func_body (93)
-    on left: 89 90, on right: 88
+    on left: 90 91, on right: 89
 arg_list_decl (94)
-    on left: 91 93, on right: 89 90
+    on left: 92 94, on right: 90 91
 @1 (95)
-    on left: 92, on right: 93
+    on left: 93, on right: 94
 args_decl (96)
-    on left: 94 95, on right: 93 95
+    on left: 95 96, on right: 94 96
 array_constructor (97)
-    on left: 96, on right: 75
+    on left: 97, on right: 76
 array_elem_list (98)
-    on left: 97 98, on right: 96
+    on left: 98 99, on right: 97
 array_elems (99)
-    on left: 99 100, on right: 98 100
+    on left: 100 101, on right: 99 101
 array_elem (100)
-    on left: 101, on right: 99 100
+    on left: 102, on right: 100 101
 
 
 state 0
@@ -401,51 +403,51 @@ state 4
 
 state 5
 
-   48 expr: INT .
-
-    $default  reduce using rule 48 (expr)
-
-
-state 6
-
-   54 expr: FLOAT .
-
-    $default  reduce using rule 54 (expr)
-
-
-state 7
-
-   49 expr: DOUBLE .
+   49 expr: INT .
 
     $default  reduce using rule 49 (expr)
 
 
-state 8
+state 6
 
-   53 expr: BOOL .
+   55 expr: FLOAT .
 
-    $default  reduce using rule 53 (expr)
+    $default  reduce using rule 55 (expr)
 
 
-state 9
+state 7
 
-   50 expr: STRING .
+   50 expr: DOUBLE .
 
     $default  reduce using rule 50 (expr)
 
 
-state 10
+state 8
 
-   51 expr: TRUE .
+   54 expr: BOOL .
+
+    $default  reduce using rule 54 (expr)
+
+
+state 9
+
+   51 expr: STRING .
 
     $default  reduce using rule 51 (expr)
 
 
-state 11
+state 10
 
-   52 expr: FALSE .
+   52 expr: TRUE .
 
     $default  reduce using rule 52 (expr)
+
+
+state 11
+
+   53 expr: FALSE .
+
+    $default  reduce using rule 53 (expr)
 
 
 state 12
@@ -577,7 +579,7 @@ state 19
 
 state 20
 
-   88 func_decl_named: FUNCTION . id_chain func_body
+   89 func_decl_named: FUNCTION . id_chain func_body
 
     ID  shift, and go to state 23
 
@@ -619,9 +621,9 @@ state 21
 
 state 22
 
-   55 expr: NIL .
+   56 expr: NIL .
 
-    $default  reduce using rule 55 (expr)
+    $default  reduce using rule 56 (expr)
 
 
 state 23
@@ -633,7 +635,7 @@ state 23
 
 state 24
 
-   56 expr: NOT . expr
+   57 expr: NOT . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -689,8 +691,8 @@ state 27
 
 state 28
 
-   73 expr: '[' . varubleType ']' '(' ')'
-   96 array_constructor: '[' . array_elem_list ']'
+   74 expr: '[' . varubleType ']' '(' ')'
+   97 array_constructor: '[' . array_elem_list ']'
 
     INT         shift, and go to state 5
     FLOAT       shift, and go to state 6
@@ -713,7 +715,7 @@ state 28
     '['         shift, and go to state 28
     '('         shift, and go to state 29
 
-    $default  reduce using rule 97 (array_elem_list)
+    $default  reduce using rule 98 (array_elem_list)
 
     alone_id           go to state 39
     id_chain           go to state 40
@@ -730,7 +732,7 @@ state 28
 
 state 29
 
-   72 expr: '(' . expr ')'
+   73 expr: '(' . expr ')'
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -843,9 +845,9 @@ state 40
 
 state 41
 
-   44 var: varlet . id_chain
-   45    | varlet . id_chain ':' '[' varubleType ']'
-   46    | varlet . id_chain ':' varubleType
+   45 var: varlet . id_chain
+   46    | varlet . id_chain ':' '[' varubleType ']'
+   47    | varlet . id_chain ':' varubleType
 
     ID  shift, and go to state 23
 
@@ -856,60 +858,62 @@ state 41
 state 42
 
    20 stmt: var . '=' expr end_expr
-   47 expr: var .
-   76 func_call: var . '(' arg_list ')'
+   44 var: var . '[' expr ']'
+   48 expr: var .
+   77 func_call: var . '(' arg_list ')'
 
     '='  shift, and go to state 77
-    '('  shift, and go to state 78
+    '['  shift, and go to state 78
+    '('  shift, and go to state 79
 
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 48 (expr)
 
 
 state 43
 
    19 stmt: expr . end_expr
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
     ENDL   shift, and go to state 25
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
     ';'    shift, and go to state 26
 
-    end_expr  go to state 94
+    end_expr  go to state 95
 
 
 state 44
 
-   74 expr: func_call .
+   75 expr: func_call .
 
-    $default  reduce using rule 74 (expr)
+    $default  reduce using rule 75 (expr)
 
 
 state 45
@@ -921,15 +925,19 @@ state 45
 
 state 46
 
-   75 expr: array_constructor .
+   76 expr: array_constructor .
 
-    $default  reduce using rule 75 (expr)
+    $default  reduce using rule 76 (expr)
 
 
 state 47
 
     6 stmt_import: IMPORT var .
+   44 var: var . '[' expr ']'
 
+    '['  shift, and go to state 78
+
+    '['       [reduce using rule 6 (stmt_import)]
     $default  reduce using rule 6 (stmt_import)
 
 
@@ -937,147 +945,150 @@ state 48
 
    37 stmt_repeat: REPEAT stmt_block . WHILE expr
 
-    WHILE  shift, and go to state 95
+    WHILE  shift, and go to state 96
 
 
 state 49
 
-   47 expr: var .
-   76 func_call: var . '(' arg_list ')'
+   44 var: var . '[' expr ']'
+   48 expr: var .
+   77 func_call: var . '(' arg_list ')'
 
-    '('  shift, and go to state 78
+    '['  shift, and go to state 78
+    '('  shift, and go to state 79
 
-    '('       [reduce using rule 47 (expr)]
-    $default  reduce using rule 47 (expr)
+    '['       [reduce using rule 48 (expr)]
+    '('       [reduce using rule 48 (expr)]
+    $default  reduce using rule 48 (expr)
 
 
 state 50
 
    35 stmt_while: WHILE expr . stmt_block
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
     '{'    shift, and go to state 27
 
-    stmt_block  go to state 96
+    stmt_block  go to state 97
 
 
 state 51
 
    36 stmt_for: FOR alone_id . IN expr stmt_block
 
-    IN  shift, and go to state 97
+    IN  shift, and go to state 98
 
 
 state 52
 
    24 stmt_if: IF expr . opt_endl stmt_block elseif_list opt_endl
    25        | IF expr . opt_endl stmt_block elseif_list ELSE stmt_block opt_endl
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
     ENDL   shift, and go to state 59
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
     $default  reduce using rule 3 (opt_endl)
 
-    opt_endl  go to state 98
+    opt_endl  go to state 99
 
 
 state 53
 
    28 stmt_switch: SWITCH expr . opt_endl '{' opt_endl switch_cases opt_endl '}'
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
     ENDL   shift, and go to state 59
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
     $default  reduce using rule 3 (opt_endl)
 
-    opt_endl  go to state 99
+    opt_endl  go to state 100
 
 
 state 54
@@ -1090,12 +1101,12 @@ state 54
 state 55
 
    40 id_chain: id_chain . '.' alone_id
-   88 func_decl_named: FUNCTION id_chain . func_body
+   89 func_decl_named: FUNCTION id_chain . func_body
 
     '.'  shift, and go to state 75
-    '('  shift, and go to state 100
+    '('  shift, and go to state 101
 
-    func_body  go to state 101
+    func_body  go to state 102
 
 
 state 56
@@ -1108,63 +1119,63 @@ state 56
 state 57
 
    18 stmt: RETURN expr . end_expr
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
     ENDL   shift, and go to state 25
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
     ';'    shift, and go to state 26
 
-    end_expr  go to state 102
+    end_expr  go to state 103
 
 
 state 58
 
-   56 expr: NOT expr .
-   57     | expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   57 expr: NOT expr .
+   58     | expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    $default  reduce using rule 56 (expr)
+    $default  reduce using rule 57 (expr)
 
 
 state 59
@@ -1210,7 +1221,7 @@ state 61
     ENDL      shift, and go to state 25
     ';'       shift, and go to state 26
     '{'       shift, and go to state 27
-    '}'       shift, and go to state 103
+    '}'       shift, and go to state 104
     '['       shift, and go to state 28
     '('       shift, and go to state 29
 
@@ -1235,150 +1246,150 @@ state 61
 
 state 62
 
-   83 varubleType: STRINGT .
-
-    $default  reduce using rule 83 (varubleType)
-
-
-state 63
-
-   87 varubleType: CHARACTERT .
-
-    $default  reduce using rule 87 (varubleType)
-
-
-state 64
-
-   82 varubleType: INTT .
-
-    $default  reduce using rule 82 (varubleType)
-
-
-state 65
-
-   84 varubleType: FLOATT .
+   84 varubleType: STRINGT .
 
     $default  reduce using rule 84 (varubleType)
 
 
-state 66
+state 63
 
-   85 varubleType: DOUBLET .
+   88 varubleType: CHARACTERT .
+
+    $default  reduce using rule 88 (varubleType)
+
+
+state 64
+
+   83 varubleType: INTT .
+
+    $default  reduce using rule 83 (varubleType)
+
+
+state 65
+
+   85 varubleType: FLOATT .
 
     $default  reduce using rule 85 (varubleType)
 
 
-state 67
+state 66
 
-   86 varubleType: BOOLT .
+   86 varubleType: DOUBLET .
 
     $default  reduce using rule 86 (varubleType)
 
 
+state 67
+
+   87 varubleType: BOOLT .
+
+    $default  reduce using rule 87 (varubleType)
+
+
 state 68
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-  101 array_elem: expr .
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+  102 array_elem: expr .
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
-    $default  reduce using rule 101 (array_elem)
+    $default  reduce using rule 102 (array_elem)
 
 
 state 69
 
-   73 expr: '[' varubleType . ']' '(' ')'
-
-    ']'  shift, and go to state 104
-
-
-state 70
-
-   96 array_constructor: '[' array_elem_list . ']'
+   74 expr: '[' varubleType . ']' '(' ')'
 
     ']'  shift, and go to state 105
 
 
+state 70
+
+   97 array_constructor: '[' array_elem_list . ']'
+
+    ']'  shift, and go to state 106
+
+
 state 71
 
-   98 array_elem_list: array_elems .
-  100 array_elems: array_elems . ',' array_elem
+   99 array_elem_list: array_elems .
+  101 array_elems: array_elems . ',' array_elem
 
-    ','  shift, and go to state 106
+    ','  shift, and go to state 107
 
-    $default  reduce using rule 98 (array_elem_list)
+    $default  reduce using rule 99 (array_elem_list)
 
 
 state 72
 
-   99 array_elems: array_elem .
+  100 array_elems: array_elem .
 
-    $default  reduce using rule 99 (array_elems)
+    $default  reduce using rule 100 (array_elems)
 
 
 state 73
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-   72     | '(' expr . ')'
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+   73     | '(' expr . ')'
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
-    ')'    shift, and go to state 107
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+    ')'    shift, and go to state 108
 
 
 state 74
@@ -1394,21 +1405,21 @@ state 75
 
     ID  shift, and go to state 23
 
-    alone_id  go to state 108
+    alone_id  go to state 109
 
 
 state 76
 
    40 id_chain: id_chain . '.' alone_id
-   44 var: varlet id_chain .
-   45    | varlet id_chain . ':' '[' varubleType ']'
-   46    | varlet id_chain . ':' varubleType
+   45 var: varlet id_chain .
+   46    | varlet id_chain . ':' '[' varubleType ']'
+   47    | varlet id_chain . ':' varubleType
 
-    ':'  shift, and go to state 109
+    ':'  shift, and go to state 110
     '.'  shift, and go to state 75
 
-    ':'       [reduce using rule 44 (var)]
-    $default  reduce using rule 44 (var)
+    ':'       [reduce using rule 45 (var)]
+    $default  reduce using rule 45 (var)
 
 
 state 77
@@ -1434,14 +1445,14 @@ state 77
     id_chain           go to state 40
     varlet             go to state 41
     var                go to state 49
-    expr               go to state 110
+    expr               go to state 111
     func_call          go to state 44
     array_constructor  go to state 46
 
 
 state 78
 
-   76 func_call: var '(' . arg_list ')'
+   44 var: var '[' . expr ']'
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1458,22 +1469,18 @@ state 78
     '['     shift, and go to state 28
     '('     shift, and go to state 29
 
-    $default  reduce using rule 77 (arg_list)
-
     alone_id           go to state 39
-    id_chain           go to state 111
+    id_chain           go to state 40
     varlet             go to state 41
     var                go to state 49
     expr               go to state 112
     func_call          go to state 44
-    arg_list           go to state 113
-    args               go to state 114
     array_constructor  go to state 46
 
 
 state 79
 
-   71 expr: expr RANGE . expr
+   77 func_call: var '(' . arg_list ')'
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1490,46 +1497,22 @@ state 79
     '['     shift, and go to state 28
     '('     shift, and go to state 29
 
+    $default  reduce using rule 78 (arg_list)
+
     alone_id           go to state 39
-    id_chain           go to state 40
+    id_chain           go to state 113
     varlet             go to state 41
     var                go to state 49
-    expr               go to state 115
+    expr               go to state 114
     func_call          go to state 44
+    arg_list           go to state 115
+    args               go to state 116
     array_constructor  go to state 46
 
 
 state 80
 
-   69 expr: expr EQ . expr
-
-    INT     shift, and go to state 5
-    FLOAT   shift, and go to state 6
-    DOUBLE  shift, and go to state 7
-    BOOL    shift, and go to state 8
-    STRING  shift, and go to state 9
-    TRUE    shift, and go to state 10
-    FALSE   shift, and go to state 11
-    LET     shift, and go to state 12
-    VAR     shift, and go to state 13
-    NIL     shift, and go to state 22
-    ID      shift, and go to state 23
-    NOT     shift, and go to state 24
-    '['     shift, and go to state 28
-    '('     shift, and go to state 29
-
-    alone_id           go to state 39
-    id_chain           go to state 40
-    varlet             go to state 41
-    var                go to state 49
-    expr               go to state 116
-    func_call          go to state 44
-    array_constructor  go to state 46
-
-
-state 81
-
-   70 expr: expr NE . expr
+   72 expr: expr RANGE . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1555,9 +1538,9 @@ state 81
     array_constructor  go to state 46
 
 
-state 82
+state 81
 
-   68 expr: expr LE . expr
+   70 expr: expr EQ . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1583,9 +1566,9 @@ state 82
     array_constructor  go to state 46
 
 
-state 83
+state 82
 
-   67 expr: expr GE . expr
+   71 expr: expr NE . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1611,16 +1594,9 @@ state 83
     array_constructor  go to state 46
 
 
-state 84
+state 83
 
-   57 expr: expr NOT .
-
-    $default  reduce using rule 57 (expr)
-
-
-state 85
-
-   59 expr: expr OR . expr
+   69 expr: expr LE . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1646,9 +1622,9 @@ state 85
     array_constructor  go to state 46
 
 
-state 86
+state 84
 
-   58 expr: expr AND . expr
+   68 expr: expr GE . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1674,9 +1650,16 @@ state 86
     array_constructor  go to state 46
 
 
-state 87
+state 85
 
-   66 expr: expr '<' . expr
+   58 expr: expr NOT .
+
+    $default  reduce using rule 58 (expr)
+
+
+state 86
+
+   60 expr: expr OR . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1702,9 +1685,9 @@ state 87
     array_constructor  go to state 46
 
 
-state 88
+state 87
 
-   65 expr: expr '>' . expr
+   59 expr: expr AND . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1730,9 +1713,9 @@ state 88
     array_constructor  go to state 46
 
 
-state 89
+state 88
 
-   60 expr: expr '+' . expr
+   67 expr: expr '<' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1758,9 +1741,9 @@ state 89
     array_constructor  go to state 46
 
 
-state 90
+state 89
 
-   61 expr: expr '-' . expr
+   66 expr: expr '>' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1786,9 +1769,9 @@ state 90
     array_constructor  go to state 46
 
 
-state 91
+state 90
 
-   62 expr: expr '*' . expr
+   61 expr: expr '+' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1814,9 +1797,9 @@ state 91
     array_constructor  go to state 46
 
 
-state 92
+state 91
 
-   63 expr: expr '/' . expr
+   62 expr: expr '-' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1842,9 +1825,9 @@ state 92
     array_constructor  go to state 46
 
 
-state 93
+state 92
 
-   64 expr: expr '%' . expr
+   63 expr: expr '*' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1870,16 +1853,9 @@ state 93
     array_constructor  go to state 46
 
 
-state 94
+state 93
 
-   19 stmt: expr end_expr .
-
-    $default  reduce using rule 19 (stmt)
-
-
-state 95
-
-   37 stmt_repeat: REPEAT stmt_block WHILE . expr
+   64 expr: expr '/' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1905,16 +1881,9 @@ state 95
     array_constructor  go to state 46
 
 
-state 96
+state 94
 
-   35 stmt_while: WHILE expr stmt_block .
-
-    $default  reduce using rule 35 (stmt_while)
-
-
-state 97
-
-   36 stmt_for: FOR alone_id IN . expr stmt_block
+   65 expr: expr '%' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -1940,52 +1909,122 @@ state 97
     array_constructor  go to state 46
 
 
+state 95
+
+   19 stmt: expr end_expr .
+
+    $default  reduce using rule 19 (stmt)
+
+
+state 96
+
+   37 stmt_repeat: REPEAT stmt_block WHILE . expr
+
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 28
+    '('     shift, and go to state 29
+
+    alone_id           go to state 39
+    id_chain           go to state 40
+    varlet             go to state 41
+    var                go to state 49
+    expr               go to state 131
+    func_call          go to state 44
+    array_constructor  go to state 46
+
+
+state 97
+
+   35 stmt_while: WHILE expr stmt_block .
+
+    $default  reduce using rule 35 (stmt_while)
+
+
 state 98
+
+   36 stmt_for: FOR alone_id IN . expr stmt_block
+
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 28
+    '('     shift, and go to state 29
+
+    alone_id           go to state 39
+    id_chain           go to state 40
+    varlet             go to state 41
+    var                go to state 49
+    expr               go to state 132
+    func_call          go to state 44
+    array_constructor  go to state 46
+
+
+state 99
 
    24 stmt_if: IF expr opt_endl . stmt_block elseif_list opt_endl
    25        | IF expr opt_endl . stmt_block elseif_list ELSE stmt_block opt_endl
 
     '{'  shift, and go to state 27
 
-    stmt_block  go to state 131
-
-
-state 99
-
-   28 stmt_switch: SWITCH expr opt_endl . '{' opt_endl switch_cases opt_endl '}'
-
-    '{'  shift, and go to state 132
+    stmt_block  go to state 133
 
 
 state 100
 
-   89 func_body: '(' . arg_list_decl ')' FUNCTIONARROW varubleType stmt_block
-   90          | '(' . arg_list_decl ')' stmt_block
+   28 stmt_switch: SWITCH expr opt_endl . '{' opt_endl switch_cases opt_endl '}'
 
-    ID  shift, and go to state 23
-
-    $default  reduce using rule 91 (arg_list_decl)
-
-    alone_id       go to state 133
-    arg_list_decl  go to state 134
-    args_decl      go to state 135
+    '{'  shift, and go to state 134
 
 
 state 101
 
-   88 func_decl_named: FUNCTION id_chain func_body .
+   90 func_body: '(' . arg_list_decl ')' FUNCTIONARROW varubleType stmt_block
+   91          | '(' . arg_list_decl ')' stmt_block
 
-    $default  reduce using rule 88 (func_decl_named)
+    ID  shift, and go to state 23
+
+    $default  reduce using rule 92 (arg_list_decl)
+
+    alone_id       go to state 135
+    arg_list_decl  go to state 136
+    args_decl      go to state 137
 
 
 state 102
+
+   89 func_decl_named: FUNCTION id_chain func_body .
+
+    $default  reduce using rule 89 (func_decl_named)
+
+
+state 103
 
    18 stmt: RETURN expr end_expr .
 
     $default  reduce using rule 18 (stmt)
 
 
-state 103
+state 104
 
     7 stmt_block: '{' stmt_list '}' . opt_endl
 
@@ -1994,26 +2033,26 @@ state 103
     ENDL      [reduce using rule 3 (opt_endl)]
     $default  reduce using rule 3 (opt_endl)
 
-    opt_endl  go to state 136
-
-
-state 104
-
-   73 expr: '[' varubleType ']' . '(' ')'
-
-    '('  shift, and go to state 137
+    opt_endl  go to state 138
 
 
 state 105
 
-   96 array_constructor: '[' array_elem_list ']' .
+   74 expr: '[' varubleType ']' . '(' ')'
 
-    $default  reduce using rule 96 (array_constructor)
+    '('  shift, and go to state 139
 
 
 state 106
 
-  100 array_elems: array_elems ',' . array_elem
+   97 array_constructor: '[' array_elem_list ']' .
+
+    $default  reduce using rule 97 (array_constructor)
+
+
+state 107
+
+  101 array_elems: array_elems ',' . array_elem
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -2037,27 +2076,27 @@ state 106
     expr               go to state 68
     func_call          go to state 44
     array_constructor  go to state 46
-    array_elem         go to state 138
-
-
-state 107
-
-   72 expr: '(' expr ')' .
-
-    $default  reduce using rule 72 (expr)
+    array_elem         go to state 140
 
 
 state 108
+
+   73 expr: '(' expr ')' .
+
+    $default  reduce using rule 73 (expr)
+
+
+state 109
 
    40 id_chain: id_chain '.' alone_id .
 
     $default  reduce using rule 40 (id_chain)
 
 
-state 109
+state 110
 
-   45 var: varlet id_chain ':' . '[' varubleType ']'
-   46    | varlet id_chain ':' . varubleType
+   46 var: varlet id_chain ':' . '[' varubleType ']'
+   47    | varlet id_chain ':' . varubleType
 
     STRINGT     shift, and go to state 62
     CHARACTERT  shift, and go to state 63
@@ -2065,609 +2104,646 @@ state 109
     FLOATT      shift, and go to state 65
     DOUBLET     shift, and go to state 66
     BOOLT       shift, and go to state 67
-    '['         shift, and go to state 139
+    '['         shift, and go to state 141
 
-    varubleType  go to state 140
-
-
-state 110
-
-   20 stmt: var '=' expr . end_expr
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    ENDL   shift, and go to state 25
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
-    ';'    shift, and go to state 26
-
-    end_expr  go to state 141
+    varubleType  go to state 142
 
 
 state 111
 
+   20 stmt: var '=' expr . end_expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    ENDL   shift, and go to state 25
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+    ';'    shift, and go to state 26
+
+    end_expr  go to state 143
+
+
+state 112
+
+   44 var: var '[' expr . ']'
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+    ']'    shift, and go to state 144
+
+
+state 113
+
    40 id_chain: id_chain . '.' alone_id
    43 var: id_chain .
-   80 args: id_chain . ':' expr
+   81 args: id_chain . ':' expr
 
-    ':'  shift, and go to state 142
+    ':'  shift, and go to state 145
     '.'  shift, and go to state 75
 
     $default  reduce using rule 43 (var)
 
 
-state 112
-
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-   79 args: expr .
-
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
-
-    $default  reduce using rule 79 (args)
-
-
-state 113
-
-   76 func_call: var '(' arg_list . ')'
-
-    ')'  shift, and go to state 143
-
-
 state 114
 
-   78 arg_list: args .
-   81 args: args . ',' alone_id ':' expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+   80 args: expr .
 
-    ','  shift, and go to state 144
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
-    $default  reduce using rule 78 (arg_list)
+    $default  reduce using rule 80 (args)
 
 
 state 115
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-   71     | expr RANGE expr .
+   77 func_call: var '(' arg_list . ')'
 
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
-
-    $default  reduce using rule 71 (expr)
+    ')'  shift, and go to state 146
 
 
 state 116
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   69     | expr EQ expr .
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   79 arg_list: args .
+   82 args: args . ',' alone_id ':' expr
 
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
+    ','  shift, and go to state 147
 
-    $default  reduce using rule 69 (expr)
+    $default  reduce using rule 79 (arg_list)
 
 
 state 117
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   70     | expr NE expr .
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+   72     | expr RANGE expr .
 
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 70 (expr)
+    $default  reduce using rule 72 (expr)
 
 
 state 118
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   68     | expr LE expr .
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   70     | expr EQ expr .
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 68 (expr)
+    $default  reduce using rule 70 (expr)
 
 
 state 119
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   67     | expr GE expr .
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   71     | expr NE expr .
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 67 (expr)
+    $default  reduce using rule 71 (expr)
 
 
 state 120
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   59     | expr OR expr .
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   69     | expr LE expr .
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 59 (expr)
+    $default  reduce using rule 69 (expr)
 
 
 state 121
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   58     | expr AND expr .
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   68     | expr GE expr .
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 58 (expr)
+    $default  reduce using rule 68 (expr)
 
 
 state 122
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   66     | expr '<' expr .
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   60     | expr OR expr .
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
-
-    $default  reduce using rule 66 (expr)
-
-
-state 123
-
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   65     | expr '>' expr .
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-
-    NOT  shift, and go to state 84
-    '+'  shift, and go to state 89
-    '-'  shift, and go to state 90
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
-
-    $default  reduce using rule 65 (expr)
-
-
-state 124
-
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   60     | expr '+' expr .
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-
-    NOT  shift, and go to state 84
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
     $default  reduce using rule 60 (expr)
 
 
+state 123
+
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   59     | expr AND expr .
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+
+    $default  reduce using rule 59 (expr)
+
+
+state 124
+
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   67     | expr '<' expr .
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
+
+    $default  reduce using rule 67 (expr)
+
+
 state 125
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   61     | expr '-' expr .
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   66     | expr '>' expr .
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
-    '*'  shift, and go to state 91
-    '/'  shift, and go to state 92
-    '%'  shift, and go to state 93
+    NOT  shift, and go to state 85
+    '+'  shift, and go to state 90
+    '-'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 61 (expr)
+    $default  reduce using rule 66 (expr)
 
 
 state 126
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   62     | expr '*' expr .
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   61     | expr '+' expr .
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
+    NOT  shift, and go to state 85
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 62 (expr)
+    $default  reduce using rule 61 (expr)
 
 
 state 127
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   63     | expr '/' expr .
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   62     | expr '-' expr .
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
+    NOT  shift, and go to state 85
+    '*'  shift, and go to state 92
+    '/'  shift, and go to state 93
+    '%'  shift, and go to state 94
 
-    $default  reduce using rule 63 (expr)
+    $default  reduce using rule 62 (expr)
 
 
 state 128
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   64     | expr '%' expr .
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   63     | expr '*' expr .
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    NOT  shift, and go to state 84
+    NOT  shift, and go to state 85
 
-    $default  reduce using rule 64 (expr)
+    $default  reduce using rule 63 (expr)
 
 
 state 129
 
-   37 stmt_repeat: REPEAT stmt_block WHILE expr .
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   64     | expr '/' expr .
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    NOT  shift, and go to state 85
+
+    $default  reduce using rule 64 (expr)
+
+
+state 130
+
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   65     | expr '%' expr .
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+
+    NOT  shift, and go to state 85
+
+    $default  reduce using rule 65 (expr)
+
+
+state 131
+
+   37 stmt_repeat: REPEAT stmt_block WHILE expr .
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
     NOT       [reduce using rule 37 (stmt_repeat)]
     $default  reduce using rule 37 (stmt_repeat)
 
 
-state 130
+state 132
 
    36 stmt_for: FOR alone_id IN expr . stmt_block
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
     '{'    shift, and go to state 27
 
-    stmt_block  go to state 145
+    stmt_block  go to state 148
 
 
-state 131
+state 133
 
    24 stmt_if: IF expr opt_endl stmt_block . elseif_list opt_endl
    25        | IF expr opt_endl stmt_block . elseif_list ELSE stmt_block opt_endl
 
     $default  reduce using rule 26 (elseif_list)
 
-    elseif_list  go to state 146
+    elseif_list  go to state 149
 
 
-state 132
+state 134
 
    28 stmt_switch: SWITCH expr opt_endl '{' . opt_endl switch_cases opt_endl '}'
 
@@ -2676,60 +2752,60 @@ state 132
     ENDL      [reduce using rule 3 (opt_endl)]
     $default  reduce using rule 3 (opt_endl)
 
-    opt_endl  go to state 147
-
-
-state 133
-
-   94 args_decl: alone_id . ':' varubleType
-
-    ':'  shift, and go to state 148
-
-
-state 134
-
-   89 func_body: '(' arg_list_decl . ')' FUNCTIONARROW varubleType stmt_block
-   90          | '(' arg_list_decl . ')' stmt_block
-
-    ')'  shift, and go to state 149
+    opt_endl  go to state 150
 
 
 state 135
 
-   93 arg_list_decl: args_decl . @1
-   95 args_decl: args_decl . ',' alone_id ':' varubleType
+   95 args_decl: alone_id . ':' varubleType
 
-    ','  shift, and go to state 150
-
-    $default  reduce using rule 92 (@1)
-
-    @1  go to state 151
+    ':'  shift, and go to state 151
 
 
 state 136
+
+   90 func_body: '(' arg_list_decl . ')' FUNCTIONARROW varubleType stmt_block
+   91          | '(' arg_list_decl . ')' stmt_block
+
+    ')'  shift, and go to state 152
+
+
+state 137
+
+   94 arg_list_decl: args_decl . @1
+   96 args_decl: args_decl . ',' alone_id ':' varubleType
+
+    ','  shift, and go to state 153
+
+    $default  reduce using rule 93 (@1)
+
+    @1  go to state 154
+
+
+state 138
 
     7 stmt_block: '{' stmt_list '}' opt_endl .
 
     $default  reduce using rule 7 (stmt_block)
 
 
-state 137
-
-   73 expr: '[' varubleType ']' '(' . ')'
-
-    ')'  shift, and go to state 152
-
-
-state 138
-
-  100 array_elems: array_elems ',' array_elem .
-
-    $default  reduce using rule 100 (array_elems)
-
-
 state 139
 
-   45 var: varlet id_chain ':' '[' . varubleType ']'
+   74 expr: '[' varubleType ']' '(' . ')'
+
+    ')'  shift, and go to state 155
+
+
+state 140
+
+  101 array_elems: array_elems ',' array_elem .
+
+    $default  reduce using rule 101 (array_elems)
+
+
+state 141
+
+   46 var: varlet id_chain ':' '[' . varubleType ']'
 
     STRINGT     shift, and go to state 62
     CHARACTERT  shift, and go to state 63
@@ -2738,26 +2814,33 @@ state 139
     DOUBLET     shift, and go to state 66
     BOOLT       shift, and go to state 67
 
-    varubleType  go to state 153
+    varubleType  go to state 156
 
 
-state 140
+state 142
 
-   46 var: varlet id_chain ':' varubleType .
+   47 var: varlet id_chain ':' varubleType .
 
-    $default  reduce using rule 46 (var)
+    $default  reduce using rule 47 (var)
 
 
-state 141
+state 143
 
    20 stmt: var '=' expr end_expr .
 
     $default  reduce using rule 20 (stmt)
 
 
-state 142
+state 144
 
-   80 args: id_chain ':' . expr
+   44 var: var '[' expr ']' .
+
+    $default  reduce using rule 44 (var)
+
+
+state 145
+
+   81 args: id_chain ':' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -2778,62 +2861,62 @@ state 142
     id_chain           go to state 40
     varlet             go to state 41
     var                go to state 49
-    expr               go to state 154
+    expr               go to state 157
     func_call          go to state 44
     array_constructor  go to state 46
 
 
-state 143
+state 146
 
-   76 func_call: var '(' arg_list ')' .
+   77 func_call: var '(' arg_list ')' .
 
-    $default  reduce using rule 76 (func_call)
+    $default  reduce using rule 77 (func_call)
 
 
-state 144
+state 147
 
-   81 args: args ',' . alone_id ':' expr
+   82 args: args ',' . alone_id ':' expr
 
     ID  shift, and go to state 23
 
-    alone_id  go to state 155
+    alone_id  go to state 158
 
 
-state 145
+state 148
 
    36 stmt_for: FOR alone_id IN expr stmt_block .
 
     $default  reduce using rule 36 (stmt_for)
 
 
-state 146
+state 149
 
    24 stmt_if: IF expr opt_endl stmt_block elseif_list . opt_endl
    25        | IF expr opt_endl stmt_block elseif_list . ELSE stmt_block opt_endl
    27 elseif_list: elseif_list . ELSEIF expr stmt_block
 
-    ELSE    shift, and go to state 156
-    ELSEIF  shift, and go to state 157
+    ELSE    shift, and go to state 159
+    ELSEIF  shift, and go to state 160
     ENDL    shift, and go to state 59
 
     ENDL      [reduce using rule 3 (opt_endl)]
     $default  reduce using rule 3 (opt_endl)
 
-    opt_endl  go to state 158
+    opt_endl  go to state 161
 
 
-state 147
+state 150
 
    28 stmt_switch: SWITCH expr opt_endl '{' opt_endl . switch_cases opt_endl '}'
 
     $default  reduce using rule 29 (switch_cases)
 
-    switch_cases  go to state 159
+    switch_cases  go to state 162
 
 
-state 148
+state 151
 
-   94 args_decl: alone_id ':' . varubleType
+   95 args_decl: alone_id ':' . varubleType
 
     STRINGT     shift, and go to state 62
     CHARACTERT  shift, and go to state 63
@@ -2842,105 +2925,105 @@ state 148
     DOUBLET     shift, and go to state 66
     BOOLT       shift, and go to state 67
 
-    varubleType  go to state 160
-
-
-state 149
-
-   89 func_body: '(' arg_list_decl ')' . FUNCTIONARROW varubleType stmt_block
-   90          | '(' arg_list_decl ')' . stmt_block
-
-    FUNCTIONARROW  shift, and go to state 161
-    '{'            shift, and go to state 27
-
-    stmt_block  go to state 162
-
-
-state 150
-
-   95 args_decl: args_decl ',' . alone_id ':' varubleType
-
-    ID  shift, and go to state 23
-
-    alone_id  go to state 163
-
-
-state 151
-
-   93 arg_list_decl: args_decl @1 .
-
-    $default  reduce using rule 93 (arg_list_decl)
+    varubleType  go to state 163
 
 
 state 152
 
-   73 expr: '[' varubleType ']' '(' ')' .
+   90 func_body: '(' arg_list_decl ')' . FUNCTIONARROW varubleType stmt_block
+   91          | '(' arg_list_decl ')' . stmt_block
 
-    $default  reduce using rule 73 (expr)
+    FUNCTIONARROW  shift, and go to state 164
+    '{'            shift, and go to state 27
+
+    stmt_block  go to state 165
 
 
 state 153
 
-   45 var: varlet id_chain ':' '[' varubleType . ']'
+   96 args_decl: args_decl ',' . alone_id ':' varubleType
 
-    ']'  shift, and go to state 164
+    ID  shift, and go to state 23
+
+    alone_id  go to state 166
 
 
 state 154
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-   80 args: id_chain ':' expr .
+   94 arg_list_decl: args_decl @1 .
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
-
-    $default  reduce using rule 80 (args)
+    $default  reduce using rule 94 (arg_list_decl)
 
 
 state 155
 
-   81 args: args ',' alone_id . ':' expr
+   74 expr: '[' varubleType ']' '(' ')' .
 
-    ':'  shift, and go to state 165
+    $default  reduce using rule 74 (expr)
 
 
 state 156
+
+   46 var: varlet id_chain ':' '[' varubleType . ']'
+
+    ']'  shift, and go to state 167
+
+
+state 157
+
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+   81 args: id_chain ':' expr .
+
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+
+    $default  reduce using rule 81 (args)
+
+
+state 158
+
+   82 args: args ',' alone_id . ':' expr
+
+    ':'  shift, and go to state 168
+
+
+state 159
 
    25 stmt_if: IF expr opt_endl stmt_block elseif_list ELSE . stmt_block opt_endl
 
     '{'  shift, and go to state 27
 
-    stmt_block  go to state 166
+    stmt_block  go to state 169
 
 
-state 157
+state 160
 
    27 elseif_list: elseif_list ELSEIF . expr stmt_block
 
@@ -2963,45 +3046,45 @@ state 157
     id_chain           go to state 40
     varlet             go to state 41
     var                go to state 49
-    expr               go to state 167
+    expr               go to state 170
     func_call          go to state 44
     array_constructor  go to state 46
 
 
-state 158
+state 161
 
    24 stmt_if: IF expr opt_endl stmt_block elseif_list opt_endl .
 
     $default  reduce using rule 24 (stmt_if)
 
 
-state 159
+state 162
 
    28 stmt_switch: SWITCH expr opt_endl '{' opt_endl switch_cases . opt_endl '}'
    30 switch_cases: switch_cases . switch_case
 
-    CASE     shift, and go to state 168
-    DEFAULT  shift, and go to state 169
+    CASE     shift, and go to state 171
+    DEFAULT  shift, and go to state 172
     ENDL     shift, and go to state 59
 
     $default  reduce using rule 3 (opt_endl)
 
-    opt_endl       go to state 170
-    switch_case    go to state 171
-    case_label     go to state 172
-    default_label  go to state 173
+    opt_endl       go to state 173
+    switch_case    go to state 174
+    case_label     go to state 175
+    default_label  go to state 176
 
 
-state 160
+state 163
 
-   94 args_decl: alone_id ':' varubleType .
+   95 args_decl: alone_id ':' varubleType .
 
-    $default  reduce using rule 94 (args_decl)
+    $default  reduce using rule 95 (args_decl)
 
 
-state 161
+state 164
 
-   89 func_body: '(' arg_list_decl ')' FUNCTIONARROW . varubleType stmt_block
+   90 func_body: '(' arg_list_decl ')' FUNCTIONARROW . varubleType stmt_block
 
     STRINGT     shift, and go to state 62
     CHARACTERT  shift, and go to state 63
@@ -3010,112 +3093,33 @@ state 161
     DOUBLET     shift, and go to state 66
     BOOLT       shift, and go to state 67
 
-    varubleType  go to state 174
-
-
-state 162
-
-   90 func_body: '(' arg_list_decl ')' stmt_block .
-
-    $default  reduce using rule 90 (func_body)
-
-
-state 163
-
-   95 args_decl: args_decl ',' alone_id . ':' varubleType
-
-    ':'  shift, and go to state 175
-
-
-state 164
-
-   45 var: varlet id_chain ':' '[' varubleType ']' .
-
-    $default  reduce using rule 45 (var)
+    varubleType  go to state 177
 
 
 state 165
 
-   81 args: args ',' alone_id ':' . expr
+   91 func_body: '(' arg_list_decl ')' stmt_block .
 
-    INT     shift, and go to state 5
-    FLOAT   shift, and go to state 6
-    DOUBLE  shift, and go to state 7
-    BOOL    shift, and go to state 8
-    STRING  shift, and go to state 9
-    TRUE    shift, and go to state 10
-    FALSE   shift, and go to state 11
-    LET     shift, and go to state 12
-    VAR     shift, and go to state 13
-    NIL     shift, and go to state 22
-    ID      shift, and go to state 23
-    NOT     shift, and go to state 24
-    '['     shift, and go to state 28
-    '('     shift, and go to state 29
-
-    alone_id           go to state 39
-    id_chain           go to state 40
-    varlet             go to state 41
-    var                go to state 49
-    expr               go to state 176
-    func_call          go to state 44
-    array_constructor  go to state 46
+    $default  reduce using rule 91 (func_body)
 
 
 state 166
 
-   25 stmt_if: IF expr opt_endl stmt_block elseif_list ELSE stmt_block . opt_endl
+   96 args_decl: args_decl ',' alone_id . ':' varubleType
 
-    ENDL  shift, and go to state 59
-
-    ENDL      [reduce using rule 3 (opt_endl)]
-    $default  reduce using rule 3 (opt_endl)
-
-    opt_endl  go to state 177
+    ':'  shift, and go to state 178
 
 
 state 167
 
-   27 elseif_list: elseif_list ELSEIF expr . stmt_block
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   46 var: varlet id_chain ':' '[' varubleType ']' .
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
-    '{'    shift, and go to state 27
-
-    stmt_block  go to state 178
+    $default  reduce using rule 46 (var)
 
 
 state 168
 
-   33 case_label: CASE . expr ':'
+   82 args: args ',' alone_id ':' . expr
 
     INT     shift, and go to state 5
     FLOAT   shift, and go to state 6
@@ -3143,55 +3147,134 @@ state 168
 
 state 169
 
-   34 default_label: DEFAULT . ':'
+   25 stmt_if: IF expr opt_endl stmt_block elseif_list ELSE stmt_block . opt_endl
 
-    ':'  shift, and go to state 180
+    ENDL  shift, and go to state 59
+
+    ENDL      [reduce using rule 3 (opt_endl)]
+    $default  reduce using rule 3 (opt_endl)
+
+    opt_endl  go to state 180
 
 
 state 170
 
-   28 stmt_switch: SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl . '}'
+   27 elseif_list: elseif_list ELSEIF expr . stmt_block
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    '}'  shift, and go to state 181
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+    '{'    shift, and go to state 27
+
+    stmt_block  go to state 181
 
 
 state 171
+
+   33 case_label: CASE . expr ':'
+
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    DOUBLE  shift, and go to state 7
+    BOOL    shift, and go to state 8
+    STRING  shift, and go to state 9
+    TRUE    shift, and go to state 10
+    FALSE   shift, and go to state 11
+    LET     shift, and go to state 12
+    VAR     shift, and go to state 13
+    NIL     shift, and go to state 22
+    ID      shift, and go to state 23
+    NOT     shift, and go to state 24
+    '['     shift, and go to state 28
+    '('     shift, and go to state 29
+
+    alone_id           go to state 39
+    id_chain           go to state 40
+    varlet             go to state 41
+    var                go to state 49
+    expr               go to state 182
+    func_call          go to state 44
+    array_constructor  go to state 46
+
+
+state 172
+
+   34 default_label: DEFAULT . ':'
+
+    ':'  shift, and go to state 183
+
+
+state 173
+
+   28 stmt_switch: SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl . '}'
+
+    '}'  shift, and go to state 184
+
+
+state 174
 
    30 switch_cases: switch_cases switch_case .
 
     $default  reduce using rule 30 (switch_cases)
 
 
-state 172
+state 175
 
    31 switch_case: case_label . stmt_list
 
     $default  reduce using rule 8 (stmt_list)
 
-    stmt_list  go to state 182
+    stmt_list  go to state 185
 
 
-state 173
+state 176
 
    32 switch_case: default_label . stmt_list
 
     $default  reduce using rule 8 (stmt_list)
 
-    stmt_list  go to state 183
+    stmt_list  go to state 186
 
 
-state 174
+state 177
 
-   89 func_body: '(' arg_list_decl ')' FUNCTIONARROW varubleType . stmt_block
+   90 func_body: '(' arg_list_decl ')' FUNCTIONARROW varubleType . stmt_block
 
     '{'  shift, and go to state 27
 
-    stmt_block  go to state 184
+    stmt_block  go to state 187
 
 
-state 175
+state 178
 
-   95 args_decl: args_decl ',' alone_id ':' . varubleType
+   96 args_decl: args_decl ',' alone_id ':' . varubleType
 
     STRINGT     shift, and go to state 62
     CHARACTERT  shift, and go to state 63
@@ -3200,113 +3283,113 @@ state 175
     DOUBLET     shift, and go to state 66
     BOOLT       shift, and go to state 67
 
-    varubleType  go to state 185
+    varubleType  go to state 188
 
 
-state 176
+state 179
 
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
-   81 args: args ',' alone_id ':' expr .
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
+   82 args: args ',' alone_id ':' expr .
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
 
-    $default  reduce using rule 81 (args)
+    $default  reduce using rule 82 (args)
 
 
-state 177
+state 180
 
    25 stmt_if: IF expr opt_endl stmt_block elseif_list ELSE stmt_block opt_endl .
 
     $default  reduce using rule 25 (stmt_if)
 
 
-state 178
+state 181
 
    27 elseif_list: elseif_list ELSEIF expr stmt_block .
 
     $default  reduce using rule 27 (elseif_list)
 
 
-state 179
+state 182
 
    33 case_label: CASE expr . ':'
-   57 expr: expr . NOT
-   58     | expr . AND expr
-   59     | expr . OR expr
-   60     | expr . '+' expr
-   61     | expr . '-' expr
-   62     | expr . '*' expr
-   63     | expr . '/' expr
-   64     | expr . '%' expr
-   65     | expr . '>' expr
-   66     | expr . '<' expr
-   67     | expr . GE expr
-   68     | expr . LE expr
-   69     | expr . EQ expr
-   70     | expr . NE expr
-   71     | expr . RANGE expr
+   58 expr: expr . NOT
+   59     | expr . AND expr
+   60     | expr . OR expr
+   61     | expr . '+' expr
+   62     | expr . '-' expr
+   63     | expr . '*' expr
+   64     | expr . '/' expr
+   65     | expr . '%' expr
+   66     | expr . '>' expr
+   67     | expr . '<' expr
+   68     | expr . GE expr
+   69     | expr . LE expr
+   70     | expr . EQ expr
+   71     | expr . NE expr
+   72     | expr . RANGE expr
 
-    RANGE  shift, and go to state 79
-    EQ     shift, and go to state 80
-    NE     shift, and go to state 81
-    LE     shift, and go to state 82
-    GE     shift, and go to state 83
-    NOT    shift, and go to state 84
-    OR     shift, and go to state 85
-    AND    shift, and go to state 86
-    '<'    shift, and go to state 87
-    '>'    shift, and go to state 88
-    '+'    shift, and go to state 89
-    '-'    shift, and go to state 90
-    '*'    shift, and go to state 91
-    '/'    shift, and go to state 92
-    '%'    shift, and go to state 93
-    ':'    shift, and go to state 186
+    RANGE  shift, and go to state 80
+    EQ     shift, and go to state 81
+    NE     shift, and go to state 82
+    LE     shift, and go to state 83
+    GE     shift, and go to state 84
+    NOT    shift, and go to state 85
+    OR     shift, and go to state 86
+    AND    shift, and go to state 87
+    '<'    shift, and go to state 88
+    '>'    shift, and go to state 89
+    '+'    shift, and go to state 90
+    '-'    shift, and go to state 91
+    '*'    shift, and go to state 92
+    '/'    shift, and go to state 93
+    '%'    shift, and go to state 94
+    ':'    shift, and go to state 189
 
 
-state 180
+state 183
 
    34 default_label: DEFAULT ':' .
 
     $default  reduce using rule 34 (default_label)
 
 
-state 181
+state 184
 
    28 stmt_switch: SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' .
 
     $default  reduce using rule 28 (stmt_switch)
 
 
-state 182
+state 185
 
     9 stmt_list: stmt_list . stmt opt_endl
    31 switch_case: case_label stmt_list .
@@ -3360,7 +3443,7 @@ state 182
     array_constructor  go to state 46
 
 
-state 183
+state 186
 
     9 stmt_list: stmt_list . stmt opt_endl
    32 switch_case: default_label stmt_list .
@@ -3414,21 +3497,21 @@ state 183
     array_constructor  go to state 46
 
 
-state 184
+state 187
 
-   89 func_body: '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block .
+   90 func_body: '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block .
 
-    $default  reduce using rule 89 (func_body)
-
-
-state 185
-
-   95 args_decl: args_decl ',' alone_id ':' varubleType .
-
-    $default  reduce using rule 95 (args_decl)
+    $default  reduce using rule 90 (func_body)
 
 
-state 186
+state 188
+
+   96 args_decl: args_decl ',' alone_id ':' varubleType .
+
+    $default  reduce using rule 96 (args_decl)
+
+
+state 189
 
    33 case_label: CASE expr ':' .
 

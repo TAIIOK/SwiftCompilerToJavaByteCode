@@ -510,26 +510,7 @@ void set_parent_func(struct NStmt* child, struct NFunc* parent)
             cur = cur->next;
         }
     }
-    else if ((child->type == STMT_EXPR || child->type == STMT_LASSIGN || child->type == STMT_ASSIGN) && child->expr->type == EXPR_TABLE)
-    {
-        struct NTblElem* elem = child->expr->table->first;
-        struct NStmt * cur = NULL;
-        while (elem != NULL)
-        {
-            if (elem->value->type == EXPR_FUNC_DEC_ANON)
-            {
-                elem->value->func->pfunc = parent;
-                find_clojure_variables(elem->value->func);
-                cur = elem->value->func->body->first;
-                cur = cur->next;
-                while (cur != NULL)
-                {
-                    set_parent_func(cur,elem->value->func);
-                    cur = cur->next;
-                }
-            }
-        }
-    }
+    
 }
 
 void set_null_field_expr(struct NExpr* expr)
