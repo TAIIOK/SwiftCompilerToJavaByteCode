@@ -18,7 +18,7 @@
  */
 enum st_const_types {
     CONST_UTF8      = 1,
-    
+
     CONST_INT       = 3,
     CONST_FLOAT     = 4,
     CONST_CLASS     = 7,
@@ -69,7 +69,7 @@ struct st_const {
         int val_int;
         double val_float;
     } value;
-    
+
     STConst * next;
 };
 
@@ -299,11 +299,11 @@ void st_fill_tables(struct NStmtList * root) {
     // Set current table
     st_current_const_table = &st_const_table;
     st_current_const_last  = &st_const_last;
-    
+
     // Append first
     *st_current_const_table = st_new_const_table();
     *st_current_const_last  = *st_current_const_table;
-    
+
     // Append others
     st_stmt_list(root);
 }
@@ -327,7 +327,7 @@ void st_stmt(struct NStmt * node) {
         case STMT_RETURN: if (node->expr != NULL) st_stmt_expr(node->expr); break;
         case STMT_IF:     st_stmt_if(node->if_tree);                        break;
 
-        case STMT_FUNC: { 
+        case STMT_FUNC: {
             // Switch to local constant table and initialize it.
             st_current_const_table  = &(node->func->const_table);
             st_current_const_last   = &(node->func->const_last);
@@ -359,7 +359,6 @@ void st_stmt_while(struct NWhile * node) {
 void st_stmt_for(struct NFor * node) {
     st_stmt_expr(node->name);
     st_stmt_expr(node->start);
-    st_stmt_expr(node->end);
     st_stmt_expr(node->step);
     st_stmt_list(node->body);
 }
@@ -447,14 +446,14 @@ void st_stmt_func(struct NFunc * node) {
 
 void st_stmt_if(struct NIf * node) {
     st_stmt_list(node->body);
-    
+
     struct NIf* current = node->elseiflist->first;
     while (current != NULL)
     {
         st_stmt_if(current);
         current = current->next;
     }
-    
+
     st_stmt_list(node->elsebody);
 }
 
@@ -520,11 +519,11 @@ void st_stmt_expr(struct NExpr * node) {
         }
         break;
     }
-    
+
     if (node->left != NULL) {
         st_stmt_expr(node->left);
     }
-    
+
     if (node->right != NULL) {
         st_stmt_expr(node->right);
     }
@@ -541,25 +540,25 @@ int st_constant_index(STConst * table, enum st_const_types type, const void * va
                         return index;
                     }
                 break;
-                
+
                 case CONST_FLOAT:
                     if (cur->value.val_float == *((double *)value)) {
                         return index;
                     }
                 break;
-                
+
                 case CONST_UTF8:
                     if (strcmp(cur->value.utf8, (const char *)value) == 0) {
                         return index;
                     }
                 break;
-                
+
                 default:
                     return -1;
                 break;
             }
         }
-        
+
         cur = cur->next;
         index++;
     }
@@ -595,15 +594,15 @@ void st_print_const(STConst * table) {
 
             case CONST_CLASS:
             case CONST_STRING:    printf("%d", cur->value.args.arg1); break;
-            
+
             case CONST_FIELDREF:
             case CONST_METHODREF:
             case CONST_NAMETYPE: printf("%d %d", cur->value.args.arg1, cur->value.args.arg2); break;
-            
+
             default:              printf("==WTF?=="); break;
         }
         printf("\n");
-        
+
         cur = cur->next;
         index++;
     }

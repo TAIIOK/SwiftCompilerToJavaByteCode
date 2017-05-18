@@ -732,7 +732,7 @@ char *yytext;
 	  #include <math.h>
 
     #include "swift.tab.h"
-    //#include "semantic_tables.h"
+    #include "semantic_tables.h"
     #include "tree_print.h"
 
 
@@ -2528,6 +2528,35 @@ int main(int argc,char* argv[])
         update_tree_parent_func(root);
         update_tree_stmtlist(root,root);
         print_tree(root);
+
+
+        printf("Constant table:\n");
+        st_fill_tables(root);
+        st_print_const(st_const_table);
+
+        struct NStmt * current = root->first;
+        while (current != NULL)
+        {
+            if (current->type == STMT_FUNC)
+            {
+                printf("Function constant table:\n");
+                st_print_const(current->func->const_table);
+            }
+            current = current->next;
+        }
+
+        printf("Function list:\n");
+        SList * cur = func_list;
+        while (cur != NULL)
+        {
+            printf("function %s\n", ((NFunc *)(cur->data))->name->last->name );
+            cur = cur->next;
+        }
+
+        printf("Function methodrefs:\n");
+        st_print_const(st_func_handles);
+
+
     }
     return 0;
 }
