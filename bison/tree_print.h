@@ -18,6 +18,10 @@ int table_count;
 int if_count;
 int import_count;
 int type_count;
+int switch_count;
+int case_count;
+int case_value;
+int case_body;
 FILE* output;
 
 void print_while(char* parent, struct NWhile* while_loop);
@@ -37,6 +41,128 @@ void print_import(char* parent, struct NImport* stmt_import);
 void print_switch(char* parent, struct NSwitch* switch_loop);
 void print_varuble_type(char* parent, struct NExpr* expr);
 void print_varuble_constant(char* parent, struct NExpr* expr);
+void print_case_list(char* parent, struct NCaseList* caselist);
+
+void print_case_list(char* parent, struct NCaseList* caselist)
+{
+  struct NCase* current = caselist->first;
+  char* current_node, * buffer , * buffer1 = (char*)malloc(sizeof(char)*33);
+  while (current != NULL)
+  {
+    buffer = (char*)malloc(sizeof(char)*33);
+    sprintf(buffer, "%d", case_count);
+    current_node = (char*)malloc(sizeof(char)*33);
+    strcpy(current_node, "case");
+    strcat(current_node, buffer);
+    strcat(buffer1, current_node);
+    buffer = (char*)malloc(sizeof(char)*33);
+    strcpy(buffer, current_node);
+    strcat(buffer, "[label = \"SwitchCase\"];\n");
+    fprintf(output,"%s", buffer);
+    buffer = (char*)malloc(sizeof(char)*33);
+    strcpy(buffer, parent);
+    strcat(buffer, "--");
+    strcat(buffer, current_node);
+    strcat(buffer, ";\n");
+    fprintf(output,"%s",buffer);
+    case_count++;
+
+      if(current->name != NULL){
+        buffer = (char*)malloc(sizeof(char)*33);
+        sprintf(buffer, "%d", case_value);
+        current_node = (char*)malloc(sizeof(char)*33);
+        strcpy(current_node, "casevalue");
+        strcat(current_node, buffer);
+        buffer = (char*)malloc(sizeof(char)*33);
+        strcpy(buffer, current_node);
+        strcat(buffer, "[label = \"Case Main Value\"];\n");
+        fprintf(output,"%s", buffer);
+        buffer = (char*)malloc(sizeof(char)*33);
+        strcpy(buffer, buffer1);
+        strcat(buffer, "--");
+        strcat(buffer, current_node);
+        strcat(buffer, ";\n");
+        fprintf(output,"%s",buffer);
+        case_value++;
+
+        print_expr(current_node,current->name);
+      }
+
+      buffer = (char*)malloc(sizeof(char)*33);
+      sprintf(buffer, "%d", case_body);
+      current_node = (char*)malloc(sizeof(char)*33);
+      strcpy(current_node, "casebody");
+      strcat(current_node, buffer);
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(buffer, current_node);
+      strcat(buffer, "[label = \"body\"];\n");
+      fprintf(output,"%s", buffer);
+      buffer = (char*)malloc(sizeof(char)*33);
+      strcpy(buffer, buffer1);
+      strcat(buffer, "--");
+      strcat(buffer, current_node);
+      strcat(buffer, ";\n");
+      fprintf(output,"%s",buffer);
+      case_body++;
+
+
+      struct NStmt* current1 = current->body->first;
+      while (current1 != NULL)
+      {
+          print_stmt(current_node,current1);
+          current1 = current1->next;
+      }
+      buffer1 = (char*)malloc(sizeof(char)*33);
+      current = current->next;
+  }
+
+}
+void print_switch(char* parent, struct NSwitch* switch_loop)
+{
+  char* current_node, * buffer = (char*)malloc(sizeof(char)*33);
+  char* buffer1 = (char*)malloc(sizeof(char)*33);
+  current_node = (char*)malloc(sizeof(char)*33);
+  sprintf(buffer,"%d",switch_count);
+  strcpy(current_node, "switch");
+  strcat(current_node, buffer);
+  buffer = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer, current_node);
+  fprintf(output,"%s", strcat(buffer, "[label = \"switch\"];\n"));
+  buffer = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer, parent);
+  strcat(buffer, "--");
+  strcat(buffer, current_node);
+  strcat(buffer, ";\n");
+  fprintf(output,"%s", buffer);
+  switch_count++;
+  buffer = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer, current_node);
+  strcat(buffer, "body");
+  strcpy(buffer1, buffer);
+  strcat(buffer1, "[label = \"body\"];\n");
+  fprintf(output, "%s", buffer1);
+  buffer1 = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer1,current_node);
+  strcat(buffer1,"--");
+  strcat(buffer1,buffer);
+  strcat(buffer1,";");
+  fprintf(output, "%s", buffer1);
+  print_case_list(buffer, switch_loop->caselist);
+  buffer = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer, current_node);
+  strcat(buffer, "varname");
+  strcpy(buffer1, buffer);
+  strcat(buffer1, "[label = \"main var\"];\n");
+  fprintf(output, "%s", buffer1);
+  buffer1 = (char*)malloc(sizeof(char)*33);
+  strcpy(buffer1,current_node);
+  strcat(buffer1,"--");
+  strcat(buffer1,buffer);
+  strcat(buffer1,";");
+  fprintf(output, "%s", buffer1);
+  print_expr(buffer, switch_loop->Name);
+
+}
 
 void print_varuble_constant(char* parent, struct NExpr* expr)
 {
@@ -625,6 +751,9 @@ void print_stmt(char* parent, struct NStmt* stmt)
         case STMT_FOR:
             print_for(parent,stmt->for_loop);
             break;
+        case STMT_SWITCH:
+            print_switch(parent,stmt->switch_tree);
+            break;
         case STMT_EXPR:
             print_expr(parent,stmt->expr);
             break;
@@ -1007,6 +1136,10 @@ void print_tree(struct NStmtList* stmtlist)
     type_count = 0;
     import_count = 0;
     var_constant_count = 0;
+    switch_count = 0;
+    case_count = 0;
+    case_value = 0;
+    case_body = 0;
     char* start = (char*)malloc(sizeof(char)*5);
     strcpy(start, "root");
     output = fopen("file.dot","w");

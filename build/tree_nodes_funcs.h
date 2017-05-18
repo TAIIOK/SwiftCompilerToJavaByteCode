@@ -510,7 +510,7 @@ void set_parent_func(struct NStmt* child, struct NFunc* parent)
             cur = cur->next;
         }
     }
-    
+
 }
 
 void set_null_field_expr(struct NExpr* expr)
@@ -830,10 +830,12 @@ struct NCase* create_case(struct NLabelCase* label, struct NStmtList* body)
   {
     result->type = DIFFERENT;
     result->name = label->name;
+
   }
   else{
   result->name = NULL;
   result->type = DEFAULTT;
+
   }
   result->body = body;
   result->next = NULL;
@@ -846,7 +848,7 @@ struct NLabelCase* create_label_case(struct NExpr* condition,NSwitchCaseType typ
 
   result->name = condition;
   result->type = type;
-
+  
   return result;
 }
 
