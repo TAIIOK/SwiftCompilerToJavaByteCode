@@ -65,6 +65,10 @@ bool compare_var_names(struct NExpr* first, struct NExpr * second)
         {
             return abs(first->Double - second->Double) < 0.0000001;
         }
+        else if (first->type == EXPR_FLOAT)
+        {
+            return abs(first->Float - second->Float) < 0.0000001;
+        }
         else if (first->type == EXPR_UMIN)
         {
             return compare_var_names(first->right,second->right);
@@ -848,7 +852,7 @@ struct NLabelCase* create_label_case(struct NExpr* condition,NSwitchCaseType typ
 
   result->name = condition;
   result->type = type;
-  
+
   return result;
 }
 

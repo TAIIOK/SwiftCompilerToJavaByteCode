@@ -1,9 +1,9 @@
 all: clean swiftComp
 
 swiftComp: swift.tab.o lex.yy.o
-	g++ lex.yy.o swift.tab.o -o swiftComp
+	g++ lex.yy.o swift.tab.o -o swiftComp -g
 
-swift.tab.o: swift.tab.c tree_nodes.h tree_nodes_funcs.h tree_print.h semantic_tables.h
+swift.tab.o: swift.tab.c tree_nodes.h tree_nodes_funcs.h tree_print.h semantic_tables.h codegen.h
 	g++ -c swift.tab.c
 
 lex.yy.o: lex.yy.c
@@ -26,6 +26,9 @@ tree_print.h:
 
 semantic_tables.h:
 		cp ../bison/semantic_tables.h ./
+
+codegen.h:
+		cp ../bison/codegen.h ./
 
 clean:
 	rm -rf *.o *.h *.c swiftComp

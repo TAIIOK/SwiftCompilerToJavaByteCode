@@ -18,7 +18,7 @@
  */
 enum st_const_types {
     CONST_UTF8      = 1,
-
+    CONST_DOUBLE    = 2,
     CONST_INT       = 3,
     CONST_FLOAT     = 4,
     CONST_CLASS     = 7,
@@ -67,7 +67,8 @@ struct st_const {
         } args;
 
         int val_int;
-        double val_float;
+        float val_float;
+        double val_double;
     } value;
 
     STConst * next;
@@ -129,6 +130,10 @@ STConst *  st_func_hlast   = NULL;
 /*
  * Function declarations.
  */
+
+void st_stmt_switch_list(struct NCaseList * node);
+
+void st_stmt_switch(struct NSwitch * node);
 
 /**
  * Creates a new constant table with first temporary UTF8 entry.
@@ -206,6 +211,8 @@ int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int 
  */
 void st_print_const();
 
+void st_print_const_file(FILE *  output,STConst * table);
+
 /**
  * Return a string containing constant type name.
  * Just turns enum value to it's name.
@@ -256,7 +263,11 @@ STConst * st_new_const(enum st_const_types type, void * arg) {
         break;
 
         case CONST_FLOAT:
-        c->value.val_float = *((double *)arg);
+        c->value.val_float = *((float *)arg);
+        break;
+
+        case CONST_DOUBLE:
+        c->value.val_double = *((double *)arg);
         break;
 
         case CONST_CLASS:
@@ -326,6 +337,7 @@ void st_stmt(struct NStmt * node) {
         case STMT_LFUNC:  st_stmt_func(node->func);                         break;
         case STMT_RETURN: if (node->expr != NULL) st_stmt_expr(node->expr); break;
         case STMT_IF:     st_stmt_if(node->if_tree);                        break;
+        case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
 
         case STMT_FUNC: {
             // Switch to local constant table and initialize it.
@@ -351,6 +363,27 @@ void st_stmt(struct NStmt * node) {
     }
 }
 
+void st_stmt_switch_list(struct NCaseList * node) {
+    struct NCase * current = node->first;
+    while (current != NULL) {
+
+        struct NStmt* current1 = current->body->first;
+        while (current1 != NULL)
+        {
+          st_stmt(current1);
+          current1 = current1->next;
+        }
+        current = current->next;
+    }
+}
+void st_stmt_switch(struct NSwitch * node){
+  st_stmt_expr(node->Name);
+
+  printf("%d\n",(int)node->Name->type);
+
+
+  st_stmt_switch_list(node->caselist);
+}
 void st_stmt_while(struct NWhile * node) {
     st_stmt_expr(node->condition);
     st_stmt_list(node->body);
@@ -473,13 +506,26 @@ void st_stmt_expr(struct NExpr * node) {
         }
         break;
 
-        case EXPR_DOUBLE: {
-            if (st_constant_index(*st_current_const_table, CONST_FLOAT, (void *)&(node->Double)) == -1) {
+        case EXPR_FLOAT: {
+            if (st_constant_index(*st_current_const_table, CONST_FLOAT, (void *)&(node->Float)) == -1) {
                 STConst * cfloat = (STConst *)malloc(sizeof(STConst));
                 cfloat->next = NULL;
 
                 cfloat->type = CONST_FLOAT;
-                cfloat->value.val_float = node->Double;
+                cfloat->value.val_float = node->Float;
+
+                (*st_current_const_last)->next = cfloat;
+                *st_current_const_last = cfloat;
+            }
+        }
+
+        case EXPR_DOUBLE: {
+            if (st_constant_index(*st_current_const_table, CONST_DOUBLE, (void *)&(node->Double)) == -1) {
+                STConst * cfloat = (STConst *)malloc(sizeof(STConst));
+                cfloat->next = NULL;
+
+                cfloat->type = CONST_DOUBLE;
+                cfloat->value.val_double = node->Double;
 
                 (*st_current_const_last)->next = cfloat;
                 *st_current_const_last = cfloat;
@@ -541,6 +587,13 @@ int st_constant_index(STConst * table, enum st_const_types type, const void * va
                     }
                 break;
 
+                case CONST_DOUBLE:
+                    if (cur->value.val_double == *((double *)value)) {
+                        return index;
+                    }
+                break;
+
+
                 case CONST_FLOAT:
                     if (cur->value.val_float == *((double *)value)) {
                         return index;
@@ -581,37 +634,71 @@ int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int 
     return -1;
 }
 
-void st_print_const(STConst * table) {
+void st_print_const_file(FILE * output, STConst * table) {
+
     char name[10] = "";
     STConst * cur = table;
     int index = 0;
     while (cur != 0) {
-        printf("%5d:  %9s  ", index, st_type_name(cur->type, name));
-        switch (cur->type) {
-            case CONST_UTF8:      printf("'%s'", cur->value.utf8);      break;
-            case CONST_INT:       printf("%d", cur->value.val_int);   break;
-            case CONST_FLOAT:     printf("%f", cur->value.val_float); break;
 
+      fprintf(output, "%5d;%9s; ", index, st_type_name(cur->type, name));
+
+      //  printf("%5d:  %9s  ", index, st_type_name(cur->type, name));
+        switch (cur->type) {
+            case CONST_UTF8:      fprintf(output, "'%s'", cur->value.utf8);      break;
+            case CONST_INT:       fprintf(output, "%d", cur->value.val_int);   break;
+            case CONST_FLOAT:     fprintf(output, "%f", cur->value.val_float); break;
+            case CONST_DOUBLE:    fprintf(output, "%f", cur->value.val_double); break;
             case CONST_CLASS:
-            case CONST_STRING:    printf("%d", cur->value.args.arg1); break;
+            case CONST_STRING:    fprintf(output, "%d", cur->value.args.arg1); break;
 
             case CONST_FIELDREF:
             case CONST_METHODREF:
-            case CONST_NAMETYPE: printf("%d %d", cur->value.args.arg1, cur->value.args.arg2); break;
+            case CONST_NAMETYPE: fprintf(output, "%d %d", cur->value.args.arg1, cur->value.args.arg2); break;
 
-            default:              printf("==WTF?=="); break;
+            default:              fprintf(output,"%s", "==WTF?=="); break;
         }
-        printf("\n");
+        fprintf(output,"%s","\n");
 
         cur = cur->next;
         index++;
     }
+
+}
+
+void st_print_const(STConst * table)
+{
+  char name[10] = "";
+  STConst * cur = table;
+  int index = 0;
+  while (cur != 0) {
+      printf("%5d:  %9s  ", index, st_type_name(cur->type, name));
+      switch (cur->type) {
+          case CONST_UTF8:      printf("'%s'", cur->value.utf8);      break;
+          case CONST_INT:       printf("%d", cur->value.val_int);   break;
+          case CONST_FLOAT:     printf("%f", cur->value.val_float); break;
+          case CONST_DOUBLE:    printf("%f", cur->value.val_double); break;
+          case CONST_CLASS:
+          case CONST_STRING:    printf("%d", cur->value.args.arg1); break;
+
+          case CONST_FIELDREF:
+          case CONST_METHODREF:
+          case CONST_NAMETYPE: printf("%d %d", cur->value.args.arg1, cur->value.args.arg2); break;
+
+          default:              printf("==WTF?=="); break;
+      }
+      printf("\n");
+
+      cur = cur->next;
+      index++;
+  }
 }
 
 char * st_type_name(enum st_const_types type, char name[10]) {
     switch (type) {
         case CONST_UTF8:      strcpy(name, "UTF8");      break;
         case CONST_INT:       strcpy(name, "INT");       break;
+        case CONST_DOUBLE:    strcpy(name, "DOUBLE");     break;
         case CONST_FLOAT:     strcpy(name, "FLOAT");     break;
         case CONST_CLASS:     strcpy(name, "CLASS");     break;
         case CONST_STRING:    strcpy(name, "STRING");    break;
