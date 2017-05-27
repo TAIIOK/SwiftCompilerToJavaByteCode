@@ -529,6 +529,17 @@ void st_stmt_expr(struct NExpr * node) {
 
                 (*st_current_const_last)->next = cfloat;
                 *st_current_const_last = cfloat;
+
+                // Make constant
+                STConst * cstr = (STConst *)malloc(sizeof(STConst));
+                cstr->next = NULL;
+
+                cstr->type = CONST_DOUBLE;
+                cstr->value.args.arg1 = st_constant_index(*st_current_const_table, CONST_DOUBLE , (void *)&(node->Double));
+
+                (*st_current_const_last)->next = cstr;
+                *st_current_const_last = cstr;
+
             }
         }
         break;
