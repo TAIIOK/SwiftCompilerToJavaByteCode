@@ -615,12 +615,14 @@ struct NExpr* create_expr_boolean(int value)
 
 struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varubltype ,struct NConstant* varlet)
 {
+
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
     result->idlist = value;
     result->varconstant = varlet;
     result->vartype = varubltype;
     result->type = EXPR_ID_LIST;
+
     return result;
 }
 
@@ -939,7 +941,7 @@ struct NFunc* set_func_name(struct NExprList* name, struct NFunc* result)
 
 struct NConstant* create_var_constant_type(NConstantEnum varEnumType)
 {
-  struct NConstant* result = (NConstant*)malloc(sizeof(NConstant));
+  struct NConstant *result = (NConstant*)malloc(sizeof(NConstant));
   result->constant = varEnumType;
   return result;
 }

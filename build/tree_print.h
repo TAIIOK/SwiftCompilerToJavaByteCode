@@ -172,7 +172,7 @@ void print_varuble_constant(char* parent, struct NExpr* expr)
   char* buffer1 = (char*)malloc(sizeof(char)*33);
   char* current;
 
-  if( expr->vartype != NULL)
+  if( expr->varconstant != NULL)
   {
 
       switch (expr->varconstant->constant)
@@ -243,7 +243,7 @@ void print_varuble_type(char* parent, struct NExpr* expr)
   char* buffer = (char*)malloc(sizeof(char)*33);
   char* buffer1 = (char*)malloc(sizeof(char)*33);
   char* current;
-
+  printf("vartype  %d \n",expr->vartype);
   if( expr->vartype != NULL)
   {
 
@@ -325,8 +325,9 @@ void print_varuble_type(char* parent, struct NExpr* expr)
       strcat(buffer, buffer1);
       strcat(buffer, ";\n");
       fprintf(output,"%s", buffer);
+      type_count = type_count + 1;
   }
-  type_count = type_count + 2;
+
 }
 
 void print_import(char* parent, struct NImport* stmt_import)
