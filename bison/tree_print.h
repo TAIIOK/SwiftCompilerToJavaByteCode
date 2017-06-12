@@ -243,7 +243,6 @@ void print_varuble_type(char* parent, struct NExpr* expr)
   char* buffer = (char*)malloc(sizeof(char)*33);
   char* buffer1 = (char*)malloc(sizeof(char)*33);
   char* current;
-  printf("vartype  %d \n",expr->vartype);
   if( expr->vartype != NULL)
   {
 
