@@ -120,18 +120,20 @@
 %left NOT
 %%
 end_expr:             ENDL  {;}
-                      | ';' {;}
+                      | ';' opt_endl {;}
 ;
-
+opt_endl:             /* empty */ {;}
+                      | ENDL {;}
+;
 root:               stmt_list {printf("root\n");root=$1; $$=$1;}
 ;
-stmt_import:          IMPORT id_chain {printf("import found\n");$$ = create_import($2);}
+stmt_import:          IMPORT var {printf("import found\n");$$ = create_import($2);}
 ;
 /* == Statements == */
-stmt_block:          '{' stmt_list '}'    {printf("block found\n");$$ = $2;}
+stmt_block:          '{' stmt_list '}'  opt_endl  {printf("block found\n");$$ = $2;}
 ;
 stmt_list:            /* empty */ { printf("stmt list null found\n");$$ = create_stmt_list(NULL);}
-                    | stmt_list stmt   {printf("stmt list not null\n");$$ = add_stmt_to_list($1, $2);}
+                    | stmt_list stmt opt_endl  {printf("stmt list not null\n");$$ = add_stmt_to_list($1, $2);}
 ;
 stmt:                 stmt_block {printf("stmt_block\n");$$ = create_stmt_block($1);}
                     | stmt_if {printf("stmt_if\n");$$ = create_stmt_if($1);}
@@ -145,15 +147,16 @@ stmt:                 stmt_block {printf("stmt_block\n");$$ = create_stmt_block(
                     | expr end_expr {printf("stmt_expr\n");$$ = create_stmt_expr($1);}
                     | var '=' expr end_expr {printf("line with eq\n"); $$ = create_stmt_assign($1, $3, 0);}
                     | func_decl_named {printf("stmt_func decl\n");$$ = create_stmt_func($1);}
+                    | end_expr {printf("end_expr\n");$$ = create_stmt_spec(2);}
                     | stmt_import {printf("stmt_import\n");$$ = create_stmt_import($1);}
 ;
-stmt_if:              IF expr  stmt_block elseif_list  {printf("stmt_if_1\n");$$ = create_if($2, $3, $4, create_stmt_list(NULL));}
-                    | IF expr  stmt_block elseif_list ELSE stmt_block  {printf("stmt_if_2\n");$$ = create_if($2, $3, $4, $6);}
+stmt_if:              IF expr opt_endl stmt_block elseif_list opt_endl {printf("stmt_if_1\n");$$ = create_if($2, $4, $5, create_stmt_list(NULL));}
+                    | IF expr opt_endl stmt_block elseif_list ELSE stmt_block opt_endl {printf("stmt_if_2\n");$$ = create_if($2, $4, $5, $7);}
 ;
 elseif_list:          /* empty */ {printf("empty else if\n");$$ = create_if_list(NULL); }
                     | elseif_list ELSEIF expr stmt_block {printf("else_if\n");$$ = add_if_to_list($1, create_if($3, $4, create_if_list(NULL), create_stmt_list(NULL)));}
 ;
-stmt_switch:          SWITCH expr  '{'  switch_cases  '}' {printf("stmt_switch\n");$$ = create_switch($2,$4);}
+stmt_switch:          SWITCH expr opt_endl '{' opt_endl switch_cases opt_endl '}' {printf("stmt_switch\n");$$ = create_switch($2,$6);}
 ;
 switch_cases:         /* nothing */ {printf("empty case\n");$$ = create_case_list(NULL);}
                       | switch_cases switch_case {printf("switch cases\n");$$ = add_case_to_list($1,$2);}
@@ -174,21 +177,18 @@ stmt_repeat:          REPEAT stmt_block WHILE expr   {printf("stmt_repeat\n");$$
 alone_id:             ID {printf("alone_id\n");$$ = create_expr_id(yylval.Id);}
 ;
 id_chain:             alone_id {printf("id-chain\n");$$ = create_expr_list($1);}
+                    | id_chain '.' alone_id {printf("id chain class\n");$$ = add_expr_to_list($1, $3); }
 ;
 varlet:               VAR {printf("var \n"); $$ = create_var_constant_type(VART);}
                     | LET {printf("let\n"); $$ = create_var_constant_type(LETT);}
 ;
 var:                  id_chain {printf("varuble 1\n"); $$ = create_expr_exprlist($1,NULL,NULL); }
-                    | id_chain '.' alone_id {printf("id chain class\n");$$ = add_expr_to_list($1, $3); }
-                    | varlet var {printf("varuble 2\n");$$ = create_expr_exprlist($2,NULL,$1); }
-                    | varlet var ':' varubleType {printf("varuble 5\n");$$ = create_expr_exprlist($2,$4,$1);}
-                    | varlet var  ':' '[' varubleType ']' {printf("varuble 4\n");$$ = create_expr_exprlist($2,$5,$1); }
-
+                    | var'[' expr ']'         { $$ = create_op_expr(EXPR_MAS, $1, $3); }
+                    | varlet id_chain {printf("varuble 2\n");$$ = create_expr_exprlist($2,NULL,$1); }
+                    | varlet id_chain  ':' '[' varubleType ']' {printf("varuble 4\n");$$ = create_expr_exprlist($2,$5,$1); }
+                    | varlet id_chain ':' varubleType {printf("varuble 5\n");$$ = create_expr_exprlist($2,$4,$1);}
 ;
-
-
 expr:                 var {printf("expr var\n");$$ = $1;}
-                    | var '[' varubleType ']'         { $$ = create_op_expr(EXPR_MAS, $1, $3); }
                     | INT {printf("expr INT\n"); $$ = create_expr_int(yylval.Int);}
                     | DOUBLE {printf("expr DOUBLE\n"); $$ = create_expr_double(yylval.Double);}
                     | STRING {printf("expr STRING\n"); $$ = create_expr_string(yylval.String);}
@@ -198,6 +198,7 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | FLOAT {printf("expr FLOAT\n");$$ = create_expr_float(yylval.Double);}
                     | NIL {printf("expr NIL\n");$$ = create_expr_nil(); }
                     | NOT expr {printf("not expr "); $$ = create_op_expr(EXPR_NOT, $2, NULL);}
+                    | expr NOT {printf("expr not type\n");}
                     | expr AND expr {printf("expr and expr\n");$$ = create_op_expr(EXPR_AND, $1, $3);}
                     | expr OR  expr {printf("expr or expr\n"); $$ = create_op_expr(EXPR_OR, $1, $3);}
                     | expr '+' expr {printf("expr + expr\n"); $$ = create_op_expr(EXPR_PLUS, $1, $3);}
@@ -213,11 +214,12 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | expr NE  expr {printf("expr NE expr\n"); $$ = create_op_expr(EXPR_NQ, $1, $3);}
                     | expr RANGE expr {printf("expr RANGE expr\n"); $$ = create_op_expr(EXPR_RANGE, $1, $3);}
                     | '(' expr ')' {printf("(expr)\n"); $$ = $2;}
+                    | '[' varubleType ']' '(' ')' {printf("varuble 3\n");$$ = create_expr_table(NULL, $2);}
                     | func_call {printf("expr func_call\n"); $$ = $1;}
                     | array_constructor {printf("expr array_constructor\n"); $$ = create_expr_table($1, NULL);}
 ;
 /* == Function call == */
-func_call:            id_chain '(' arg_list ')' {printf("function call\n"); $$ = create_op_expr(EXPR_MET, $1, create_expr_exprlist($3,NULL,NULL));}
+func_call:            var '(' arg_list ')' {printf("function call\n"); $$ = create_op_expr(EXPR_MET, $1, create_expr_exprlist($3,NULL,NULL));}
 ;
 arg_list:             /* empty */ {printf("arg_list empty\n");$$ = create_expr_list(NULL);}
                     | args {printf("arg_list args \n");$$ = $1;}
@@ -234,18 +236,20 @@ varubleType:                 INTT {printf("int type\n");$$ = create_var_type(INT
                     | CHARACTERT {printf("character type\n");$$ = create_var_type(CHARACTERTy);}
 ;
 /* == Function declaration == */
-func_decl_named:      FUNCTION id_chain  func_body  {printf("func decl name\n");$$ = set_func_name($2, $3);}
+func_decl_named:      FUNCTION id_chain  func_body {printf("func decl name\n");$$ = set_func_name($2, $3);}
 ;
 func_body:            '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block {printf("function body\n");$$ = create_func($2, $6,$5);}
-                    |  '(' arg_list_decl ')' stmt_block {printf("function body\n");$$ = create_func($2, $4,create_var_type(VOIDTy));}
+                    |  '(' arg_list_decl ')'  stmt_block {printf("function body\n");$$ = create_func($2, $4,create_var_type(VOIDTy));}
 ;
 arg_list_decl:        /* empty */ {printf("arg list decl empty\n");$$ = create_expr_list(NULL);}
                     | args_decl {;} {printf("arg list decl \n");$$ = $1;}
 ;
-args_decl:            alone_id ':' varubleType {printf("args decl 1 \n");$$ = create_expr_list($1);}
-                    | args_decl ',' alone_id ':' varubleType { printf("args decl 2 \n"); $$ = add_expr_to_list($1, $3);}
+args_decl:            id_chain ':' varubleType {printf("args decl 1 \n");$$ = create_expr_list($1);}
+                    | args_decl ',' id_chain ':' varubleType { printf("args decl 2 \n"); $$ = add_expr_to_list($1, $3);}
 ;
-
+/* == Array declaration == */
+/* var massive:[Int] = []
+var someInts = [Int]() */
 array_constructor:  '[' array_elem_list ']' {printf("array constructor");$$ = $2;}
 ;
 array_elem_list:        /* empty */ {printf("array elem list empty \n");$$ = create_table(NULL);}

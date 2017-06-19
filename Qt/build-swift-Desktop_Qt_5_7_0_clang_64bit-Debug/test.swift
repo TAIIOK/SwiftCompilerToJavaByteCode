@@ -1,18 +1,3 @@
-//  Test.swift
-//  Created by Roman Efimov on 22.02.17.
-//  Copyright © 2017 Roman Efimov. All rights reserved.
-//
-/*
- 
- {"StickerPacks":[
- {
- "name": "test",
- "count": 1,
- "links": ["https://pp.vk.me/c606621/v606621505/7af7/dZnzJQLMFVs.jpg"]
- }
- ]
- }
- */
 import Foundation
 
 var line = readLine()
@@ -54,45 +39,27 @@ if (!trueBool || falseBool ){
 if (trueBool || falseBool ){
 }
 
-if (trueBool && falseBool ){
-}
-
-if varuble == constant {
-    print("равны\(2)")
-}
-else if (varuble < constant){
-}
-else {
-}
-
-while varuble != constant{
-}
-
-repeat{
-    print("\(int)")
-    int = int + 22
-}while (varuble>constant)
-
-for index in 3...6 {
-    print("\(index) times 5 is \(index)")
-}
-
-
-
 func myFunc(){
     
     var bar = 90
     
 }
 
+
 var  sdb = "ss"
 
-
-func myssFuncs(){
+//50
+func main( lol:Int, ass:Double){
     
     var bar = 91
     
 }
+
+
+var kek = main(lol:Int, ass:sdb)
+
+
+//58
 switch trueBool {
 case true:
     break

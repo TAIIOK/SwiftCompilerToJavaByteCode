@@ -23,7 +23,7 @@ int main(int argc,char* argv[])
 
     yyparse();
     update_tree_parent_func(root);
-    update_tree_stmtlist(root,root);
+    //update_tree_stmtlist(root,root);
     print_tree(root);
     system("pause");
 
@@ -31,7 +31,8 @@ int main(int argc,char* argv[])
     FILE* output;
     output = fopen("constant_table.csv","w");
     semantic table;
-    table.create_tree(root);
+    table.create_table(root);
+
     printf("Constant table:\n");
     fprintf(output, "'%s'", ";Constant table:;\n");
     st_fill_tables(root);
@@ -64,5 +65,7 @@ int main(int argc,char* argv[])
     fprintf(output, "%s",";Function methodrefs:;\n");
     st_print_const(st_func_handles);
     st_print_const_file(output,st_func_handles);
+
     fclose(output);
+
 }

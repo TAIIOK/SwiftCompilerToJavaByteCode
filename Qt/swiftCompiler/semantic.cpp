@@ -14,7 +14,7 @@ void semantic::printTable()
             case CONST_INT:       printf("%d", table[i].value.val_int);   break;
             case CONST_FLOAT:     printf("%f", table[i].value.val_float); break;
             case CONST_DOUBLE:    printf("%f", table[i].value.val_double); break;
-            case CONST_CLASS:
+            case CONST_CLASS:     printf("%d", table[i].value.val_int); break;
             case CONST_STRING:    printf("%d", table[i].value.args.arg1); break;
 
             case CONST_FIELDREF:
@@ -28,12 +28,91 @@ void semantic::printTable()
     }
 }
 
-void semantic::create_tree(NStmtList *root){
+char * semantic::get_function_args(struct NFunc * f)
+{
+    char * str = (char*)malloc(sizeof(char)*33);;
 
-    table.clear();
+   struct NExpr * current = f->args->first;
+   strcat(str,"(");
 
+   while(current != NULL)
+   {
+               switch (current->vartype->type) {
+                   case INTTy:       strcat(str,"I;");   break;
+                   case FLOATTy:     strcat(str,"F;"); break;
+                   case DOUBLETy:    strcat(str,"D;"); break;
+                   case BOOLTy:      strcat(str,"B;"); break;
+                   case STRINGTy:    strcat(str,"S;"); break;
+
+                   default:              printf("==WTF?==;"); break;
+               }
+       current = current->next;
+   }
+    strcat(str,")");
+    return str;
+}
+
+void semantic::print_function_param(char * function,NStmtList *root){
+    char * str = (char*)malloc(sizeof(char)*33);;
     struct NStmt * current = root->first;
     while (current != NULL) {
+        if(current->type == STMT_FUNC)
+        {
+
+         if(strcmp(current->func->name->last->name,function))
+         {
+             if(current->func->args->first == NULL)
+             {
+                 qDebug() << current->func->args->first;
+                 printf("1111111111111111111111111111111111111111111111111111111111");
+                 strcat(str,"()");
+
+             }
+             else{
+                 strcat(str,get_function_args(current->func));
+             }
+             if(current->func->vartype == NULL)
+             {
+
+             }else{
+
+             }
+
+         }
+        }
+        current = current->next;
+    }
+
+    printf("%s",str);
+
+}
+
+void semantic::create_header(NStmtList *root){
+STConst code;
+code.next = NULL;
+code.type = CONST_UTF8;
+code.value.utf8  = "Code";
+table.append(code);
+STConst main;
+main.next = NULL;
+main.type = CONST_UTF8;
+main.value.utf8  = "Main";
+table.append(main);
+
+STConst classs;
+classs.next = NULL;
+classs.type = CONST_CLASS;
+classs.value.val_int  = 2;
+table.append(classs);
+print_function_param("main",root);
+}
+void semantic::create_table(NStmtList *root){
+
+    table.clear();
+    create_header(root);
+    struct NStmt * current = root->first;
+    while (current != NULL) {
+
         st_stmt(current);
         current = current->next;
     }
@@ -45,6 +124,7 @@ void semantic::create_tree(NStmtList *root){
 void semantic::st_stmt_list(struct NStmtList * node) {
     struct NStmt * current = node->first;
     while (current != NULL) {
+
         st_stmt(current);
         current = current->next;
     }
@@ -70,7 +150,7 @@ void semantic::st_stmt(struct NStmt * node) {
         //    *st_current_const_last  = *st_current_const_table;
 
             // Fill table.
-            st_stmt_func(node->func);
+           functions_list.append(st_stmt_func(node->func));
 
             // Switch to global.
           //  st_current_const_table = &st_const_table;
@@ -119,86 +199,30 @@ void semantic::st_stmt_for(struct NFor * node) {
     st_stmt_list(node->body);
 }
 
-void semantic::st_stmt_func(struct NFunc * node) {
-    /*
-    int arg1;
-    char buf[512];
-    STConst * c = NULL;
-    SList * f = (SList *)malloc(sizeof(SList));
+QList<st_const> semantic::st_stmt_func(struct NFunc * node) {
 
-    // Add function to list
-    f->next = NULL;
-    f->data = (void *)(node);
-    if (func_list == NULL) {
-        func_list = f;
-        func_last = f;
-    } else {
-        func_last->next = f;
-        func_last = f;
+      QList<st_const> temp;
+
+     STConst func;
+     func.type == CONST_UTF8;
+     func.next == NULL;
+     func.value.utf8 = node->name->last->name;
+
+     st_stmt_list(node->body);
+
+     return temp;
+
+}
+
+void semantic::get_function_body(struct NStmtList * node)
+{
+    QList<st_const> temp_body;
+
+    struct NStmt * current = node->first;
+    while (current != NULL) {
+        st_stmt(current);
+        current = current->next;
     }
-
-    // Set function classname
-    node->classname = (char *)malloc(10);
-    sprintf(node->classname, "func%d", funcnum);
-    funcnum++;
-
-    // Create methodref
-
-    // Method name UTF8
-    if (st_constant_index(st_func_handles, CONST_UTF8, "value") == -1) {
-        c = st_new_const(CONST_UTF8, NULL);
-        c->value.utf8 = (char *)malloc(6);
-        strcpy(c->value.utf8, "value");
-        st_func_hlast->next = c;
-        st_func_hlast = c;
-        fconstnum++;
-    }
-
-    // Function handle UTF8
-    st_gen_func_handle(node, buf);
-    int fh = st_constant_index(st_func_handles, CONST_UTF8, buf);
-    if (fh == -1) {
-        c = st_new_const(CONST_UTF8, NULL);
-        c->value.utf8 = (char *)malloc(512);
-        strcpy(c->value.utf8, buf);
-        st_func_hlast->next = c;
-        st_func_hlast = c;
-        fh = ++fconstnum;
-    }
-
-    // Class name UTF8
-    c = st_new_const(CONST_UTF8, (void *)node->classname);
-    st_func_hlast->next = c;
-    st_func_hlast = c;
-    fconstnum++;
-
-    // Class
-    c = st_new_const(CONST_CLASS, (void *)&fconstnum);
-    st_func_hlast->next = c;
-    st_func_hlast = c;
-    fconstnum++;
-
-    // Name and type
-    arg1 = st_constant_index(st_func_handles, CONST_UTF8, "value");
-    int nt = st_constant_index2(st_func_handles, CONST_NAMETYPE, arg1, fh);
-    if (nt == -1) {
-        c = st_new_const2(CONST_NAMETYPE, arg1, fh);
-        st_func_hlast->next = c;
-        st_func_hlast = c;
-        nt = ++fconstnum;
-    }
-
-    // Methodref
-    arg1 = fconstnum - 1;
-    c = st_new_const2(CONST_METHODREF, arg1, nt);
-    st_func_hlast->next = c;
-    st_func_hlast = c;
-    fconstnum++;
-
-    // Set methodref attribute
-    node->methodref = fconstnum;
-    */
-    st_stmt_list(node->body);
 
 }
 
@@ -265,27 +289,7 @@ void semantic::st_stmt_expr(struct NExpr * node) {
                     cint.value.utf8 = node->name;
                    table.append(cint);
                 }
-        /*
-            // Make UTF-8
-            STConst * utf8 = (STConst *)malloc(sizeof(STConst));
-            utf8->next = NULL;
 
-            utf8->type = CONST_UTF8;
-            utf8->value.utf8 = node->name; // `strcpy` it in case of problems
-
-            (*st_current_const_last)->next = utf8;
-            *st_current_const_last = utf8;
-
-            // Make constant
-            STConst * cstr = (STConst *)malloc(sizeof(STConst));
-            cstr->next = NULL;
-
-            cstr->type = CONST_STRING;
-            cstr->value.args.arg1 = st_constant_index(*st_current_const_table, CONST_UTF8, utf8->value.utf8);
-
-            (*st_current_const_last)->next = cstr;
-            *st_current_const_last = cstr;
-            */
         }
         break;
 

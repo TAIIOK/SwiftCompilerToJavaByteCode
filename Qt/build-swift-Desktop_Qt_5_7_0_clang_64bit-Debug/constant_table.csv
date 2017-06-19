@@ -22,32 +22,16 @@
    20;   STRING; 19
    21;     UTF8; 'testing string'
    22;   STRING; 21
-   23;     UTF8; 'равны'
+   23;     UTF8; 'ss'
    24;   STRING; 23
-   25;     UTF8; ''
-   26;   STRING; 19
-   27;     UTF8; ''
-   28;   STRING; 19
-   29;     UTF8; ''
-   30;   STRING; 19
-   31;      INT; 22
-   32;      INT; 6
-   33;     UTF8; ''
-   34;   STRING; 19
-   35;     UTF8; ' times 5 is '
-   36;   STRING; 35
-   37;     UTF8; ''
-   38;   STRING; 19
-   39;     UTF8; 'ss'
-   40;   STRING; 39
-';Function constant table:;
-'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 91
 ';Function constant table:;
 '    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
     1;      INT; 90
+';Function constant table:;
+'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
+    1;      INT; 91
 ';Function list:;
-';'myssFuncs';;'myFunc';;Function methodrefs:;
+';'myFunc';;'main';;Function methodrefs:;
     0;     UTF8; 'RTL METHODREFS WILL BE HERE'
     1;     UTF8; 'value'
     2;     UTF8; '()Lrtl/Mixed;'
@@ -55,6 +39,8 @@
     4;    CLASS; 3
     5; NAMETYPE; 1 2
     6;METHODREF; 4 5
-    7;     UTF8; 'func1'
-    8;    CLASS; 7
-    9;METHODREF; 7 5
+    7;     UTF8; '(Lrtl/Mixed;Lrtl/Mixed;)Lrtl/Mixed;'
+    8;     UTF8; 'func1'
+    9;    CLASS; 8
+   10; NAMETYPE; 1 7
+   11;METHODREF; 9 10
