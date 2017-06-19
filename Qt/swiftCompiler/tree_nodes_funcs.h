@@ -443,6 +443,11 @@ void update_tree_if(struct NIf* current, struct NStmtList* root)
 
 void set_parent_func(struct NStmt* child, struct NFunc* parent)
 {
+    if(child == NULL)
+    {
+        return;
+    }
+
     if(child->type == STMT_LFUNC || child->type == STMT_FUNC
         || ((child->type == STMT_ASSIGN ||
             child->type == STMT_LASSIGN ||
@@ -615,6 +620,18 @@ struct NExpr* create_expr_boolean(int value)
 
 struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varubltype ,struct NConstant* varlet)
 {
+    if(varubltype->isArray != NULL)
+    {
+        if(varubltype->isArray == true){
+        struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
+        set_null_field_expr(result);
+        result->table = NULL;
+        result->vartype = varubltype;
+        result->type = EXPR_TABLE;
+        return result;
+        }
+    }
+
 
     struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
     set_null_field_expr(result);
@@ -946,10 +963,20 @@ struct NConstant* create_var_constant_type(enum NConstantEnum varEnumType)
   return result;
 }
 
-struct NVarType* create_var_type(enum NVarEnumType varEnumType)
+struct NVarType* create_var_type(enum NVarEnumType varEnumType,bool array)
 {
   struct NVarType* result = (struct NVarType*)malloc(sizeof(struct NVarType));
   result->type = varEnumType;
+  result->isArray = array;
+
+  return result;
+}
+
+struct NVarType* create_var_type_array(struct NVarType* type)
+{
+    struct NVarType* result = (struct NVarType*)malloc(sizeof(struct NVarType));
+    result->type = type->type;
+    result->isArray = true;
   return result;
 }
 

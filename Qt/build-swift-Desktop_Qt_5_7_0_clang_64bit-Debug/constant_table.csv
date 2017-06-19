@@ -1,46 +1,6 @@
 ';Constant table:;
 '    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 4
-    2;      INT; 3
-    3;   DOUBLE; 3123.123123
-    4;      INT; 4095
-    5;      INT; 17
-    6;      INT; 0
-    7;     UTF8; 's'
-    8;   STRING; 7
-    9;     UTF8; 'string'
-   10;   STRING; 9
-   11;   DOUBLE; 0.100000
-   12;     UTF8; 'SD'
-   13;   STRING; 12
-   14;     UTF8; 's'
-   15;   STRING; 7
-   16;      INT; 5
-   17;     UTF8; 'array size'
-   18;   STRING; 17
-   19;     UTF8; ''
-   20;   STRING; 19
-   21;     UTF8; 'testing string'
-   22;   STRING; 21
-   23;     UTF8; 'ss'
-   24;   STRING; 23
-';Function constant table:;
-'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 90
-';Function constant table:;
-'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 91
+    1;      INT; 5
 ';Function list:;
-';'myFunc';;'main';;Function methodrefs:;
+';Function methodrefs:;
     0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;     UTF8; 'value'
-    2;     UTF8; '()Lrtl/Mixed;'
-    3;     UTF8; 'func0'
-    4;    CLASS; 3
-    5; NAMETYPE; 1 2
-    6;METHODREF; 4 5
-    7;     UTF8; '(Lrtl/Mixed;Lrtl/Mixed;)Lrtl/Mixed;'
-    8;     UTF8; 'func1'
-    9;    CLASS; 8
-   10; NAMETYPE; 1 7
-   11;METHODREF; 9 10

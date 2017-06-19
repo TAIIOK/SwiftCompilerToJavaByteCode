@@ -128,6 +128,7 @@ struct NExpr
 struct NVarType
 {
     enum NVarEnumType type;
+    bool isArray;
 };
 
 struct NStmt
