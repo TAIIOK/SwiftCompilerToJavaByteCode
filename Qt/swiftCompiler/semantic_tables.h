@@ -8,7 +8,8 @@
 #define _H_SEMANTIC_TABLES_
 
 #include "tree_nodes.h"
-
+#include "semantic_structs.h"
+#include <string>
 /*
  * Table structure declarations.
  */
@@ -16,63 +17,7 @@
 /**
  * Constant types.
  */
-enum st_const_types {
-    CONST_UTF8      = 1,
-    CONST_DOUBLE    = 2,
-    CONST_INT       = 3,
-    CONST_FLOAT     = 4,
-    CONST_CLASS     = 7,
-    CONST_STRING    = 8,
-    CONST_FIELDREF  = 9,
-    CONST_METHODREF = 10,
-    CONST_NAMETYPE  = 12
-};
 
-/**
- * Filed flags.
- */
-enum st_filed_flags {
-    FIELD_ACCESS_PUBLIC    = 0x0001,
-    FIELD_ACCESS_PRIVATE   = 0x0002,
-    FIELD_ACCESS_PROTECTED = 0x0004,
-
-    FIELD_STATIC = 0x0008
-};
-
-/**
- * Method flags.
- */
-enum st_method_flags {
-    METHOD_ACCESS_PUBLIC    = 0x001,
-    METHOD_ACCESS_PRIVATE   = 0x002,
-    METHOD_ACCESS_PROTECTED = 0x004,
-
-    METHOD_STATIC   = 0x0008,
-    METHOD_FINAL    = 0x0010,
-    METHOD_ABSTRACT = 0x0400
-};
-
-/**
- * A record of constants table.
- * Singly-Linked list element.
- */
-typedef struct st_const STConst;
-struct st_const {
-    enum st_const_types type;
-    union {
-        char * utf8;
-        struct {
-            int arg1;
-            int arg2;
-        } args;
-
-        int val_int;
-        float val_float;
-        double val_double;
-    } value;
-
-    STConst * next;
-};
 
 /**
  * Represents field record.
@@ -391,8 +336,8 @@ void st_stmt_while(struct NWhile * node) {
 
 void st_stmt_for(struct NFor * node) {
     st_stmt_expr(node->name);
-    st_stmt_expr(node->start);
-    st_stmt_expr(node->step);
+    st_stmt_expr(node->start->right);
+    st_stmt_expr(node->start->left);
     st_stmt_list(node->body);
 }
 

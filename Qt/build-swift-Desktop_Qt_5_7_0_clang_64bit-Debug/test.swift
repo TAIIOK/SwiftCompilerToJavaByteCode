@@ -13,17 +13,89 @@
  ]
  }
  */
+import Foundation
 
-var ints:Int
+var line = readLine()
+print(line)
 
-var bool1:Bool
+var varuble = 4
+let constant = 3
+var double = 3123.1231231
+var hex = 0xFFF                 // 4095 in hexadecimal notation
+let binaryInteger = 0b10001     // 17 in binary notation
+let octalInteger = 0o21			// 17 in octal notation
+var trueBool:Bool = true
+var falseBool:Bool = false
+var int:Int = 0
+var char:Character = "s"
+var string:String = "string"
+var doublevar:Double = 0.1
+var float:Float = 0.1
+
+var SD = "SD"
+
+var __ = SD
+__ = "s"
+
+var $ = 5
+
+var massive:[Int] = []
 
 
-switch bool1 {
-case false:
-    break
+print("array size\(someInts.count)")
+
+var stringvar = "testing string"
+
+//print("string size\(stringvar.characters.count)")
+
+if (!trueBool || falseBool ){
+}
+
+if (trueBool || falseBool ){
+}
+
+if (trueBool && falseBool ){
+}
+
+if varuble == constant {
+    print("равны\(2)")
+}
+else if (varuble < constant){
+}
+else {
+}
+
+while varuble != constant{
+}
+
+repeat{
+    print("\(int)")
+    int = int + 22
+}while (varuble>constant)
+
+for index in 3...6 {
+    print("\(index) times 5 is \(index)")
+}
+
+
+
+func myFunc(){
+    
+    var bar = 90
+    
+}
+
+var  sdb = "ss"
+
+
+func myssFuncs(){
+    
+    var bar = 91
+    
+}
+switch trueBool {
 case true:
     break
- default:
-    break
+case false: break
+default: break
 }

@@ -3,7 +3,7 @@ QT -= gui
 
 CONFIG += c++11
 
-TARGET = untitled
+TARGET = swiftcomp
 CONFIG += console
 CONFIG -= app_bundle
 
@@ -23,4 +23,5 @@ HEADERS += \
     tree_nodes_funcs.h \
     tree_print.h \
     swift.tab.h \
-    semantic.h
+    semantic.h \
+    semantic_structs.h

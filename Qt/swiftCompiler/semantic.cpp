@@ -5,22 +5,46 @@ semantic::semantic()
 
 }
 
+void semantic::printTable()
+{
+    for(int i = 0; i < table.size(); i++)
+    {
+        switch (table[i].type) {
+            case CONST_UTF8:      printf("'%s'", table[i].value.utf8);      break;
+            case CONST_INT:       printf("%d", table[i].value.val_int);   break;
+            case CONST_FLOAT:     printf("%f", table[i].value.val_float); break;
+            case CONST_DOUBLE:    printf("%f", table[i].value.val_double); break;
+            case CONST_CLASS:
+            case CONST_STRING:    printf("%d", table[i].value.args.arg1); break;
+
+            case CONST_FIELDREF:
+            case CONST_METHODREF:
+            case CONST_NAMETYPE: printf("%d %d", table[i].value.args.arg1, table[i].value.args.arg2); break;
+
+            default:              printf("==WTF?=="); break;
+        }
+    printf("\n");
+
+    }
+}
 
 void semantic::create_tree(NStmtList *root){
 
     table.clear();
 
     struct NStmt * current = root->first;
-    while (current != 0) {
+    while (current != NULL) {
         st_stmt(current);
         current = current->next;
     }
+
+    printTable();
 
 }
 
 void semantic::st_stmt_list(struct NStmtList * node) {
     struct NStmt * current = node->first;
-    while (current != 0) {
+    while (current != NULL) {
         st_stmt(current);
         current = current->next;
     }
@@ -90,8 +114,8 @@ void semantic::st_stmt_while(struct NWhile * node) {
 
 void semantic::st_stmt_for(struct NFor * node) {
     st_stmt_expr(node->name);
-    st_stmt_expr(node->start);
-    st_stmt_expr(node->step);
+    st_stmt_expr(node->start->right);
+    st_stmt_expr(node->start->left);
     st_stmt_list(node->body);
 }
 
@@ -194,53 +218,53 @@ void semantic::st_stmt_if(struct NIf * node) {
 void semantic::st_stmt_expr(struct NExpr * node) {
     switch (node->type) {
         case EXPR_INT: {
-            /*if (st_constant_index(*st_current_const_table, CONST_INT, (void *)&(node->Int)) == -1) {
-                STConst * cint = (STConst *)malloc(sizeof(STConst));
-                cint->next = NULL;
 
-                cint->type = CONST_INT;
-                cint->value.val_int = node->Int;
+            if (st_constant_index(CONST_INT, (void *)&(node->Int)) == -1) {
+                STConst cint;
+                cint.next = NULL;
 
-                (*st_current_const_last)->next = cint;
-                *st_current_const_last = cint;
+                cint.type = CONST_INT;
+                cint.value.val_int = node->Int;
+               table.append(cint);
             }
-            */
-        }
+
+
         break;
 
         case EXPR_FLOAT: {
-        /*
-            if (st_constant_index(*st_current_const_table, CONST_FLOAT, (void *)&(node->Float)) == -1) {
-                STConst * cfloat = (STConst *)malloc(sizeof(STConst));
-                cfloat->next = NULL;
+                if (st_constant_index(CONST_FLOAT, (void *)&(node->Float)) == -1) {
+                    STConst cint;
+                    cint.next = NULL;
 
-                cfloat->type = CONST_FLOAT;
-                cfloat->value.val_float = node->Float;
-
-                (*st_current_const_last)->next = cfloat;
-                *st_current_const_last = cfloat;
-            }
-            */
+                    cint.type = CONST_FLOAT;
+                    cint.value.val_float = node->Float;
+                   table.append(cint);
+                }
         }
 
         case EXPR_DOUBLE: {
-        /*
-            if (st_constant_index(*st_current_const_table, CONST_DOUBLE, (void *)&(node->Double)) == -1) {
-                STConst * cfloat = (STConst *)malloc(sizeof(STConst));
-                cfloat->next = NULL;
+                if (st_constant_index(CONST_DOUBLE, (void *)&(node->Double)) == -1) {
+                    STConst cint;
+                    cint.next = NULL;
 
-                cfloat->type = CONST_DOUBLE;
-                cfloat->value.val_double = node->Double;
+                    cint.type = CONST_DOUBLE;
+                    cint.value.val_double = node->Double;
+                   table.append(cint);
+                }
 
-                (*st_current_const_last)->next = cfloat;
-                *st_current_const_last = cfloat;
-
-            }
-            */
         }
         break;
 
         case EXPR_STR: {
+
+                if (st_constant_index(CONST_UTF8, (void *)&(node->name)) == -1) {
+                    STConst cint;
+                    cint.next = NULL;
+
+                    cint.type = CONST_UTF8;
+                    cint.value.utf8 = node->name;
+                   table.append(cint);
+                }
         /*
             // Make UTF-8
             STConst * utf8 = (STConst *)malloc(sizeof(STConst));
@@ -282,4 +306,47 @@ void semantic::st_stmt_expr(struct NExpr * node) {
     if (node->right != NULL) {
         st_stmt_expr(node->right);
     }
+}
+}
+
+int semantic::st_constant_index(enum st_const_types type, const void *value)
+{
+    QList<st_const>::iterator cur;
+    int index = 0;
+    for (cur = table.begin(); cur != table.end(); ++cur){
+        if (cur->type == type) {
+            switch (type) {
+                case CONST_INT:
+                    if (cur->value.val_int == *((int *)value)) {
+                        return index;
+                    }
+                break;
+
+                case CONST_DOUBLE:
+                    if (cur->value.val_double == *((double *)value)) {
+                        return index;
+                    }
+                break;
+
+
+                case CONST_FLOAT:
+                    if (cur->value.val_float == *((double *)value)) {
+                        return index;
+                    }
+                break;
+
+                case CONST_UTF8:
+                    if (strcmp(cur->value.utf8, (const char *)value) == 0) {
+                        return index;
+                    }
+                break;
+
+                default:
+                    return -1;
+                break;
+            }
+        }
+        index++;
+    }
+    return -1;
 }
