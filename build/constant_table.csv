@@ -1,6 +1,15 @@
 ';Constant table:;
-'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 4
+'    1;     UTF8; 'Code'
+    2;      INT; 1
+';Function constant table:;
+'    1; ==WTF?==; ==WTF?==
+    2;      INT; 1
 ';Function list:;
-';Function methodrefs:;
-    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
+';'myFuncM';;Function methodrefs:;
+    1; ==WTF?==; ==WTF?==
+    2;     UTF8; 'value'
+    3;     UTF8; '(Lrtl/Mixed;Lrtl/Mixed;Lrtl/Mixed;)Lrtl/Mixed;'
+    4;     UTF8; 'func0'
+    5;    CLASS; 3
+    6; NAMETYPE; 1 2
+    7;METHODREF; 4 5

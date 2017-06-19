@@ -7,7 +7,7 @@
     #include <netinet/in.h>
 	  #include <math.h>
 
-    #include "swift.tab.h"
+    #include "swift.tab.hpp"
     #include "semantic_tables.h"
     #include "tree_print.h"
 
@@ -249,7 +249,7 @@ int main(int argc,char* argv[])
 
         printf("Function methodrefs:\n");
         fprintf(output, "%s",";Function methodrefs:;\n");
-        st_print_const(st_func_handles);
+       st_print_const(st_func_handles);
         st_print_const_file(output,st_func_handles);
         fclose(output);
 
