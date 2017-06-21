@@ -1721,22 +1721,22 @@ yyreduce:
     {
         case 2:
 #line 135 "../bison/swift.y"
-    {printf("kekes-1");;}
+    {;;}
     break;
 
   case 3:
 #line 136 "../bison/swift.y"
-    {printf("kekes0");;}
+    {;;}
     break;
 
   case 4:
 #line 139 "../bison/swift.y"
-    {printf("kekes1");;}
+    {;;}
     break;
 
   case 5:
 #line 140 "../bison/swift.y"
-    {printf("kekes2");;}
+    {;;}
     break;
 
   case 6:

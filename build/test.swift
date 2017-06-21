@@ -88,8 +88,8 @@ func myFuncMoreThanOneParam(dad:Int,str:String,bo:Bool) -> Bool {
     return true
 }
 
-//var resultone = myFuncOneParam(dad: 1)
-//var resultsecond = myFuncMoreThanOneParam(dad: 1, str: "", bo: true)
+var resultone = myFuncOneParam(dad: 1)
+var resultsecond = myFuncMoreThanOneParam(dad: 1, str: "", bo: true)
 
 switch trueBool {
 case true:

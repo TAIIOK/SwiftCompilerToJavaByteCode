@@ -41,6 +41,8 @@
    39;   STRING; 38
    40;     UTF8; ''
    41;   STRING; 19
+   42;     UTF8; ''
+   43;   STRING; 19
 ';Function constant table:;
 '    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
 ';Function list:;

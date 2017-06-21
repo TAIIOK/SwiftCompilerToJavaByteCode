@@ -132,12 +132,12 @@
 
 %%
 
-end_expr:             ENDL  {printf("kekes-1");}
-                      | ';' opt_endl {printf("kekes0");}
+end_expr:             ENDL  {;}
+                      | ';' opt_endl {;}
 ;
 
-opt_endl:             /* empty */ {printf("kekes1");}
-                      | ENDL {printf("kekes2");}
+opt_endl:             /* empty */ {;}
+                      | ENDL {;}
 ;
 
 root:               stmt_list {printf("root\n");root=$1; $$=$1;}
