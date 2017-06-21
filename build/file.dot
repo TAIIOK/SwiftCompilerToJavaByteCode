@@ -625,7 +625,7 @@ expr173--expr174;
 expr175[label = "fcall"];
 assign24--expr175;
 expr175name[label = "name"];
-expr176[label = "myFuncMoreThanOn‡e‡≠ù"];
+expr176[label = "myFuncMoreThanOn"];
 expr175name--expr176;
 expr175--expr175name;
 expr175args[label = " args "];

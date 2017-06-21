@@ -369,6 +369,7 @@ classs.type = CONST_CLASS;
 classs.value.val_int  = 2;
 table.push_back(classs);
 
+/*
 STConst param;
 param.next = NULL;
 param.type = CONST_UTF8;
@@ -380,6 +381,21 @@ minit.next = NULL;
 minit.type = CONST_UTF8;
 minit.value.utf8  = "<init>";
 table.push_back(minit);
+*/
+
+
+STConst minit;
+minit.next = NULL;
+minit.type = CONST_UTF8;
+minit.value.utf8  = "Main";
+table.push_back(minit);
+
+STConst param;
+param.next = NULL;
+param.type = CONST_UTF8;
+param.value.utf8  = "()V";
+table.push_back(param);
+
 
 }
 void create_table(NStmtList *root){
