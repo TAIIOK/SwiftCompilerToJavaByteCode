@@ -399,6 +399,7 @@ void st_stmt_func(struct NStmt * node) {
 }
 
 void st_stmt_if(struct NIf * node) {
+    st_stmt_expr(node->condition);
     st_stmt_list(node->body);
 
     struct NIf* current = node->elseiflist->first;
@@ -494,6 +495,29 @@ void st_stmt_expr(struct NExpr * node) {
         }
         break;
 
+        case EXPR_ID: {
+            // Make UTF-8
+            printf("%s name",node->name);
+            if(node->Int != NULL){
+              printf("kek");
+            }
+            if(node->vartype != NULL){
+            printf("%d TYPE\n",node->vartype->type);
+          }
+        }
+        break;
+
+        case EXPR_ID_LIST: {
+            // Make UTF-8
+
+            struct NExpr * cur = node->idlist->first;
+            while (cur != NULL) {
+                st_stmt_expr(cur);
+
+                cur = cur->next;
+            }
+        }
+        break;
         case EXPR_MET: {
             function_call.push_back(*node);
             struct NExpr * cur = node->right->idlist->first;
@@ -504,6 +528,7 @@ void st_stmt_expr(struct NExpr * node) {
         }
         break;
     }
+
 
     if (node->left != NULL) {
         st_stmt_expr(node->left);
