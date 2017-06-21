@@ -65,42 +65,12 @@ struct st_const {
  * Function declarations.
  */
 
-void st_stmt_switch_list(struct NCaseList * node);
-
-void st_stmt_switch(struct NSwitch * node);
-
-/**
- * Creates a new constant table with first temporary UTF8 entry.
- * @return A pointer to constant list.
- */
-STConst * st_new_const_table();
-
-/**
- * Creates a new one-argument constant.
- * Accepts: CONST_UTF8, CONST_INT, CONST_FLOAT, CONST_CLASS, CONST_STRING.
- * @param [in] type Constant type.
- * @param [in] arg  Constant value.
- * @return Created constant.
- */
-STConst * st_new_const(enum st_const_types type, void * arg);
-
-/**
-* Creates a new two-argument constant.
-* Accepts: CONST_FIELDREF, CONST_METHODREF, CONST_NAMETYPE.
-* @param [in] type Constant type.
-* @param [in] arg1 Constant first value.
-* @param [in] arg2 Constant second value.
-* @return Created constant.
-*/
-STConst * st_new_const2(enum st_const_types type, int arg1, int arg2);
-
 
 
 /**
  * Fills tables according to given tree.
  * @param [in] root The root of the tree.
  */
-
 
 void st_stmt_list(struct NStmtList * node);
 void st_stmt(struct NStmt * node);
@@ -109,68 +79,33 @@ void st_stmt_for(struct NFor * node);
 void st_stmt_func(struct NFunc * node);
 void st_stmt_if(struct NIf * node);
 void st_stmt_expr(struct NExpr * node);
+void st_stmt_switch_list(struct NCaseList * node);
+void st_stmt_switch(struct NSwitch * node);
 
-/**
- * Returns zero-based index of one-argument constant in table.
- * @param [in] table A constant table to search in
- * @param [in] type  Constant type. Supported types are:
- *                   CONST_INT
- *                   CONST_FLOAT
- *                   CONST_UTF8
- * @param [in] arg1  First value.
- * @param [in] arg2  Second value.
- * @return Zero-based index or -1 when constant not found.
- */
+
 int st_constant_index(enum st_const_types type, const void * value);
 
-/**
- * Returns zero-based index of two-argument constant in table.
- * @param [in] table A constant table to search in
- * @param [in] type  Constant type. Supported types are:
- *                   CONST_FIELDREF
- *                   CONST_METHODREF
- *                   CONST_NAMETYPE
- * @param [in] value Constant value.
- * @return Zero-based index or -1 when constant not found.
- */
+
 int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int arg2);
 
-/**
- * Prints the constants table.
- */
+
 void st_print_const();
 
 void st_print_const_file(FILE *  output,STConst * table);
 
-/**
- * Return a string containing constant type name.
- * Just turns enum value to it's name.
- * @param [in]  type Const type.
- * @param [out] name String.
- * @return param name.
- */
+
 char * st_type_name(enum st_const_types type, char name[10]);
 
-/**
- * Returns the number of elements in given expr list.
- * This function iterates over the list.
- * @param [in] start List head.
- * @return Number of elements.
- */
+
 int    nexprlist_count(NExprList * start);
 
-/**
- * Generates a function handle for the given function;
- * @param [in] f      NFunc tree node.
- * @param [in] buffer Text buffer.
- * @return Text buffer with function handle.
- */
+
 char * st_gen_func_handle(NFunc * f, char * buffer);
 
 
 //############################################################################//
 
-list<st_const> table; // объявляем пустой список
+list<st_const> table; 
 list<NFunc> functions_list;
 list<NExpr> function_call;
 
