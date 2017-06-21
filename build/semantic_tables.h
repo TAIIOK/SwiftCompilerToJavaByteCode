@@ -76,7 +76,7 @@ void st_stmt_list(struct NStmtList * node);
 void st_stmt(struct NStmt * node);
 void st_stmt_while(struct NWhile * node);
 void st_stmt_for(struct NFor * node);
-void st_stmt_func(struct NFunc * node);
+void st_stmt_func(struct NStmt * node);
 void st_stmt_if(struct NIf * node);
 void st_stmt_expr(struct NExpr * node);
 void st_stmt_switch_list(struct NCaseList * node);
@@ -171,14 +171,62 @@ char * get_function_args(struct NFunc * f)
     return str;
 }
 
-void print_function_param(char * function,NStmtList *root){
+
+void print_function_param(char * function,struct NStmt * current){
+    char * str = (char*)malloc(sizeof(char)*33);;
+
+        if(current->type == STMT_FUNC)
+        {
+          STConst name;
+          name.next = NULL;
+          name.type = CONST_UTF8;
+          name.value.utf8  = function;
+          table.push_back(name);
+
+         if(strcmp(current->func->name->last->name,function) == 0)
+         {
+             if(current->func->args->first == NULL)
+             {
+                 strcat(str,"()");
+
+             }
+             else{
+                 strcat(str,get_function_args(current->func));
+             }
+             if(current->func->vartype == NULL)
+             {
+              strcat(str,"V;");
+             }else{
+                strcat(str,get_function_type(current->func));
+             }
+             STConst code;
+             code.next = NULL;
+             code.type = CONST_UTF8;
+             code.value.utf8  = str;
+             table.push_back(code);
+               }
+         }
+
+
+
+
+
+}
+
+void print_function_param(char * function, NStmtList *root){
     char * str = (char*)malloc(sizeof(char)*33);;
     struct NStmt * current = root->first;
     while (current != NULL) {
+
         if(current->type == STMT_FUNC)
         {
          if(strcmp(current->func->name->last->name,function) == 0)
          {
+           STConst name;
+           name.next = NULL;
+           name.type = CONST_UTF8;
+           name.value.utf8  = function;
+           table.push_back(name);
              if(current->func->args->first == NULL)
              {
                  strcat(str,"()");
@@ -283,7 +331,7 @@ void st_stmt(struct NStmt * node) {
         case STMT_EXPR:   st_stmt_expr(node->expr);                         break;
         case STMT_BLOCK:  st_stmt_list(node->list);                         break;
         case STMT_REPEAT: st_stmt_while(node->while_loop);                  break;
-        case STMT_LFUNC:  st_stmt_func(node->func);                         break;
+        case STMT_LFUNC:  st_stmt_func(node);                         break;
         case STMT_RETURN: if (node->expr != NULL) st_stmt_expr(node->expr); break;
         case STMT_IF:     st_stmt_if(node->if_tree);                        break;
         case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
@@ -292,7 +340,7 @@ void st_stmt(struct NStmt * node) {
           functions_list.push_back(*node->func);
 
             // Fill table.
-            st_stmt_func(node->func);
+            st_stmt_func(node);
 
         }
         break;
@@ -335,86 +383,9 @@ void st_stmt_for(struct NFor * node) {
     st_stmt_list(node->body);
 }
 
-void st_stmt_func(struct NFunc * node) {
-  /*
-    int arg1;
-    char buf[512];
-    STConst * c = NULL;
-    SList * f = (SList *)malloc(sizeof(SList));
-
-    // Add function to list
-    f->next = NULL;
-    f->data = (void *)(node);
-    if (func_list == NULL) {
-        func_list = f;
-        func_last = f;
-    } else {
-        func_last->next = f;
-        func_last = f;
-    }
-
-    // Set function classname
-    node->classname = (char *)malloc(10);
-    sprintf(node->classname, "func%d", funcnum);
-    funcnum++;
-
-    // Create methodref
-
-    // Method name UTF8
-    if (st_constant_index(st_func_handles, CONST_UTF8, "value") == -1) {
-        c = st_new_const(CONST_UTF8, NULL);
-        c->value.utf8 = (char *)malloc(6);
-        strcpy(c->value.utf8, "value");
-        st_func_hlast->next = c;
-        st_func_hlast = c;
-        fconstnum++;
-    }
-
-    // Function handle UTF8
-    st_gen_func_handle(node, buf);
-    int fh = st_constant_index(st_func_handles, CONST_UTF8, buf);
-    if (fh == -1) {
-        c = st_new_const(CONST_UTF8, NULL);
-        c->value.utf8 = (char *)malloc(512);
-        strcpy(c->value.utf8, buf);
-        st_func_hlast->next = c;
-        st_func_hlast = c;
-        fh = ++fconstnum;
-    }
-
-    // Class name UTF8
-    c = st_new_const(CONST_UTF8, (void *)node->classname);
-    st_func_hlast->next = c;
-    st_func_hlast = c;
-    fconstnum++;
-
-    // Class
-    c = st_new_const(CONST_CLASS, (void *)&fconstnum);
-    st_func_hlast->next = c;
-    st_func_hlast = c;
-    fconstnum++;
-
-    // Name and type
-    arg1 = st_constant_index(st_func_handles, CONST_UTF8, "value");
-    int nt = st_constant_index2(st_func_handles, CONST_NAMETYPE, arg1, fh);
-    if (nt == -1) {
-        c = st_new_const2(CONST_NAMETYPE, arg1, fh);
-        st_func_hlast->next = c;
-        st_func_hlast = c;
-        nt = ++fconstnum;
-    }
-
-    // Methodref
-    arg1 = fconstnum - 1;
-    c = st_new_const2(CONST_METHODREF, arg1, nt);
-    st_func_hlast->next = c;
-    st_func_hlast = c;
-    fconstnum++;
-
-    // Set methodref attribute
-    node->methodref = fconstnum;
-*/
-    st_stmt_list(node->body);
+void st_stmt_func(struct NStmt * node) {
+    print_function_param(node->func->name->last->name,node);
+    st_stmt_list(node->func->body);
 }
 
 void st_stmt_if(struct NIf * node) {

@@ -82,10 +82,11 @@ for index in 1...5 {
 }
 
 func main() -> Bool{
-
+    var a = 5
 }
 
 func myFuncOneParam(dad:Int) -> Bool {
+    var a = 55
     return true
 }
 
