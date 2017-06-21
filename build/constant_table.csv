@@ -1,11 +1,50 @@
 ';Constant table:;
 '    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 5
+    1;      INT; 4
+    2;      INT; 3
+    3;   DOUBLE; 3123.123123
+    4;      INT; 4095
+    5;      INT; 17
+    6;      INT; 0
+    7;     UTF8; 's'
+    8;   STRING; 7
+    9;     UTF8; 'string'
+   10;   STRING; 9
+   11;   DOUBLE; 0.100000
+   12;     UTF8; 'SD'
+   13;   STRING; 12
+   14;     UTF8; 's'
+   15;   STRING; 7
+   16;      INT; 5
+   17;     UTF8; 'array size'
+   18;   STRING; 17
+   19;     UTF8; ''
+   20;   STRING; 19
+   21;     UTF8; 'testing string'
+   22;   STRING; 21
+   23;     UTF8; 'string size'
+   24;   STRING; 23
+   25;     UTF8; ''
+   26;   STRING; 19
+   27;     UTF8; 'равны'
+   28;   STRING; 27
+   29;     UTF8; ''
+   30;   STRING; 19
+   31;     UTF8; ''
+   32;   STRING; 19
+   33;     UTF8; ''
+   34;   STRING; 19
+   35;      INT; 1
+   36;     UTF8; ''
+   37;   STRING; 19
+   38;     UTF8; ' times 5 is '
+   39;   STRING; 38
+   40;     UTF8; ''
+   41;   STRING; 19
 ';Function constant table:;
 '    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
-    1;      INT; 56
 ';Function list:;
-';'lol';;Function methodrefs:;
+';'myFuncMoreThanOneParam';;Function methodrefs:;
     0;     UTF8; 'RTL METHODREFS WILL BE HERE'
     1;     UTF8; 'value'
     2;     UTF8; '(Lrtl/Mixed;Lrtl/Mixed;Lrtl/Mixed;)Lrtl/Mixed;'

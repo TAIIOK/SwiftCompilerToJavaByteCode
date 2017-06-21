@@ -132,12 +132,12 @@
 
 %%
 
-end_expr:             ENDL  {;}
-                      | ';' opt_endl {;}
+end_expr:             ENDL  {printf("kekes-1");}
+                      | ';' opt_endl {printf("kekes0");}
 ;
 
-opt_endl:             /* empty */ {;}
-                      | ENDL {;}
+opt_endl:             /* empty */ {printf("kekes1");}
+                      | ENDL {printf("kekes2");}
 ;
 
 root:               stmt_list {printf("root\n");root=$1; $$=$1;}
@@ -148,7 +148,7 @@ stmt_import:          IMPORT var {printf("import found\n");$$ = create_import($2
 
 /* == Statements == */
 
-stmt_block:          '{' stmt_list '}'  opt_endl  {printf("block found\n");$$ = $2;}
+stmt_block:          '{' stmt_list '}'   {printf("block found\n");$$ = $2;}
 ;
 
 stmt_list:            /* empty */ { printf("stmt list null found\n");$$ = create_stmt_list(NULL);}
@@ -164,15 +164,15 @@ stmt:                 stmt_block {printf("stmt_block\n");$$ = create_stmt_block(
                     | BREAK end_expr {printf("stmt_break\n");$$ = create_stmt_spec(0);}
                     | RETURN end_expr {printf("stmt_return\n");$$ = create_stmt_spec(1);}
                     | RETURN expr end_expr {printf("stmt_return end\n");$$ = create_stmt_return($2);}
+                    | end_expr {printf("end_expr\n");$$ = create_stmt_spec(2);}
                     | expr end_expr {printf("stmt_expr\n");$$ = create_stmt_expr($1);}
                     | var '=' expr end_expr {printf("line with eq\n"); $$ = create_stmt_assign($1, $3, 0);}
                     | func_decl_named {printf("stmt_func decl\n");$$ = create_stmt_func($1);}
-                    | end_expr {printf("end_expr\n");$$ = create_stmt_spec(2);}
                     | stmt_import {printf("stmt_import\n");$$ = create_stmt_import($1);}
 ;
 
-stmt_if:              IF expr opt_endl stmt_block elseif_list opt_endl {printf("stmt_if_1\n");$$ = create_if($2, $4, $5, create_stmt_list(NULL));}
-                    | IF expr opt_endl stmt_block elseif_list ELSE stmt_block opt_endl {printf("stmt_if_2\n");$$ = create_if($2, $4, $5, $7);}
+stmt_if:              IF expr opt_endl stmt_block opt_endl elseif_list opt_endl {printf("stmt_if_1\n");$$ = create_if($2, $4, $6, create_stmt_list(NULL));}
+                    | IF expr opt_endl stmt_block opt_endl elseif_list opt_endl ELSE stmt_block opt_endl {printf("stmt_if_2\n");$$ = create_if($2, $4, $6, $9);}
 ;
 elseif_list:          /* empty */ {printf("empty else if\n");$$ = create_if_list(NULL); }
                     | elseif_list ELSEIF expr stmt_block {printf("else_if\n");$$ = add_if_to_list($1, create_if($3, $4, create_if_list(NULL), create_stmt_list(NULL)));}
@@ -253,8 +253,9 @@ func_call:            var '(' arg_list ')' {printf("function call\n"); $$ = crea
 arg_list:             /* empty */ {printf("arg_list empty\n");$$ = create_expr_list(NULL,NULL);}
                     | args {printf("arg_list args \n");$$ = $1;}
 ;
-args:                 alone_id ':' varubleType {printf("args id : expr\n");$$ = create_expr_list($1,$3);}
-                    | args ',' alone_id ':' varubleType {printf("args , id : expr\n");$$ = add_expr_to_list($1, $3,$5);}
+args:                expr               { $$ = create_expr_list($1,NULL); }
+                    |  alone_id ':' expr {printf("args id : expr\n");$$ = create_expr_list($3,NULL);}
+                    | args ',' alone_id ':' expr {printf("args , id : expr\n");$$ = add_expr_to_list($1, $5,NULL);}
 ;
 
 varubleType:                 INTT {printf("int type\n");$$ = create_var_type(INTTy);}
