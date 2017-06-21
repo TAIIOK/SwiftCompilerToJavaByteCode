@@ -105,7 +105,7 @@ char * st_gen_func_handle(NFunc * f, char * buffer);
 
 //############################################################################//
 
-list<st_const> table; 
+list<st_const> table;
 list<NFunc> functions_list;
 list<NExpr> function_call;
 
@@ -226,19 +226,18 @@ classs.type = CONST_CLASS;
 classs.value.val_int  = 2;
 table.push_back(classs);
 
-/*
-STConst param;
-param.next = NULL;
-param.type = CONST_UTF8;
-param.value.utf8  = "()V";
-table.push_back(param);
 
-STConst minit;
-minit.next = NULL;
-minit.type = CONST_UTF8;
-minit.value.utf8  = "<init>";
-table.push_back(minit);
-*/
+STConst paramO;
+paramO.next = NULL;
+paramO.type = CONST_UTF8;
+paramO.value.utf8  = "java/lang/Object";
+table.push_back(paramO);
+
+STConst classss;
+classss.next = NULL;
+classss.type = CONST_CLASS;
+classss.value.val_int  = 4;
+table.push_back(classss);
 
 STConst minit;
 minit.next = NULL;
