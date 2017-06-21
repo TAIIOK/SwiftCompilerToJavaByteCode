@@ -1,1 +1,1 @@
-var s:String = 5
+var s = 5

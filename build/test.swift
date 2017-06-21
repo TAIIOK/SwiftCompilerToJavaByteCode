@@ -1,9 +1,5 @@
-var a = 1
+var s = 5
 
-
-func myFuncM(dad:Int,str:String,bo:Bool) -> Bool {
-    var i = 1
-    var a = 1
-    print(i)
-    return true
+func lol(lo:Int,lo:Double,lo:Float){
+    var ss = 56
 }

@@ -25,8 +25,7 @@ enum st_const_types {
     CONST_STRING    = 8,
     CONST_FIELDREF  = 9,
     CONST_METHODREF = 10,
-    CONST_NAMETYPE  = 12,
-    CONST_NULL = -1
+    CONST_NAMETYPE  = 12
 };
 
 /**
@@ -240,13 +239,31 @@ int    nexprlist_count(NExprList * start);
 char * st_gen_func_handle(NFunc * f, char * buffer);
 
 
-void st_create_head();
-
 //############################################################################//
 
 STConst * st_new_const_table() {
-    STConst * rtl = st_new_const(CONST_NULL, NULL);
+    STConst * rtl = st_new_const(CONST_UTF8, NULL);
+    rtl->value.utf8 = (char *)malloc(30);
+    strcpy(rtl->value.utf8, "RTL METHODREFS WILL BE HERE");
     return rtl;
+}
+
+void print_args(struct NStmtList * node)
+{
+  struct NStmt * current = node->first;
+  while (current != NULL) {
+      if(current->type == STMT_FUNC)
+      {
+        NExpr * cur = current->func->args->first;
+        while (cur != NULL) {
+            if(cur->vartype != NULL){
+            printf("%d",cur->vartype->type);
+          }
+            cur = cur->next;
+        }
+      }
+      current = current->next;
+  }
 }
 
 STConst * st_new_const(enum st_const_types type, void * arg) {
@@ -278,10 +295,6 @@ STConst * st_new_const(enum st_const_types type, void * arg) {
         case CONST_STRING:
         c->value.args.arg1 = *((int *)arg);
         break;
-
-        case CONST_NULL:
-        c->value.args.arg1 = NULL;
-        break;
     }
 
     return c;
@@ -309,6 +322,7 @@ int st_const_count(STConst * table) {
 }
 
 void st_fill_tables(struct NStmtList * root) {
+  print_args(root);
     st_func_handles = st_new_const_table();
     st_func_hlast   = st_func_handles;
 
@@ -320,29 +334,8 @@ void st_fill_tables(struct NStmtList * root) {
     *st_current_const_table = st_new_const_table();
     *st_current_const_last  = *st_current_const_table;
 
-    //Append head
-    st_create_head();
-
     // Append others
     st_stmt_list(root);
-}
-
-void st_create_head(){
-  STConst * rtl = st_new_const(CONST_UTF8, NULL);
-  rtl->value.utf8 = (char *)malloc(30);
-  strcpy(rtl->value.utf8, "Code");
-
-
-  *st_current_const_table = rtl;
-  *st_current_const_last  = *st_current_const_table;
-
-  STConst  rtl1 = st_new_const(CONST_UTF8, NULL);
-  rtl1->value.utf8 = (char *)malloc(30);
-  strcpy(rtl1->value.utf8, "Main");
-
-  st_current_const_last->next = rtl1;
-  *st_current_const_last = st_current_const_last;
-
 }
 
 void st_stmt_list(struct NStmtList * node) {
@@ -571,6 +564,15 @@ void st_stmt_expr(struct NExpr * node) {
             (*st_current_const_last)->next = utf8;
             *st_current_const_last = utf8;
 
+            // Make constant
+            STConst * cstr = (STConst *)malloc(sizeof(STConst));
+            cstr->next = NULL;
+
+            cstr->type = CONST_STRING;
+            cstr->value.args.arg1 = st_constant_index(*st_current_const_table, CONST_UTF8, utf8->value.utf8);
+
+            (*st_current_const_last)->next = cstr;
+            *st_current_const_last = cstr;
         }
         break;
 
@@ -656,7 +658,7 @@ void st_print_const_file(FILE * output, STConst * table) {
 
     char name[10] = "";
     STConst * cur = table;
-    int index = 1;
+    int index = 0;
     while (cur != 0) {
 
       fprintf(output, "%5d;%9s; ", index, st_type_name(cur->type, name));
@@ -688,7 +690,7 @@ void st_print_const(STConst * table)
 {
   char name[10] = "";
   STConst * cur = table;
-  int index = 1;
+  int index = 0;
   while (cur != 0) {
       printf("%5d:  %9s  ", index, st_type_name(cur->type, name));
       switch (cur->type) {

@@ -2560,7 +2560,7 @@ int main(int argc,char* argv[])
 
         printf("Function methodrefs:\n");
         fprintf(output, "%s",";Function methodrefs:;\n");
-       st_print_const(st_func_handles);
+        st_print_const(st_func_handles);
         st_print_const_file(output,st_func_handles);
         fclose(output);
 

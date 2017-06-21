@@ -723,22 +723,31 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "swift.yy"
 #line 2 "swift.yy"
+
     #include <stdio.h>
     #include <string.h>
     #include <unistd.h>
     #include <fcntl.h>
-    //#include <netinet/in.h>
+    #include <netinet/in.h>
 	  #include <math.h>
-    #include "swift.tab.h"
 
-   // #include "codegen.h"
+    #include "swift.tab.h"
+    #include "tree_print.h"
+
+    #include "codegen.h"
+
+
+
     #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
+
     char strconst[1281] = {0};
 	  int convertOctalToDecimal(int octalNumber);
 	  int convertBinaryToDecimal(int n);
+
     extern int yyparse(void);
     extern void update_tree_stmtlist(struct NStmtList* list,struct NStmtList* root);
     extern void update_tree_parent_func(struct NStmtList* root);
+
     /*
     <STRING_A>\\\(([^\)]*)\)        {
                                   yylval.Id = (char *)malloc(sizeof(yytext)+1);
@@ -751,7 +760,9 @@ char *yytext;
   static char staticstring[1281] = {0};
 
 
-#line 755 "lex.yy.c"
+
+
+#line 766 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -935,7 +946,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 36 "swift.yy"
+#line 47 "swift.yy"
 
 
   if(statictoken == 1)
@@ -956,7 +967,7 @@ YY_DECL
 
   }
 
-#line 960 "lex.yy.c"
+#line 971 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -1051,73 +1062,73 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 56 "swift.yy"
+#line 67 "swift.yy"
 {BEGIN(COMMENT); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 57 "swift.yy"
+#line 68 "swift.yy"
 {BEGIN(INITIAL);}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 58 "swift.yy"
+#line 69 "swift.yy"
 {}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 59 "swift.yy"
+#line 70 "swift.yy"
 {printf("Unterminated comment\n");return 0;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 61 "swift.yy"
+#line 72 "swift.yy"
 ;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 63 "swift.yy"
+#line 74 "swift.yy"
 { BEGIN(STRING_A); strcpy(strconst, ""); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 64 "swift.yy"
+#line 75 "swift.yy"
 strcat(strconst, "\\");
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 65 "swift.yy"
+#line 76 "swift.yy"
 strcat(strconst, "\"");
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 66 "swift.yy"
+#line 77 "swift.yy"
 strcat(strconst, "\r");
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 67 "swift.yy"
+#line 78 "swift.yy"
 strcat(strconst, "\t");
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 68 "swift.yy"
+#line 79 "swift.yy"
 strcat(strconst, "\n");
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 69 "swift.yy"
+#line 80 "swift.yy"
 strcat(strconst, "\\");
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 70 "swift.yy"
+#line 81 "swift.yy"
 strcat(strconst,yytext);
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 71 "swift.yy"
+#line 82 "swift.yy"
 {
                               strcat(staticstring, yytext);
                               statictoken = 1;
@@ -1130,7 +1141,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 80 "swift.yy"
+#line 91 "swift.yy"
 {
 								              yylval.String = (char *)malloc(strlen(strconst) + 1);
                               strcpy(yylval.String, strconst);
@@ -1141,293 +1152,293 @@ YY_RULE_SETUP
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 86 "swift.yy"
+#line 97 "swift.yy"
 ;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 89 "swift.yy"
+#line 100 "swift.yy"
 return IMPORT;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 91 "swift.yy"
+#line 102 "swift.yy"
 return VAR;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 92 "swift.yy"
+#line 103 "swift.yy"
 return LET;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 94 "swift.yy"
+#line 105 "swift.yy"
 return INTT;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 95 "swift.yy"
+#line 106 "swift.yy"
 return CHARACTERT;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 96 "swift.yy"
+#line 107 "swift.yy"
 return STRINGT;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 97 "swift.yy"
+#line 108 "swift.yy"
 return BOOLT;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 98 "swift.yy"
+#line 109 "swift.yy"
 return FLOATT;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 99 "swift.yy"
+#line 110 "swift.yy"
 return DOUBLET;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 101 "swift.yy"
+#line 112 "swift.yy"
 return TRUE;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 102 "swift.yy"
+#line 113 "swift.yy"
 return FALSE;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 104 "swift.yy"
+#line 115 "swift.yy"
 return REPEAT;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 105 "swift.yy"
+#line 116 "swift.yy"
 return WHILE;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 107 "swift.yy"
+#line 118 "swift.yy"
 return FOR;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 108 "swift.yy"
+#line 119 "swift.yy"
 return IN;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 110 "swift.yy"
+#line 121 "swift.yy"
 return IF;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 111 "swift.yy"
+#line 122 "swift.yy"
 return ELSEIF;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 112 "swift.yy"
+#line 123 "swift.yy"
 return ELSE;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 114 "swift.yy"
+#line 125 "swift.yy"
 return SWITCH;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 115 "swift.yy"
+#line 126 "swift.yy"
 return CASE;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 116 "swift.yy"
+#line 127 "swift.yy"
 return DEFAULT;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 117 "swift.yy"
+#line 128 "swift.yy"
 return BREAK;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 120 "swift.yy"
+#line 131 "swift.yy"
 return FUNCTION;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 121 "swift.yy"
+#line 132 "swift.yy"
 return FUNCTIONARROW;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 123 "swift.yy"
+#line 134 "swift.yy"
 return DO;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 124 "swift.yy"
+#line 135 "swift.yy"
 return RANGE;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 126 "swift.yy"
+#line 137 "swift.yy"
 return RETURN;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 127 "swift.yy"
+#line 138 "swift.yy"
 return NIL;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 129 "swift.yy"
+#line 140 "swift.yy"
 return '.';
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 130 "swift.yy"
+#line 141 "swift.yy"
 return SELF;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 131 "swift.yy"
+#line 142 "swift.yy"
 return ERROR;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 133 "swift.yy"
+#line 144 "swift.yy"
 return '-';
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 134 "swift.yy"
+#line 145 "swift.yy"
 return '*';
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 135 "swift.yy"
+#line 146 "swift.yy"
 return '/';
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 136 "swift.yy"
+#line 147 "swift.yy"
 return '%';
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 137 "swift.yy"
+#line 148 "swift.yy"
 return '+';
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 138 "swift.yy"
+#line 149 "swift.yy"
 return '=';
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 140 "swift.yy"
+#line 151 "swift.yy"
 return '>';
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 141 "swift.yy"
+#line 152 "swift.yy"
 return '<';
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 142 "swift.yy"
+#line 153 "swift.yy"
 return EQ;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 143 "swift.yy"
+#line 154 "swift.yy"
 return GE;
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 144 "swift.yy"
+#line 155 "swift.yy"
 return LE;
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 145 "swift.yy"
+#line 156 "swift.yy"
 return NE;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 147 "swift.yy"
+#line 158 "swift.yy"
 return ',';
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 149 "swift.yy"
+#line 160 "swift.yy"
 return '(';
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 150 "swift.yy"
+#line 161 "swift.yy"
 return ')';
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 151 "swift.yy"
+#line 162 "swift.yy"
 return '{';
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 152 "swift.yy"
+#line 163 "swift.yy"
 return '}';
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 153 "swift.yy"
+#line 164 "swift.yy"
 {printf("[");return '[';}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 154 "swift.yy"
+#line 165 "swift.yy"
 {printf("]");return ']';}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 155 "swift.yy"
+#line 166 "swift.yy"
 {printf(":");return ':';}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 157 "swift.yy"
+#line 168 "swift.yy"
 return ';';
 	YY_BREAK
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
-#line 158 "swift.yy"
+#line 169 "swift.yy"
 return ENDL;
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 160 "swift.yy"
+#line 171 "swift.yy"
 return OR;
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 161 "swift.yy"
+#line 172 "swift.yy"
 return AND;
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 162 "swift.yy"
+#line 173 "swift.yy"
 return NOT;
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 164 "swift.yy"
+#line 175 "swift.yy"
 {
                                   yylval.Int = convertBinaryToDecimal(atoi(yytext+2));
                                   return INT;
@@ -1435,7 +1446,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 168 "swift.yy"
+#line 179 "swift.yy"
 {
                                   yylval.Int = convertOctalToDecimal(atoi(yytext+2));
                                   return INT;
@@ -1443,7 +1454,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 172 "swift.yy"
+#line 183 "swift.yy"
 {
                                   yylval.Int = strtol(yytext,NULL,16);
                                   return INT;
@@ -1451,7 +1462,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 176 "swift.yy"
+#line 187 "swift.yy"
 {
                                   yylval.Int = atoi(yytext);
                                   return INT;
@@ -1459,7 +1470,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 180 "swift.yy"
+#line 191 "swift.yy"
 {
                                   yylval.Id = (char *)malloc(sizeof(yytext)+1);
                                   strcpy(yylval.Id, yytext);
@@ -1468,7 +1479,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 185 "swift.yy"
+#line 196 "swift.yy"
 {
                                   yylval.Double = atof(yytext);
                                   return DOUBLE;
@@ -1476,25 +1487,25 @@ YY_RULE_SETUP
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 190 "swift.yy"
+#line 201 "swift.yy"
 printf("Unknown symbol: %s\n",yytext);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 192 "swift.yy"
+#line 203 "swift.yy"
 {;};
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(STRING_A):
-#line 194 "swift.yy"
+#line 205 "swift.yy"
 return 0;
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 195 "swift.yy"
+#line 206 "swift.yy"
 ECHO;
 	YY_BREAK
-#line 1498 "lex.yy.c"
+#line 1509 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2501,8 +2512,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 195 "swift.yy"
-
+#line 206 "swift.yy"
 
 
 

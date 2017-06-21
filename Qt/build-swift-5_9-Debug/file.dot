@@ -1,0 +1,15 @@
+graph graphname {
+root;
+assign0[label = "="];
+root--assign0;
+expr0[label = "id"];
+assign0--expr0;
+consttype0[label = "Constant Type"];
+consttype0--expr0;
+consttype1[label = "Var"];
+consttype1--consttype0;
+expr1[label = "s"];
+expr0--expr1;
+expr2[label = "5"];
+assign0--expr2;
+}

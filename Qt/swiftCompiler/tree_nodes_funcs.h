@@ -6,7 +6,7 @@
 /*
  * Function definition
  */
-void update_tree(struct NStmt* current, struct NStmt* prev, struct NStmtList* root, struct NStmtList* list, bool first_in_list, bool last_in_list);
+void update_tree(struct NStmt* current,struct  NStmt* prev,struct  NStmtList* root,struct  NStmtList* list, bool first_in_list, bool last_in_list);
 void update_tree_if(struct NIf* current, struct NStmtList* root);
 void set_parent_func(struct NStmt* child, struct NFunc* parent);
 void set_null_field_expr(struct NExpr* expr);
@@ -443,11 +443,6 @@ void update_tree_if(struct NIf* current, struct NStmtList* root)
 
 void set_parent_func(struct NStmt* child, struct NFunc* parent)
 {
-    if(child == NULL)
-    {
-        return;
-    }
-
     if(child->type == STMT_LFUNC || child->type == STMT_FUNC
         || ((child->type == STMT_ASSIGN ||
             child->type == STMT_LASSIGN ||
@@ -539,7 +534,7 @@ void set_null_field_expr(struct NExpr* expr)
     expr->origin = NULL;
 }
 
-struct NExpr* create_op_expr(enum NExprType type, struct NExpr* left,struct NExpr* right)
+struct NExpr* create_op_expr(enum NExprType type,struct NExpr* left,struct NExpr* right)
 {
     struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
     set_null_field_expr(result);
@@ -569,7 +564,7 @@ struct NExpr* create_expr_string(char* string)
 
 struct NExpr* create_expr_int(int value)
 {
-   struct  NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
+    struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
     set_null_field_expr(result);
     result->Int = value;
     result->type = EXPR_INT;
@@ -587,7 +582,7 @@ struct NExpr* create_expr_double(double value)
 
 struct NExpr* create_expr_float(float value)
 {
-    struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
+    struct  NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
     set_null_field_expr(result);
     result->Float = value;
     result->type = EXPR_FLOAT;
@@ -620,18 +615,6 @@ struct NExpr* create_expr_boolean(int value)
 
 struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varubltype ,struct NConstant* varlet)
 {
-    if(varubltype->isArray != NULL)
-    {
-        if(varubltype->isArray == true){
-        struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
-        set_null_field_expr(result);
-        result->table = NULL;
-        result->vartype = varubltype;
-        result->type = EXPR_TABLE;
-        return result;
-        }
-    }
-
 
     struct NExpr* result = (struct NExpr*)malloc(sizeof(struct NExpr));
     set_null_field_expr(result);
@@ -958,31 +941,21 @@ struct NFunc* set_func_name(struct NExprList* name, struct NFunc* result)
 
 struct NConstant* create_var_constant_type(enum NConstantEnum varEnumType)
 {
-  struct NConstant *result = (struct NConstant*)malloc(sizeof(struct  NConstant));
+  struct NConstant *result = (struct NConstant*)malloc(sizeof(struct NConstant));
   result->constant = varEnumType;
   return result;
 }
 
-struct NVarType* create_var_type(enum NVarEnumType varEnumType,bool array)
+struct NVarType* create_var_type(enum NVarEnumType varEnumType)
 {
   struct NVarType* result = (struct NVarType*)malloc(sizeof(struct NVarType));
   result->type = varEnumType;
-  result->isArray = array;
-
-  return result;
-}
-
-struct NVarType* create_var_type_array(struct NVarType* type)
-{
-    struct NVarType* result = (struct NVarType*)malloc(sizeof(struct NVarType));
-    result->type = type->type;
-    result->isArray = true;
   return result;
 }
 
 struct NStmt* create_stmt_return(struct NExpr* expr)
 {
-    struct NStmt* result = (struct NStmt*)malloc(sizeof(struct NStmt));
+    struct NStmt* result = (struct  NStmt*)malloc(sizeof(struct NStmt));
     result->type = STMT_RETURN;
     result->expr = expr;
     return result;

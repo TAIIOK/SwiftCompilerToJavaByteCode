@@ -730,16 +730,25 @@ struct NStmt* create_stmt_spec(int ret)
     return result;
 }
 
-struct  NExprList* create_expr_list(struct NExpr* first)
+struct  NExprList* create_expr_list(struct NExpr* first , struct NVarType* type)
 {
     struct NExprList* result = (NExprList*)malloc(sizeof(NExprList));
     result->first = first;
+    if(type != NULL){
+    result->first->vartype = type;
+    result->first->type = EXPR_ID;
+    }
     result->last = result->first;
     return result;
 }
 
-struct NExprList* add_expr_to_list(struct NExprList* list, struct NExpr* element )
+struct NExprList* add_expr_to_list(struct NExprList* list, struct NExpr* element,struct NVarType* type )
 {
+    if (type != NULL)
+    {
+      element->vartype = type;
+      element->type = EXPR_ID;
+    }
     list->last->next = element;
     list->last = element;
     return list;

@@ -9,7 +9,6 @@
 
 #include "tree_nodes.h"
 #include "semantic_structs.h"
-#include <string>
 /*
  * Table structure declarations.
  */
@@ -17,6 +16,32 @@
 /**
  * Constant types.
  */
+
+
+/**
+ * Filed flags.
+ */
+enum st_filed_flags {
+    FIELD_ACCESS_PUBLIC    = 0x0001,
+    FIELD_ACCESS_PRIVATE   = 0x0002,
+    FIELD_ACCESS_PROTECTED = 0x0004,
+
+    FIELD_STATIC = 0x0008
+};
+
+/**
+ * Method flags.
+ */
+enum st_method_flags {
+    METHOD_ACCESS_PUBLIC    = 0x001,
+    METHOD_ACCESS_PRIVATE   = 0x002,
+    METHOD_ACCESS_PROTECTED = 0x004,
+
+    METHOD_STATIC   = 0x0008,
+    METHOD_FINAL    = 0x0010,
+    METHOD_ABSTRACT = 0x0400
+};
+
 
 
 /**
@@ -336,8 +361,8 @@ void st_stmt_while(struct NWhile * node) {
 
 void st_stmt_for(struct NFor * node) {
     st_stmt_expr(node->name);
-    st_stmt_expr(node->start->right);
-    st_stmt_expr(node->start->left);
+    st_stmt_expr(node->start);
+    st_stmt_expr(node->step);
     st_stmt_list(node->body);
 }
 
@@ -658,7 +683,7 @@ char * st_type_name(enum st_const_types type, char name[10]) {
 
 int nexprlist_count(struct NExprList * start) {
     int count = 0;
-    struct NExpr * cur = start->first;
+   struct NExpr * cur = start->first;
     while (cur != NULL) {
         count++;
         cur = cur->next;

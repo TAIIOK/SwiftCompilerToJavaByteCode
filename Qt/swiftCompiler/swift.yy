@@ -1,20 +1,29 @@
 %{
+
     #include <stdio.h>
     #include <string.h>
     #include <unistd.h>
     #include <fcntl.h>
-    //#include <netinet/in.h>
+    #include <netinet/in.h>
 	  #include <math.h>
-    #include "swift.tab.h"
 
-   // #include "codegen.h"
+    #include "swift.tab.h"
+    #include "tree_print.h"
+
+    #include "codegen.h"
+
+
+
     #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
+
     char strconst[1281] = {0};
 	  int convertOctalToDecimal(int octalNumber);
 	  int convertBinaryToDecimal(int n);
+
     extern int yyparse(void);
     extern void update_tree_stmtlist(struct NStmtList* list,struct NStmtList* root);
     extern void update_tree_parent_func(struct NStmtList* root);
+
     /*
     <STRING_A>\\\(([^\)]*)\)        {
                                   yylval.Id = (char *)malloc(sizeof(yytext)+1);
@@ -25,6 +34,8 @@
   static int staticplus = 0;
   static int statictoken = 0;
   static char staticstring[1281] = {0};
+
+
 %}
 
 %option noyywrap
@@ -193,7 +204,6 @@
 
 <<EOF>>                       return 0;
 %%
-
 
 int convertOctalToDecimal(int octalNumber)
 {

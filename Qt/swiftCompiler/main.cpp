@@ -25,8 +25,6 @@ int main(int argc,char* argv[])
     update_tree_parent_func(root);
     update_tree_stmtlist(root,root);
     print_tree(root);
-    system("pause");
-
 
     FILE* output;
     output = fopen("constant_table.csv","w");

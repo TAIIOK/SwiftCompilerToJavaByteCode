@@ -26,19 +26,19 @@ enum NSwitchCaseType {
 enum NStmtType {
     STMT_WHILE,
     STMT_FOR,
-    STMT_EXPR, //2
+    STMT_EXPR,
     STMT_FUNC,
     STMT_BLOCK,
     STMT_REPEAT,
     STMT_LFUNC,
     STMT_BREAK,
     STMT_RETURN,
-    STMT_ASSIGN, //9
+    STMT_ASSIGN,
     STMT_ASSIGN_MAS,
     STMT_LASSIGN_MAS,
     STMT_LASSIGN,
     STMT_IF,
-    STMT_ENDL, //14
+    STMT_ENDL,
     STMT_SWITCH,
     STMT_IMPORT
 };
@@ -128,7 +128,6 @@ struct NExpr
 struct NVarType
 {
     enum NVarEnumType type;
-    bool isArray;
 };
 
 struct NStmt
