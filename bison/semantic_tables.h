@@ -545,18 +545,18 @@ void st_stmt_expr(struct NExpr * node) {
             utf8.value.utf8 = node->name; // `strcpy` it in case of problems
 
             table.push_back(utf8);
-            }
-            /*
-            // Make constant
-            STConst * cstr = (STConst *)malloc(sizeof(STConst));
-            cstr->next = NULL;
 
-            cstr->type = CONST_STRING;
-            cstr->value.args.arg1 = st_constant_index(*st_current_const_table, CONST_UTF8, utf8->value.utf8);
 
-            (*st_current_const_last)->next = cstr;
-            *st_current_const_last = cstr;
-            */
+            STConst  cstr ;
+            cstr.next = NULL;
+
+            cstr.type = CONST_STRING;
+            cstr.value.args.arg1 = st_constant_index(CONST_UTF8, utf8.value.utf8);
+
+            table.push_back(cstr);
+
+
+          }
         }
         break;
 
