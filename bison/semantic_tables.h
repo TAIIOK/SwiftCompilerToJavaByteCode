@@ -9,6 +9,15 @@
 
 #include "tree_nodes.h"
 
+#include <iostream>
+#include <list>     // подключаем заголовок списка
+#include <iterator> // заголовок итераторов
+#include <ctime>
+#include <cstdlib>
+using namespace std;
+
+
+
 /*
  * Table structure declarations.
  */
@@ -241,6 +250,157 @@ char * st_gen_func_handle(NFunc * f, char * buffer);
 
 //############################################################################//
 
+list<st_const> table; // объявляем пустой список
+
+void printTable()
+{
+   for (auto c : table) {
+      switch (c.type){
+            case CONST_UTF8:      printf("'%s'", c.value.utf8);      break;
+            case CONST_INT:       printf("%d", c.value.val_int);   break;
+            case CONST_FLOAT:     printf("%f", c.value.val_float); break;
+            case CONST_DOUBLE:    printf("%f", c.value.val_double); break;
+            case CONST_CLASS:     printf("%d", c.value.val_int); break;
+            case CONST_STRING:    printf("%d", c.value.args.arg1); break;
+
+            case CONST_FIELDREF:
+            case CONST_METHODREF:
+            case CONST_NAMETYPE: printf("%d %d", c.value.args.arg1, c.value.args.arg2); break;
+
+            default:              printf("==WTF?=="); break;
+        }
+    printf("\n");
+
+    }
+}
+
+char * get_function_type(struct NFunc * f)
+{
+  char * str = (char*)malloc(sizeof(char)*33);;
+
+             switch (f->vartype->type) {
+                 case INTTy:       strcat(str,"I;");   break;
+                 case FLOATTy:     strcat(str,"F;"); break;
+                 case DOUBLETy:    strcat(str,"D;"); break;
+                 case BOOLTy:      strcat(str,"B;"); break;
+                 case STRINGTy:    strcat(str,"S;"); break;
+
+                 default:              printf("==WTF?==;"); break;
+               }
+  return str;
+}
+
+char * get_function_args(struct NFunc * f)
+{
+    char * str = (char*)malloc(sizeof(char)*33);;
+
+   struct NExpr * current = f->args->first;
+   strcat(str,"(");
+
+   while(current != NULL)
+   {
+               switch (current->vartype->type) {
+                   case INTTy:       strcat(str,"I;");   break;
+                   case FLOATTy:     strcat(str,"F;"); break;
+                   case DOUBLETy:    strcat(str,"D;"); break;
+                   case BOOLTy:      strcat(str,"B;"); break;
+                   case STRINGTy:    strcat(str,"S;"); break;
+
+                   default:              printf("==WTF?==;"); break;
+               }
+       current = current->next;
+   }
+    strcat(str,")");
+    return str;
+}
+
+void print_function_param(char * function,NStmtList *root){
+    char * str = (char*)malloc(sizeof(char)*33);;
+    struct NStmt * current = root->first;
+    while (current != NULL) {
+        if(current->type == STMT_FUNC)
+        {
+         if(strcmp(current->func->name->last->name,function) == 0)
+         {
+             if(current->func->args->first == NULL)
+             {
+                 strcat(str,"()");
+
+             }
+             else{
+                 strcat(str,get_function_args(current->func));
+             }
+             if(current->func->vartype == NULL)
+             {
+              strcat(str,"V;");
+             }else{
+                strcat(str,get_function_type(current->func));
+             }
+             break;
+         }
+        }
+        current = current->next;
+    }
+
+    STConst code;
+    code.next = NULL;
+    code.type = CONST_UTF8;
+    code.value.utf8  = str;
+    table.push_back(code);
+
+}
+
+void create_header(NStmtList *root){
+STConst code;
+code.next = NULL;
+code.type = CONST_UTF8;
+code.value.utf8  = "Code";
+table.push_back(code);
+
+STConst main;
+main.next = NULL;
+main.type = CONST_UTF8;
+main.value.utf8  = "Main";
+table.push_back(main);
+
+STConst classs;
+classs.next = NULL;
+classs.type = CONST_CLASS;
+classs.value.val_int  = 2;
+table.push_back(classs);
+
+STConst param;
+param.next = NULL;
+param.type = CONST_UTF8;
+param.value.utf8  = "()V";
+table.push_back(param);
+
+STConst minit;
+minit.next = NULL;
+minit.type = CONST_UTF8;
+minit.value.utf8  = "<init>";
+table.push_back(minit);
+
+}
+void create_table(NStmtList *root){
+
+    table.clear();
+    create_header(root);
+    /*
+    struct NStmt * current = root->first;
+    while (current != NULL) {
+
+        st_stmt(current);
+        current = current->next;
+    }
+    */
+
+    printTable();
+
+}
+
+//############################################################################//
+
 STConst * st_new_const_table() {
     STConst * rtl = st_new_const(CONST_UTF8, NULL);
     rtl->value.utf8 = (char *)malloc(30);
@@ -248,23 +408,6 @@ STConst * st_new_const_table() {
     return rtl;
 }
 
-void print_args(struct NStmtList * node)
-{
-  struct NStmt * current = node->first;
-  while (current != NULL) {
-      if(current->type == STMT_FUNC)
-      {
-        NExpr * cur = current->func->args->first;
-        while (cur != NULL) {
-            if(cur->vartype != NULL){
-            printf("%d",cur->vartype->type);
-          }
-            cur = cur->next;
-        }
-      }
-      current = current->next;
-  }
-}
 
 STConst * st_new_const(enum st_const_types type, void * arg) {
     STConst * c = (STConst *)malloc(sizeof(STConst));
@@ -322,7 +465,6 @@ int st_const_count(STConst * table) {
 }
 
 void st_fill_tables(struct NStmtList * root) {
-  print_args(root);
     st_func_handles = st_new_const_table();
     st_func_hlast   = st_func_handles;
 
@@ -397,9 +539,6 @@ void st_stmt_switch_list(struct NCaseList * node) {
 }
 void st_stmt_switch(struct NSwitch * node){
   st_stmt_expr(node->Name);
-
-  printf("%d\n",(int)node->Name->type);
-
 
   st_stmt_switch_list(node->caselist);
 }

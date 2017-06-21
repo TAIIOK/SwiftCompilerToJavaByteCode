@@ -45,8 +45,12 @@
    43;   STRING; 19
 ';Function constant table:;
 '    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
+';Function constant table:;
+'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
+';Function constant table:;
+'    0;     UTF8; 'RTL METHODREFS WILL BE HERE'
 ';Function list:;
-';'myFuncMoreThanOneParam';;Function methodrefs:;
+';'myFuncMor';;'myFuncOneParam';;'main';;Function methodrefs:;
     0;     UTF8; 'RTL METHODREFS WILL BE HERE'
     1;     UTF8; 'value'
     2;     UTF8; '(Lrtl/Mixed;Lrtl/Mixed;Lrtl/Mixed;)Lrtl/Mixed;'
@@ -54,3 +58,13 @@
     4;    CLASS; 3
     5; NAMETYPE; 1 2
     6;METHODREF; 4 5
+    7;     UTF8; '(Lrtl/Mixed;)Lrtl/Mixed;'
+    8;     UTF8; 'func1'
+    9;    CLASS; 8
+   10; NAMETYPE; 1 7
+   11;METHODREF; 9 10
+   12;     UTF8; '()Lrtl/Mixed;'
+   13;     UTF8; 'func2'
+   14;    CLASS; 13
+   15; NAMETYPE; 1 12
+   16;METHODREF; 14 15

@@ -2529,7 +2529,7 @@ int main(int argc,char* argv[])
 
         FILE* output;
         output = fopen("constant_table.csv","w");
-
+        create_table(root);
         printf("Constant table:\n");
         fprintf(output, "'%s'", ";Constant table:;\n");
         st_fill_tables(root);

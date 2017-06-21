@@ -79,12 +79,16 @@ for index in 1...5 {
     print("\(index) times 5 is \(index)")
 }
 
+func main() -> Bool{
+
+}
+
 func myFuncOneParam(dad:Int) -> Bool {
     return true
 }
 
 
-func myFuncMoreThanOneParam(dad:Int,str:String,bo:Bool) -> Bool {
+func myFuncMor(dad:Int,str:String,bo:Bool) -> Bool {
     return true
 }
 
