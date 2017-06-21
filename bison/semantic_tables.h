@@ -172,6 +172,8 @@ char * st_gen_func_handle(NFunc * f, char * buffer);
 
 list<st_const> table; // объявляем пустой список
 list<NFunc> functions_list;
+list<NExpr> function_call;
+
 void printTable()
 {
    for (auto c : table) {
@@ -561,6 +563,7 @@ void st_stmt_expr(struct NExpr * node) {
         break;
 
         case EXPR_MET: {
+            function_call.push_back(*node);
             struct NExpr * cur = node->right->idlist->first;
             while (cur != NULL) {
                 st_stmt_expr(cur);
