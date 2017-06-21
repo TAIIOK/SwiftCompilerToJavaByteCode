@@ -417,11 +417,17 @@ void st_stmt_expr(struct NExpr * node) {
             if (st_constant_index(CONST_INT, (void *)&(node->Int)) == -1) {
                 STConst cint;
                 cint.next = NULL;
-
                 cint.type = CONST_INT;
                 cint.value.val_int = node->Int;
-
                 table.push_back(cint);
+
+                STConst type;
+                type.next = NULL;
+                type.type = CONST_UTF8;
+                type.value.utf8 = "I";
+                table.push_back(type);
+
+
             }
         }
         break;
@@ -435,6 +441,11 @@ void st_stmt_expr(struct NExpr * node) {
                 cfloat.value.val_float = node->Float;
 
                 table.push_back(cfloat);
+                STConst type;
+                type.next = NULL;
+                type.type = CONST_UTF8;
+                type.value.utf8 = "F";
+                table.push_back(type);
             }
         }
 
@@ -447,6 +458,12 @@ void st_stmt_expr(struct NExpr * node) {
                 cfloat.value.val_double = node->Double;
 
                 table.push_back(cfloat);
+
+                STConst type;
+                type.next = NULL;
+                type.type = CONST_UTF8;
+                type.value.utf8 = "D";
+                table.push_back(type);
 
             }
         }
@@ -584,34 +601,6 @@ void st_print_const_file(FILE * output, STConst * table) {
         index++;
     }
 
-}
-
-void st_print_const(STConst * table)
-{
-  char name[10] = "";
-  STConst * cur = table;
-  int index = 0;
-  while (cur != 0) {
-      printf("%5d:  %9s  ", index, st_type_name(cur->type, name));
-      switch (cur->type) {
-          case CONST_UTF8:      printf("'%s'", cur->value.utf8);      break;
-          case CONST_INT:       printf("%d", cur->value.val_int);   break;
-          case CONST_FLOAT:     printf("%f", cur->value.val_float); break;
-          case CONST_DOUBLE:    printf("%f", cur->value.val_double); break;
-          case CONST_CLASS:
-          case CONST_STRING:    printf("%d", cur->value.args.arg1); break;
-
-          case CONST_FIELDREF:
-          case CONST_METHODREF:
-          case CONST_NAMETYPE: printf("%d %d", cur->value.args.arg1, cur->value.args.arg2); break;
-
-          default:              printf("==WTF?=="); break;
-      }
-      printf("\n");
-
-      cur = cur->next;
-      index++;
-  }
 }
 
 char * st_type_name(enum st_const_types type, char name[10]) {
