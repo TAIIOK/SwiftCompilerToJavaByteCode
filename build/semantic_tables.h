@@ -37,29 +37,6 @@ enum st_const_types {
     CONST_NAMETYPE  = 12
 };
 
-/**
- * Filed flags.
- */
-enum st_filed_flags {
-    FIELD_ACCESS_PUBLIC    = 0x0001,
-    FIELD_ACCESS_PRIVATE   = 0x0002,
-    FIELD_ACCESS_PROTECTED = 0x0004,
-
-    FIELD_STATIC = 0x0008
-};
-
-/**
- * Method flags.
- */
-enum st_method_flags {
-    METHOD_ACCESS_PUBLIC    = 0x001,
-    METHOD_ACCESS_PRIVATE   = 0x002,
-    METHOD_ACCESS_PROTECTED = 0x004,
-
-    METHOD_STATIC   = 0x0008,
-    METHOD_FINAL    = 0x0010,
-    METHOD_ABSTRACT = 0x0400
-};
 
 /**
  * A record of constants table.
@@ -83,58 +60,6 @@ struct st_const {
     STConst * next;
 };
 
-/**
- * Represents field record.
- * Singly-linked list element.
- */
-typedef struct st_field STField;
-struct st_field {
-    unsigned short int flags;
-    unsigned short int name;
-    unsigned short int descriptor;
-
-    STField * next;
-};
-
-/**
- * Represents method record.
- * Singly-liked list element.
- */
-typedef struct st_method STMethod;
-struct st_method {
-    unsigned short int flags;
-    unsigned short int name;
-    unsigned short int descriptor;
-    unsigned short int attr_num;
-
-    STField * next;
-};
-
-/**
- * General purpose singly-linked list element.
- */
-typedef struct slist SList;
-struct slist {
-    void  * data;
-    SList * next;
-};
-
-/*
- * Table declarations.
- */
-STConst *  st_const_table = NULL;
-STConst *  st_const_last  = NULL;
-
-STConst ** st_current_const_table = NULL;
-STConst ** st_current_const_last  = NULL;
-
-SList   *  func_list = NULL;
-SList   *  func_last = NULL;
-int        funcnum   = 0;
-int        fconstnum = 0;
-
-STConst *  st_func_handles = NULL;
-STConst *  st_func_hlast   = NULL;
 
 /*
  * Function declarations.
@@ -169,18 +94,13 @@ STConst * st_new_const(enum st_const_types type, void * arg);
 */
 STConst * st_new_const2(enum st_const_types type, int arg1, int arg2);
 
-/**
- * Returns the number of constants of given table.
- * @param [in] table Constant table.
- * @return Number of constants.
- */
-int       st_const_count(STConst * table);
+
 
 /**
  * Fills tables according to given tree.
  * @param [in] root The root of the tree.
  */
-void st_fill_tables(struct NStmtList * root);
+
 
 void st_stmt_list(struct NStmtList * node);
 void st_stmt(struct NStmt * node);
@@ -201,7 +121,7 @@ void st_stmt_expr(struct NExpr * node);
  * @param [in] arg2  Second value.
  * @return Zero-based index or -1 when constant not found.
  */
-int st_constant_index(STConst * table, enum st_const_types type, const void * value);
+int st_constant_index(enum st_const_types type, const void * value);
 
 /**
  * Returns zero-based index of two-argument constant in table.
@@ -251,7 +171,7 @@ char * st_gen_func_handle(NFunc * f, char * buffer);
 //############################################################################//
 
 list<st_const> table; // объявляем пустой список
-
+list<NFunc> functions_list;
 void printTable()
 {
    for (auto c : table) {
@@ -383,7 +303,6 @@ minit.value.utf8  = "<init>";
 table.push_back(minit);
 */
 
-
 STConst minit;
 minit.next = NULL;
 minit.type = CONST_UTF8;
@@ -402,100 +321,17 @@ void create_table(NStmtList *root){
 
     table.clear();
     create_header(root);
-    /*
+
     struct NStmt * current = root->first;
     while (current != NULL) {
 
         st_stmt(current);
         current = current->next;
     }
-    */
-
     printTable();
-
 }
 
 //############################################################################//
-
-STConst * st_new_const_table() {
-    STConst * rtl = st_new_const(CONST_UTF8, NULL);
-    rtl->value.utf8 = (char *)malloc(30);
-    strcpy(rtl->value.utf8, "RTL METHODREFS WILL BE HERE");
-    return rtl;
-}
-
-
-STConst * st_new_const(enum st_const_types type, void * arg) {
-    STConst * c = (STConst *)malloc(sizeof(STConst));
-    c->next = NULL;
-    c->type = type;
-
-    switch (type) {
-        case CONST_UTF8:
-        c->value.utf8 = (char *)arg;
-        break;
-
-        case CONST_INT:
-        c->value.val_int = *((int *)arg);
-        break;
-
-        case CONST_FLOAT:
-        c->value.val_float = *((float *)arg);
-        break;
-
-        case CONST_DOUBLE:
-        c->value.val_double = *((double *)arg);
-        break;
-
-        case CONST_CLASS:
-        c->value.args.arg1 = *((int *)arg);
-        break;
-
-        case CONST_STRING:
-        c->value.args.arg1 = *((int *)arg);
-        break;
-    }
-
-    return c;
-}
-
-STConst * st_new_const2(enum st_const_types type, int arg1, int arg2) {
-    STConst * c = (STConst *)malloc(sizeof(STConst));
-    c->next = NULL;
-    c->type = type;
-    c->value.args.arg1 = arg1;
-    c->value.args.arg2 = arg2;
-    return c;
-}
-
-int st_const_count(STConst * table) {
-    STConst * cur = table;
-    int count = 0;
-
-    while (cur != NULL) {
-        count++;
-        cur = cur->next;
-    }
-
-    return count;
-}
-
-void st_fill_tables(struct NStmtList * root) {
-    st_func_handles = st_new_const_table();
-    st_func_hlast   = st_func_handles;
-
-    // Set current table
-    st_current_const_table = &st_const_table;
-    st_current_const_last  = &st_const_last;
-
-    // Append first
-    *st_current_const_table = st_new_const_table();
-    *st_current_const_last  = *st_current_const_table;
-
-    // Append others
-    st_stmt_list(root);
-}
-
 void st_stmt_list(struct NStmtList * node) {
     struct NStmt * current = node->first;
     while (current != NULL) {
@@ -517,18 +353,11 @@ void st_stmt(struct NStmt * node) {
         case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
 
         case STMT_FUNC: {
-            // Switch to local constant table and initialize it.
-            st_current_const_table  = &(node->func->const_table);
-            st_current_const_last   = &(node->func->const_last);
-            *st_current_const_table = st_new_const_table();
-            *st_current_const_last  = *st_current_const_table;
+          functions_list.push_back(*node->func);
 
             // Fill table.
             st_stmt_func(node->func);
 
-            // Switch to global.
-            st_current_const_table = &st_const_table;
-            st_current_const_last  = &st_const_last;
         }
         break;
 
@@ -571,6 +400,7 @@ void st_stmt_for(struct NFor * node) {
 }
 
 void st_stmt_func(struct NFunc * node) {
+  /*
     int arg1;
     char buf[512];
     STConst * c = NULL;
@@ -647,7 +477,7 @@ void st_stmt_func(struct NFunc * node) {
 
     // Set methodref attribute
     node->methodref = fconstnum;
-
+*/
     st_stmt_list(node->body);
 }
 
@@ -667,42 +497,39 @@ void st_stmt_if(struct NIf * node) {
 void st_stmt_expr(struct NExpr * node) {
     switch (node->type) {
         case EXPR_INT: {
-            if (st_constant_index(*st_current_const_table, CONST_INT, (void *)&(node->Int)) == -1) {
-                STConst * cint = (STConst *)malloc(sizeof(STConst));
-                cint->next = NULL;
+            if (st_constant_index(CONST_INT, (void *)&(node->Int)) == -1) {
+                STConst cint;
+                cint.next = NULL;
 
-                cint->type = CONST_INT;
-                cint->value.val_int = node->Int;
+                cint.type = CONST_INT;
+                cint.value.val_int = node->Int;
 
-                (*st_current_const_last)->next = cint;
-                *st_current_const_last = cint;
+                table.push_back(cint);
             }
         }
         break;
 
         case EXPR_FLOAT: {
-            if (st_constant_index(*st_current_const_table, CONST_FLOAT, (void *)&(node->Float)) == -1) {
-                STConst * cfloat = (STConst *)malloc(sizeof(STConst));
-                cfloat->next = NULL;
+            if (st_constant_index( CONST_FLOAT, (void *)&(node->Float)) == -1) {
+                STConst  cfloat;
+                cfloat.next = NULL;
 
-                cfloat->type = CONST_FLOAT;
-                cfloat->value.val_float = node->Float;
+                cfloat.type = CONST_FLOAT;
+                cfloat.value.val_float = node->Float;
 
-                (*st_current_const_last)->next = cfloat;
-                *st_current_const_last = cfloat;
+                table.push_back(cfloat);
             }
         }
 
         case EXPR_DOUBLE: {
-            if (st_constant_index(*st_current_const_table, CONST_DOUBLE, (void *)&(node->Double)) == -1) {
-                STConst * cfloat = (STConst *)malloc(sizeof(STConst));
-                cfloat->next = NULL;
+            if (st_constant_index( CONST_DOUBLE, (void *)&(node->Double)) == -1) {
+                STConst  cfloat;
+                cfloat.next = NULL;
 
-                cfloat->type = CONST_DOUBLE;
-                cfloat->value.val_double = node->Double;
+                cfloat.type = CONST_DOUBLE;
+                cfloat.value.val_double = node->Double;
 
-                (*st_current_const_last)->next = cfloat;
-                *st_current_const_last = cfloat;
+                table.push_back(cfloat);
 
             }
         }
@@ -710,15 +537,16 @@ void st_stmt_expr(struct NExpr * node) {
 
         case EXPR_STR: {
             // Make UTF-8
-            STConst * utf8 = (STConst *)malloc(sizeof(STConst));
-            utf8->next = NULL;
+            if (st_constant_index( CONST_UTF8, (void*)(node->name)) == -1) {
+            STConst  utf8;
+            utf8.next = NULL;
 
-            utf8->type = CONST_UTF8;
-            utf8->value.utf8 = node->name; // `strcpy` it in case of problems
+            utf8.type = CONST_UTF8;
+            utf8.value.utf8 = node->name; // `strcpy` it in case of problems
 
-            (*st_current_const_last)->next = utf8;
-            *st_current_const_last = utf8;
-
+            table.push_back(utf8);
+            }
+            /*
             // Make constant
             STConst * cstr = (STConst *)malloc(sizeof(STConst));
             cstr->next = NULL;
@@ -728,6 +556,7 @@ void st_stmt_expr(struct NExpr * node) {
 
             (*st_current_const_last)->next = cstr;
             *st_current_const_last = cstr;
+            */
         }
         break;
 
@@ -750,33 +579,33 @@ void st_stmt_expr(struct NExpr * node) {
     }
 }
 
-int st_constant_index(STConst * table, enum st_const_types type, const void * value) {
-    STConst * cur = table;
+int st_constant_index(enum st_const_types type, const void * value) {
+
     int index = 0;
-    while (cur != 0) {
-        if (cur->type == type) {
+    for (auto c : table){
+        if (c.type == type) {
             switch (type) {
                 case CONST_INT:
-                    if (cur->value.val_int == *((int *)value)) {
+                    if (c.value.val_int == *((int *)value)) {
                         return index;
                     }
                 break;
 
                 case CONST_DOUBLE:
-                    if (cur->value.val_double == *((double *)value)) {
+                    if (c.value.val_double == *((double *)value)) {
                         return index;
                     }
                 break;
 
 
                 case CONST_FLOAT:
-                    if (cur->value.val_float == *((double *)value)) {
+                    if (c.value.val_float == *((double *)value)) {
                         return index;
                     }
                 break;
 
                 case CONST_UTF8:
-                    if (strcmp(cur->value.utf8, (const char *)value) == 0) {
+                    if (strcmp(c.value.utf8, (char *)value) == 0) {
                         return index;
                     }
                 break;
@@ -786,8 +615,6 @@ int st_constant_index(STConst * table, enum st_const_types type, const void * va
                 break;
             }
         }
-
-        cur = cur->next;
         index++;
     }
     return -1;
@@ -885,26 +712,6 @@ char * st_type_name(enum st_const_types type, char name[10]) {
     return name;
 }
 
-int nexprlist_count(NExprList * start) {
-    int count = 0;
-    NExpr * cur = start->first;
-    while (cur != NULL) {
-        count++;
-        cur = cur->next;
-    }
-    return count;
-}
 
-char * st_gen_func_handle(NFunc * f, char * buffer) {
-    int i;
-
-    strcpy(buffer, "(");
-    for (i = 0; i < nexprlist_count(f->args); i++) {
-        strcat(buffer, "Lrtl/Mixed;");
-    }
-    strcat(buffer, ")Lrtl/Mixed;");
-
-    return buffer;
-}
 
 #endif

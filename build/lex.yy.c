@@ -735,7 +735,7 @@ char *yytext;
     #include "semantic_tables.h"
     #include "tree_print.h"
 
-    #include "codegen.h"
+
 
 
 
@@ -2530,6 +2530,7 @@ int main(int argc,char* argv[])
         FILE* output;
         output = fopen("constant_table.csv","w");
         create_table(root);
+        /*
         printf("Constant table:\n");
         fprintf(output, "'%s'", ";Constant table:;\n");
         st_fill_tables(root);
@@ -2565,7 +2566,7 @@ int main(int argc,char* argv[])
         fclose(output);
 
         cg_generate_bytecode(root);
-
+        */
     }
     return 0;
 }

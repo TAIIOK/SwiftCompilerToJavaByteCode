@@ -19,6 +19,7 @@ var line = readLine()
 print(line)
 
 var varuble = 4
+var varuble = 4
 let constant = 3
 var double = 3123.1231231
 var hex = 0xFFF                 // 4095 in hexadecimal notation
@@ -28,6 +29,7 @@ var trueBool:Bool = true
 var falseBool:Bool = false
 var int:Int = 0
 var char:Character = "s"
+var string:String = "string"
 var string:String = "string"
 var doublevar:Double = 0.1
 var float:Float = 0.1
