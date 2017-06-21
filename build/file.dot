@@ -677,7 +677,7 @@ expr185--expr186;
 expr187[label = "fcall"];
 assign28--expr187;
 expr187name[label = "name"];
-expr188[label = "myFuncMoreThanOnÐZà'Ð"];
+expr188[label = "myFuncMoreThanOnà«@uÚ"];
 expr187name--expr188;
 expr187--expr187name;
 expr187args[label = " args "];

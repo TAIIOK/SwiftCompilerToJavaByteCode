@@ -34,7 +34,8 @@ enum st_const_types {
     CONST_STRING    = 8,
     CONST_FIELDREF  = 9,
     CONST_METHODREF = 10,
-    CONST_NAMETYPE  = 12
+    CONST_NAMETYPE  = 12,
+    CONST_NULL = -1
 };
 
 
@@ -111,23 +112,27 @@ list<NExpr> function_call;
 
 void printTable()
 {
+  char name[10] = "";
+  int index = 0;
    for (auto c : table) {
+     if(c.type != CONST_NULL){
+     printf("%5d:  %9s  ", index, st_type_name(c.type, name));
+   }
       switch (c.type){
-            case CONST_UTF8:      printf("'%s'", c.value.utf8);      break;
-            case CONST_INT:       printf("%d", c.value.val_int);   break;
-            case CONST_FLOAT:     printf("%f", c.value.val_float); break;
-            case CONST_DOUBLE:    printf("%f", c.value.val_double); break;
-            case CONST_CLASS:     printf("%d", c.value.val_int); break;
-            case CONST_STRING:    printf("%d", c.value.args.arg1); break;
+            case CONST_UTF8:      printf("'%s'\n", c.value.utf8);      break;
+            case CONST_INT:       printf("%d\n", c.value.val_int);   break;
+            case CONST_FLOAT:     printf("%f\n", c.value.val_float); break;
+            case CONST_DOUBLE:    printf("%f\n", c.value.val_double); break;
+            case CONST_CLASS:     printf("%d\n", c.value.val_int); break;
+            case CONST_STRING:    printf("%d\n", c.value.args.arg1); break;
+            case CONST_NULL: break;
+            case CONST_FIELDREF: break;
+            case CONST_METHODREF: break;
+            case CONST_NAMETYPE: printf("%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
 
-            case CONST_FIELDREF:
-            case CONST_METHODREF:
-            case CONST_NAMETYPE: printf("%d %d", c.value.args.arg1, c.value.args.arg2); break;
-
-            default:              printf("==WTF?=="); break;
+            default:              printf("==WTF?==\n"); break;
         }
-    printf("\n");
-
+        index++;
     }
 }
 
@@ -256,6 +261,11 @@ void print_function_param(char * function, NStmtList *root){
 }
 
 void create_header(NStmtList *root){
+  STConst null;
+  null.next = NULL;
+  null.type = CONST_NULL;
+table.push_back(null);
+
 STConst code;
 code.next = NULL;
 code.type = CONST_UTF8;
