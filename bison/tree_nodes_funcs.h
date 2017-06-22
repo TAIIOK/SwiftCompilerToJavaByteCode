@@ -621,6 +621,7 @@ struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varu
     result->idlist = value;
     result->varconstant = varlet;
     result->vartype = varubltype;
+
     result->type = EXPR_ID_LIST;
 
     return result;

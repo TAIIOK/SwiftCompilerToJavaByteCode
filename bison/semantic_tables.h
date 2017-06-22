@@ -61,18 +61,6 @@ struct st_const {
     STConst * next;
 };
 
-
-/*
- * Function declarations.
- */
-
-
-
-/**
- * Fills tables according to given tree.
- * @param [in] root The root of the tree.
- */
-
 void st_stmt_list(struct NStmtList * node);
 void st_stmt(struct NStmt * node);
 void st_stmt_while(struct NWhile * node);
@@ -82,33 +70,59 @@ void st_stmt_if(struct NIf * node);
 void st_stmt_expr(struct NExpr * node);
 void st_stmt_switch_list(struct NCaseList * node);
 void st_stmt_switch(struct NSwitch * node);
-
-
 int st_constant_index(enum st_const_types type, const void * value);
-
-
 int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int arg2);
-
-
 void st_print_const();
-
 void st_print_const_file(FILE *  output,STConst * table);
-
-
 char * st_type_name(enum st_const_types type, char name[10]);
-
-
 int    nexprlist_count(NExprList * start);
-
-
 char * st_gen_func_handle(NFunc * f, char * buffer);
-
+int nexprlist_count(NExprList * start);
 
 //############################################################################//
 
 list<st_const> table;
 list<NFunc> functions_list;
 list<NExpr> function_call;
+NStmtList *globalroot;
+
+int nexprlist_count(NExprList * start) {
+    int count = 0;
+    NExpr * cur = start->first;
+    while (cur != NULL) {
+        count++;
+        cur = cur->next;
+    }
+    return count;
+}
+
+void update_varuble(NStmtList *root,NExpr *var)
+{
+  struct NStmt * current = root->first;
+  while (current != NULL) {
+    printf("%d Type of statement\n",current->type );
+      if(current->type == STMT_BLOCK)
+      {
+        struct NStmtList* result = (NStmtList*)malloc(sizeof(NStmtList));
+        result->first = current;
+        update_varuble(result,var);
+      }
+      if(current->type == STMT_ASSIGN){
+        printf("name %s\n",current->var->idlist->first->name);
+        printf("Varuble found var->type %d\n",current->var->type);
+        printf("Varuble found var->idlist->first->type %d\n",current->var->idlist->first->type);
+        if(current->var->vartype != NULL){
+        printf("Varuble found current->var->vartype->type %d\n",current->var->vartype->type);
+        }
+        if(current->var->varconstant != NULL){
+        printf("Varuble found var->varconstant %d\n",current->var->varconstant->constant);
+        }
+        printf("Varuble found expr->type %d\n",current->expr->type);
+        break;
+      }
+      current = current->next;
+  }
+}
 
 void printTable()
 {
@@ -211,11 +225,6 @@ void print_function_param(char * function,struct NStmt * current){
              table.push_back(code);
                }
          }
-
-
-
-
-
 }
 
 void print_function_param(char * function, NStmtList *root){
@@ -316,11 +325,12 @@ void create_table(NStmtList *root){
     table.clear();
     create_header(root);
 
-    struct NStmt * current = root->first;
-    while (current != NULL) {
+    globalroot = root;
 
-        st_stmt(current);
-        current = current->next;
+    struct NStmt * current1 = root->first;
+    while (current1 != NULL) {
+        st_stmt(current1);
+        current1 = current1->next;
     }
     printTable();
 }
@@ -399,6 +409,8 @@ void st_stmt_func(struct NStmt * node) {
 }
 
 void st_stmt_if(struct NIf * node) {
+    update_varuble(globalroot,node->condition->left);
+    update_varuble(globalroot,node->condition->right);
     st_stmt_expr(node->condition);
     st_stmt_list(node->body);
 
@@ -497,7 +509,7 @@ void st_stmt_expr(struct NExpr * node) {
 
         case EXPR_ID: {
             // Make UTF-8
-            printf("%s name",node->name);
+            printf("%s name\n",node->name);
             if(node->Int != NULL){
               printf("kek");
             }
@@ -512,6 +524,7 @@ void st_stmt_expr(struct NExpr * node) {
 
             struct NExpr * cur = node->idlist->first;
             while (cur != NULL) {
+
                 st_stmt_expr(cur);
 
                 cur = cur->next;
