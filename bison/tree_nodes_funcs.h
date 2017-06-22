@@ -2,7 +2,7 @@
 #include "tree_nodes.h"
 #include <stdio.h>
 #include <string.h>
-
+#include <cmath>
 /*
  * Function definition
  */

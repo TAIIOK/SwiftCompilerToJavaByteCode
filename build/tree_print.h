@@ -624,6 +624,8 @@ char* print_expr(char* parent, struct NExpr* expr)
             current = (char*)malloc(sizeof(char)*3);
             strcpy(current,"tableconstruct");
             break;
+        default:
+            break;
     }
 
     current_node = (char*)malloc(sizeof(char)*33);
@@ -880,6 +882,8 @@ void print_stmt(char* parent, struct NStmt* stmt)
         case STMT_IF:
             print_if(parent, stmt->if_tree);
             break;
+        default:
+          break;
     }
 }
 

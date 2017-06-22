@@ -370,6 +370,8 @@ void st_stmt(struct NStmt * node) {
             st_stmt_expr(node->var);
             st_stmt_expr(node->expr);
             break;
+        default:
+          break;
     }
 }
 
@@ -539,6 +541,8 @@ void st_stmt_expr(struct NExpr * node) {
                 cur = cur->next;
             }
         }
+        break;
+        default:
         break;
     }
 
