@@ -1,5 +1,3 @@
-var i:Double = 10
-
-if (i < a){
-
-}
+var s = 2
+var i:Int = 3
+ i = s

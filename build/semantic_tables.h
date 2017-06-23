@@ -77,7 +77,7 @@ void st_print_const_file(FILE *  output,STConst * table);
 char * st_type_name(enum st_const_types type, char name[10]);
 int    nexprlist_count(NExprList * start);
 char * st_gen_func_handle(NFunc * f, char * buffer);
-int nexprlist_count(NExprList * start);
+
 
 //############################################################################//
 
@@ -85,6 +85,11 @@ list<st_const> table;
 list<NFunc> functions_list;
 list<NExpr> function_call;
 NStmtList *globalroot;
+
+void check_equal(NStmtList *root,NExpr *var)
+{
+
+}
 
 int nexprlist_count(NExprList * start) {
     int count = 0;
@@ -98,21 +103,53 @@ int nexprlist_count(NExprList * start) {
 
 void update_varuble(NStmtList *root,NExpr *var)
 {
+  if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
+  {
+    return;
+  }
+
+  bool exist = false;
   struct NStmt * current = root->first;
+  printf("%d VAR Type of statement\n",var->type );
   while (current != NULL) {
     printf("%d Type of statement\n",current->type );
+
       if(current->type == STMT_BLOCK)
       {
         struct NStmtList* result = (NStmtList*)malloc(sizeof(NStmtList));
         result->first = current;
         update_varuble(result,var);
       }
-      if(current->type == STMT_ASSIGN){
+      if (current->expr == var ){
+        printf("equal\n");
+        exit (EXIT_FAILURE);
+      }
+      if (current->type == STMT_EXPR)
+      {
+        printf("bad news\n");
+        exit (EXIT_FAILURE);
+      }
+      if(var->type == EXPR_ID  && current->type == STMT_ASSIGN)
+      {
+        if(strcmp(current->var->idlist->first->name , var->name) == 0 )
+        {
+          exist = true;
+        }
+      }
+      if(current->type == STMT_ASSIGN && var->type == EXPR_ID_LIST){
+        if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
+        {
+          exist = true;
+            printf("Founded need Varuble");
+
         printf("name %s\n",current->var->idlist->first->name);
         printf("Varuble found var->type %d\n",current->var->type);
         printf("Varuble found var->idlist->first->type %d\n",current->var->idlist->first->type);
         if(current->var->vartype != NULL){
         printf("Varuble found current->var->vartype->type %d\n",current->var->vartype->type);
+        }
+        else if (current->var->idlist->first->vartype != NULL){
+          printf("Varuble found current->var->idlist->first->vartype->type %d\n",current->var->idlist->first->vartype->type);
         }
         if(current->var->varconstant != NULL){
         printf("Varuble found var->varconstant %d\n",current->var->varconstant->constant);
@@ -120,7 +157,12 @@ void update_varuble(NStmtList *root,NExpr *var)
         printf("Varuble found expr->type %d\n",current->expr->type);
         break;
       }
+      }
       current = current->next;
+  }
+  if(!exist){
+    printf("Varuble doest exist");
+    exit (EXIT_FAILURE);
   }
 }
 
@@ -327,6 +369,8 @@ void create_table(NStmtList *root){
 
     globalroot = root;
 
+
+
     struct NStmt * current1 = root->first;
     while (current1 != NULL) {
         st_stmt(current1);
@@ -366,6 +410,8 @@ void st_stmt(struct NStmt * node) {
         break;
 
         case STMT_ASSIGN:
+        update_varuble(globalroot,node->expr);
+        break;
         case STMT_LASSIGN:
             st_stmt_expr(node->var);
             st_stmt_expr(node->expr);
@@ -394,11 +440,14 @@ void st_stmt_switch(struct NSwitch * node){
   st_stmt_switch_list(node->caselist);
 }
 void st_stmt_while(struct NWhile * node) {
+    update_varuble(globalroot,node->condition->left);
+    update_varuble(globalroot,node->condition->left);
     st_stmt_expr(node->condition);
     st_stmt_list(node->body);
 }
 
 void st_stmt_for(struct NFor * node) {
+  update_varuble(globalroot,node->name);
     st_stmt_expr(node->name);
     st_stmt_expr(node->start);
     st_stmt_expr(node->step);

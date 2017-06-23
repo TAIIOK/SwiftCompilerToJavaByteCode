@@ -691,6 +691,39 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
     if (local)
         result->type = STMT_LASSIGN;
     else
+    if(var->type == EXPR_ID_LIST){
+      /*
+      EXPR_INT,
+      EXPR_DOUBLE,
+      EXPR_FLOAT,
+      EXPR_STR
+      */
+      struct NVarType* varType = (NVarType*)malloc(sizeof(NVarType));
+
+      switch (expr->type)
+      {
+        case EXPR_INT:
+        varType->type = INTTy;
+        break;
+        case EXPR_DOUBLE:
+        varType->type = DOUBLETy;
+        break;
+        case EXPR_FLOAT:
+        varType->type = FLOATTy;
+        break;
+        case EXPR_STR:
+        varType->type = STRINGTy;
+        break;
+        default:
+          break;
+      }
+      if(var->vartype == NULL)
+      {
+        printf("zdarova\n\n");
+        result->var->vartype = varType;
+      }
+    }
+    printf("%d expr->type", expr->type);
         result->type = STMT_ASSIGN;
     return result;
 }
