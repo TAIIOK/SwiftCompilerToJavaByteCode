@@ -719,11 +719,9 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
       }
       if(var->vartype == NULL)
       {
-        printf("zdarova\n\n");
         result->var->vartype = varType;
       }
     }
-    printf("%d expr->type", expr->type);
         result->type = STMT_ASSIGN;
     return result;
 }
