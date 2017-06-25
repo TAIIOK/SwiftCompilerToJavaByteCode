@@ -115,15 +115,7 @@ void update_varuble(NStmtList *root,NExpr *var)
         result->first = current;
         update_varuble(result,var);
       }
-      if (current->expr == var ){
-        printf("equal\n");
-        exit (EXIT_FAILURE);
-      }
-      if (current->type == STMT_EXPR)
-      {
-        printf("bad news\n");
-        exit (EXIT_FAILURE);
-      }
+
       if(var->type == EXPR_ID  && current->type == STMT_ASSIGN)
       {
         if(strcmp(current->var->idlist->first->name , var->name) == 0 )
@@ -147,18 +139,18 @@ void update_varuble(NStmtList *root,NExpr *var)
         printf("Varuble found var->idlist->first->type %d\n",current->var->idlist->first->type);
         if(current->var->vartype != NULL){
         printf("Varuble found current->var->vartype->type %d\n",current->var->vartype->type);
-        }
-        else if (current->var->idlist->first->vartype != NULL){
 
           char * str = (char*)malloc(sizeof(char)*33);;
 
-          switch (current->var->idlist->first->vartype->type) {
+
+          switch (current->var->vartype->type) {
               case INTTy:       strcat(str,"I;");    break;
               case FLOATTy:     strcat(str,"F;");    break;
               case DOUBLETy:    strcat(str,"D;");    break;
               case BOOLTy:      strcat(str,"B;");    break;
               case STRINGTy:    strcat(str,"S;");    break;
               case VOIDTy:      strcat(str,"V");     break;
+              case NULLTYPE:    exist = false;;      break;
               default:          printf("==WTF?==;"); break;
             }
             STConst type_var;
@@ -168,7 +160,11 @@ void update_varuble(NStmtList *root,NExpr *var)
             table.push_back(type_var);
 
         }
-        if(current->var->varconstant != NULL){
+        else {
+          exist = false;
+        }
+
+         if(current->var->varconstant != NULL){
         printf("Varuble found var->varconstant %d\n",current->var->varconstant->constant);
         }
         printf("Varuble found expr->type %d\n",current->expr->type);
@@ -502,14 +498,16 @@ void st_stmt(struct NStmt * node) {
         break;
 
         case STMT_ASSIGN:
+        update_varuble(globalroot,node->var);
         update_varuble(globalroot,node->expr);
         st_stmt_expr(node->var);
         st_stmt_expr(node->expr);
 
         break;
         case STMT_LASSIGN:
+          update_varuble(globalroot,node->var);
             st_stmt_expr(node->var);
-            st_stmt_expr(node->expr);
+
             break;
         default:
           break;
@@ -652,11 +650,8 @@ void st_stmt_expr(struct NExpr * node) {
           if(node->vartype != NULL){
             if(node->idlist->first->name != NULL)
             {
-
-
               if (st_constant_index( CONST_UTF8, (void*)(node->idlist->first->name)) == -1) {
                 char * str = (char*)malloc(sizeof(char)*33);
-
                 STConst var;
                 var.next = NULL;
                 var.type = CONST_UTF8;

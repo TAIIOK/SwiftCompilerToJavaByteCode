@@ -14,9 +14,9 @@
  }
  */
 import Foundation
-var intss:Int = 0
-var line = readLine()
-print(intss)
+
+var line:String = readLine()
+print(line)
 
 var varuble = 4
 let constant = 3
@@ -31,9 +31,4 @@ var string:String = "string"
 var doublevar:Double = 0.1
 var float:Float = 0.1
 
-func main(dd:Int,ds:Int){
-
-}
-
-var bad = main(dd:1,ds:2)
-
+int = trueBool

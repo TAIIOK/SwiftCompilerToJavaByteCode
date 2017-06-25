@@ -3,13 +3,14 @@
 
 typedef struct st_const STConst;
 enum NVarEnumType{
-  STRINGTy,
-  INTTy,
-  DOUBLETy,
-  FLOATTy,
-  BOOLTy,
-  CHARACTERTy,
-  VOIDTy
+  NULLTYPE = 0,
+  STRINGTy = 1,
+  INTTy = 2,
+  DOUBLETy = 3,
+  FLOATTy = 4,
+  BOOLTy = 5,
+  CHARACTERTy = 6,
+  VOIDTy = 7
 };
 
 enum NConstantEnum{
