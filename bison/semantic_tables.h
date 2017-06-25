@@ -96,11 +96,42 @@ int nexprlist_count(NExprList * start) {
         return count;
 }
 
-void update_varuble(NStmtList *root,NExpr *var)
+void check_equal(char *left,char *right)
+{
+  printf("left %s\n",left);
+  printf("right %s\n",right);
+    if(strcmp(left,right) != 0)
+    {
+      printf("Wrong equal\n");
+      exit (EXIT_FAILURE);
+    }
+    return;
+}
+
+char * update_varuble(NStmtList *root,NExpr *var)
 {
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
-                return;
+          switch (var->type ) {
+            case EXPR_BOOL:
+            return "B;";
+            break;
+            case EXPR_INT:
+            return "I;";
+            break;
+            case EXPR_FLOAT:
+            return "F;";
+            break;
+            case EXPR_DOUBLE:
+            return "D;";
+            break;
+            case EXPR_STR:
+            return "S;";
+            default:
+            break;
+
+          }
+                return "";
         }
 
         bool exist = false;
@@ -158,7 +189,7 @@ void update_varuble(NStmtList *root,NExpr *var)
                                         type_var.type = CONST_UTF8;
                                         type_var.value.utf8  = str;
                                         table.push_back(type_var);
-
+                                        return str;
                                 }
                                 else {
                                         exist = false;
@@ -177,6 +208,8 @@ void update_varuble(NStmtList *root,NExpr *var)
                 printf("Varuble doest exist\n");
                 exit (EXIT_FAILURE);
         }
+
+      return "";
 }
 
 void printTable()
@@ -497,8 +530,8 @@ void st_stmt(struct NStmt * node) {
                         break;
 
         case STMT_ASSIGN:
-                update_varuble(globalroot,node->var);
-                update_varuble(globalroot,node->expr);
+
+                check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);
 
