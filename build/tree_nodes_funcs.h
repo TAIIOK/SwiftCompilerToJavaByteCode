@@ -542,6 +542,7 @@ struct NExpr* create_op_expr(NExprType type,NExpr* left,NExpr* right)
     result->right = right;
     result->type = type;
     return result;
+    
 }
 
 struct NExpr* create_expr_id(char* id)
@@ -719,11 +720,9 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
       }
       if(var->vartype == NULL)
       {
-        printf("zdarova\n\n");
         result->var->vartype = varType;
       }
     }
-    printf("%d expr->type", expr->type);
         result->type = STMT_ASSIGN;
     return result;
 }
