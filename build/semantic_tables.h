@@ -110,6 +110,7 @@ void check_equal(char *left,char *right)
 
 char * update_varuble(NStmtList *root,NExpr *var)
 {
+
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
           switch (var->type ) {
@@ -530,8 +531,21 @@ void st_stmt(struct NStmt * node) {
                         break;
 
         case STMT_ASSIGN:
-
+                if(node->expr->type == EXPR_ID)
+                {
                 check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+                }
+                if(node->expr->type == EXPR_MET )
+                {
+                  for (auto c : functions_list) {
+                          if (strcmp(c.name->last->name, node->expr->left->idlist->first->name) == 0)
+                          {
+                              check_equal(update_varuble(globalroot,node->var),get_function_type(&c));
+                              break;
+                          }
+                  }
+
+                }
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);
 

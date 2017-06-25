@@ -19,4 +19,13 @@ var trueBool:Bool = true
 var int:Int = 0
 
 
-int = true
+int = 0
+
+
+func main() -> Int{
+
+    return 1
+}
+
+int = main()
+
