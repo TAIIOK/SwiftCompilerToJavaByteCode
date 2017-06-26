@@ -748,7 +748,32 @@ void st_stmt(struct NStmt * node) {
         case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
 
         case STMT_FUNC: {
+               bool args = false;
+               bool func_type = false;
+                for (auto c : functions_list)
+                {
+                  if (strcmp(c.name->last->name,node->func->name->last->name) == 0)
+                  {
+                    if(strcmp(get_function_args(&c),get_function_args(node->func)) == 0)
+                    {
+                      args = true;
+                    }
+                    if(strcmp(get_function_type(&c),get_function_type(node->func)) == 0)
+                    {
+                      func_type = true;
+                    }
+
+                    if(args && func_type)
+                    {
+                      printf("redefine function\n");
+                      exit(EXIT_FAILURE);
+                    }
+
+                  }
+                }
                 functions_list.push_back(*node->func);
+
+
 
                 // Fill table.
                 st_stmt_func(node);

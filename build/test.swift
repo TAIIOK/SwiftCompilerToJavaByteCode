@@ -33,7 +33,7 @@ func main(s:Int) -> Int{
     return 1
 }
 
-func mains(s:Int) -> Int{
+func main(s:Int) -> Double{
 
     var cake:Int = 0
     var badcake:Double = 1.9

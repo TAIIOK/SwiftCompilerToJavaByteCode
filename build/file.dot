@@ -33,7 +33,7 @@ return1--expr4;
 func1[label = "func"];
 root--func1;
 func1name[label = "func_name"];
-expr5[label = "mains"];
+expr5[label = "main"];
 func1name--expr5;
 func1--func1name;
 func1args[label = " args "];

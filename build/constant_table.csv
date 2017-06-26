@@ -17,8 +17,8 @@
    15;METHODREF;  3 14
    16;      INT;  0
    17;      INT;  1
-   18;     UTF8;  'mains'
-   19;     UTF8;  '(I )I '
+   18;     UTF8;  'main'
+   19;     UTF8;  '(I )D '
    20;     UTF8;  'cake'
    21;     UTF8;  'I '
    22; NAMETYPE;  20 21
@@ -67,7 +67,7 @@ Method list size = 3
 anotherone:;
 ;List local varubles:;
     1:; 'pie'
-mains:;
+main:;
 ;List local varubles:;
     1:; 'cake'
     2:; 'badcake'
