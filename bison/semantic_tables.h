@@ -74,6 +74,8 @@ int st_constant_index(enum st_const_types type, const void * value);
 int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int arg2);
 void st_print_const();
 void st_print_const_file(FILE *  output);
+void printLocalVars();
+void printLocalVars_file(FILE *  output);
 char * st_type_name(enum st_const_types type, char name[10]);
 int    nexprlist_count(NExprList * start);
 char * st_gen_func_handle(NFunc * f, char * buffer);
@@ -227,12 +229,57 @@ char * update_varuble(NStmtList *root,NExpr *var)
 
       return "";
 }
+void printLocalVars()
+{
+  list<st_const> tempTable;
+  tempTable = table;
+  int index = 1;
+  printf("Method list size = %d\n",functions_list.size());
+  for (auto t : functions_list) {
+      table.clear();
+
+          st_stmt_list(t.body);
+          printf("%s:\n",t.name->last->name);
+          printf("List local varubles:\n");
+          for (auto c : table) {
+          switch (c.type) {
+          case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0){printf("%5d: ", index);printf("'%s'\n", c.value.utf8); index++;}      break;
+          }
+        }
+        printf("\n");
+        index = 1;
+  }
+  table = tempTable;
+}
+
+void printLocalVars_file(FILE *output)
+{
+  list<st_const> tempTable;
+  tempTable = table;
+  int index = 1;
+  fprintf(output,"Method list size = %d\n",functions_list.size());
+  for (auto t : functions_list) {
+      table.clear();
+
+          st_stmt_list(t.body);
+          fprintf(output,"%s:;\n",t.name->last->name);
+          fprintf(output,";List local varubles:;\n");
+          for (auto c : table) {
+          switch (c.type) {
+          case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0){fprintf(output,"%5d:; ", index);fprintf(output,"'%s'\n", c.value.utf8); index++;}      break;
+          }
+        }
+        printf("\n");
+        index = 1;
+  }
+  table = tempTable;
+}
 
 void printTable()
 {
         char name[10] = "";
         int index = 0;
-        printf("Constant table size = %d\n", table.size()-1);  
+        printf("Constant table size = %d\n", table.size()-1);
         for (auto c : table) {
                 if(c.type != CONST_NULL) {
                         printf("%5d:  %9s  ", index, st_type_name(c.type, name));
@@ -528,6 +575,7 @@ void create_table(NStmtList *root){
                 current = current->next;
         }
         printTable();
+        printLocalVars();
 }
 
 //############################################################################//

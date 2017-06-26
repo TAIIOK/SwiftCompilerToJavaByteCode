@@ -24,6 +24,16 @@ int = 0
 
 func main() -> Int{
 
+    var cake:Int = 0
+    var badcake:Double = 1.9
+
+    return 1
+}
+
+func anotherone() -> Int{
+
+    var pie:Int = 0
+
     return 1
 }
 

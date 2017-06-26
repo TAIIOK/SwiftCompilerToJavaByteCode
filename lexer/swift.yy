@@ -221,6 +221,7 @@ int main(int argc,char* argv[])
         fprintf(output, "%s", ";Constant table:;\n");
         create_table(root);
         st_print_const_file(output);
+        printLocalVars_file(output);
         /*
         printf("Constant table:\n");
         fprintf(output, "%s", ";Constant table:;\n");
