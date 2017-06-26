@@ -294,11 +294,6 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                 exist = true;
                                 printf("Founded need Varuble\n");
 
-                                STConst name;
-                                name.next = NULL;
-                                name.type = CONST_UTF8;
-                                name.value.utf8  = current->var->idlist->first->name;
-                                table.push_back(name);
                                 printf("name %s\n",current->var->idlist->first->name);
                                 mult_declaration(globalroot,var);
                                 printf("Varuble found var->type %d\n",current->var->type);
@@ -330,12 +325,19 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                         case NULLTYPE:    exist = false;;      break;
                                         default:          printf("==WTF?== "); break;
                                         }
-                                        STConst type_var;
-                                        type_var.next = NULL;
-                                        type_var.type = CONST_UTF8;
-                                        type_var.value.utf8  = str;
-                                        table.push_back(type_var);
+                                        if (st_constant_index(CONST_UTF8, (void *)&(current->var->idlist->first->name)) == -1) {
+                                                STConst name;
+                                                name.next = NULL;
+                                                name.type = CONST_UTF8;
+                                                name.value.utf8  = current->var->idlist->first->name;
+                                                table.push_back(name);
 
+                                                STConst type_var;
+                                                type_var.next = NULL;
+                                                type_var.type = CONST_UTF8;
+                                                type_var.value.utf8  = str;
+                                                table.push_back(type_var);
+                                        }
                                         STConst name_type;
                                         name_type.next = NULL;
                                         name_type.type = CONST_NAMETYPE;

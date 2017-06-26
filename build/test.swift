@@ -22,6 +22,9 @@ var int:Int = 0
 
 var s:String = "some\""
 
+s = " hgjghjghhgjhgjjhg"
+
+
 func main(s:Int) -> Int{
 
     var cake:Int = 0
@@ -53,7 +56,6 @@ if(int > 1)
 for a in 1...10{
 
 }
-
 
 
 

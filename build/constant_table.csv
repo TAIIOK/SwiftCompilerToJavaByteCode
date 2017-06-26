@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 57;
+;Constant table size = 63;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -52,11 +52,17 @@
    50;METHODREF;  3 49
    51;     UTF8;  'some"'
    52;   STRING;  51
-   53;     UTF8;  'int'
-   54;     UTF8;  'I '
+   53;     UTF8;  's'
+   54;     UTF8;  'S '
    55; NAMETYPE;  53 54
    56;METHODREF;  3 55
-   57;      INT;  10
+   57;     UTF8;  ' hgjghjghhgjhgjjhg'
+   58;   STRING;  57
+   59;     UTF8;  'int'
+   60;     UTF8;  'I '
+   61; NAMETYPE;  59 60
+   62;METHODREF;  3 61
+   63;      INT;  10
 Method list size = 3
 anotherone:;
 ;List local varubles:;

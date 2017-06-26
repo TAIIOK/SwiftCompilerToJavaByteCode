@@ -542,7 +542,7 @@ struct NExpr* create_op_expr(NExprType type,NExpr* left,NExpr* right)
     result->right = right;
     result->type = type;
     return result;
-    
+
 }
 
 struct NExpr* create_expr_id(char* id)
@@ -718,7 +718,7 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
         default:
           break;
       }
-      if(var->vartype == NULL)
+      if(var->vartype == NULL && var->varconstant != NULL)
       {
         result->var->vartype = varType;
       }
