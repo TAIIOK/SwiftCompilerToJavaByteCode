@@ -100,12 +100,12 @@ int nexprlist_count(NExprList * start) {
 
 void check_equal(char *left,char *right)
 {
-    if(strcmp(left,right) != 0)
-    {
-      printf("Wrong equal TYPE\n");
-      exit (EXIT_FAILURE);
-    }
-    return;
+        if(strcmp(left,right) != 0)
+        {
+                printf("Wrong equal TYPE\n");
+                exit (EXIT_FAILURE);
+        }
+        return;
 }
 
 char * update_varuble(NStmtList *root,NExpr *var)
@@ -113,25 +113,25 @@ char * update_varuble(NStmtList *root,NExpr *var)
 
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
-          switch (var->type ) {
-            case EXPR_BOOL:
-            return "B ";
-            break;
-            case EXPR_INT:
-            return "I ";
-            break;
-            case EXPR_FLOAT:
-            return "F ";
-            break;
-            case EXPR_DOUBLE:
-            return "D ";
-            break;
-            case EXPR_STR:
-            return "S ";
-            default:
-            break;
+                switch (var->type ) {
+                case EXPR_BOOL:
+                        return "B ";
+                        break;
+                case EXPR_INT:
+                        return "I ";
+                        break;
+                case EXPR_FLOAT:
+                        return "F ";
+                        break;
+                case EXPR_DOUBLE:
+                        return "D ";
+                        break;
+                case EXPR_STR:
+                        return "S ";
+                default:
+                        break;
 
-          }
+                }
                 return "";
         }
 
@@ -227,52 +227,52 @@ char * update_varuble(NStmtList *root,NExpr *var)
                 exit (EXIT_FAILURE);
         }
 
-      return "";
+        return "";
 }
 void printLocalVars()
 {
-  list<st_const> tempTable;
-  tempTable = table;
-  int index = 1;
-  printf("Method list size = %d\n",functions_list.size());
-  for (auto t : functions_list) {
-      table.clear();
+        list<st_const> tempTable;
+        tempTable = table;
+        int index = 1;
+        printf("Method list size = %d\n",functions_list.size());
+        for (auto t : functions_list) {
+                table.clear();
 
-          st_stmt_list(t.body);
-          printf("%s:\n",t.name->last->name);
-          printf("List local varubles:\n");
-          for (auto c : table) {
-          switch (c.type) {
-          case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0){printf("%5d: ", index);printf("'%s'\n", c.value.utf8); index++;}      break;
-          }
+                st_stmt_list(t.body);
+                printf("%s:\n",t.name->last->name);
+                printf("List local varubles:\n");
+                for (auto c : table) {
+                        switch (c.type) {
+                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
+                        }
+                }
+                printf("\n");
+                index = 1;
         }
-        printf("\n");
-        index = 1;
-  }
-  table = tempTable;
+        table = tempTable;
 }
 
 void printLocalVars_file(FILE *output)
 {
-  list<st_const> tempTable;
-  tempTable = table;
-  int index = 1;
-  fprintf(output,"Method list size = %d\n",functions_list.size());
-  for (auto t : functions_list) {
-      table.clear();
+        list<st_const> tempTable;
+        tempTable = table;
+        int index = 1;
+        fprintf(output,"Method list size = %d\n",functions_list.size());
+        for (auto t : functions_list) {
+                table.clear();
 
-          st_stmt_list(t.body);
-          fprintf(output,"%s:;\n",t.name->last->name);
-          fprintf(output,";List local varubles:;\n");
-          for (auto c : table) {
-          switch (c.type) {
-          case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0){fprintf(output,"%5d:; ", index);fprintf(output,"'%s'\n", c.value.utf8); index++;}      break;
-          }
+                st_stmt_list(t.body);
+                fprintf(output,"%s:;\n",t.name->last->name);
+                fprintf(output,";List local varubles:;\n");
+                for (auto c : table) {
+                        switch (c.type) {
+                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0) {fprintf(output,"%5d:; ", index); fprintf(output,"'%s'\n", c.value.utf8); index++;}      break;
+                        }
+                }
+                printf("\n");
+                index = 1;
         }
-        printf("\n");
-        index = 1;
-  }
-  table = tempTable;
+        table = tempTable;
 }
 
 void printTable()
@@ -611,17 +611,17 @@ void st_stmt(struct NStmt * node) {
         case STMT_ASSIGN:
                 if(node->expr->type == EXPR_ID)
                 {
-                check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+                        check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                 }
                 if(node->expr->type == EXPR_MET )
                 {
-                  for (auto c : functions_list) {
-                          if (strcmp(c.name->last->name, node->expr->left->idlist->first->name) == 0)
-                          {
-                              check_equal(update_varuble(globalroot,node->var),get_function_type(&c));
-                              break;
-                          }
-                  }
+                        for (auto c : functions_list) {
+                                if (strcmp(c.name->last->name, node->expr->left->idlist->first->name) == 0)
+                                {
+                                        check_equal(update_varuble(globalroot,node->var),get_function_type(&c));
+                                        break;
+                                }
+                        }
 
                 }
                 st_stmt_expr(node->var);
@@ -889,29 +889,29 @@ int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int 
 
 void st_print_const_file(FILE * output) {
 
-  char name[10] = "";
-  fprintf(output,";Constant table size = %d;\n", table.size()-1);
-  int index = 0;
-  for (auto c : table) {
-          if(c.type != CONST_NULL) {
-                  fprintf(output,"%5d;%9s;  ", index, st_type_name(c.type, name));
-          }
-          switch (c.type) {
-          case CONST_UTF8:      fprintf(output,"'%s'\n", c.value.utf8);      break;
-          case CONST_INT:       fprintf(output,"%d\n", c.value.val_int);   break;
-          case CONST_FLOAT:     fprintf(output,"%f\n", c.value.val_float); break;
-          case CONST_DOUBLE:    fprintf(output,"%f\n", c.value.val_double); break;
-          case CONST_CLASS:     fprintf(output,"%d\n", c.value.val_int); break;
-          case CONST_STRING:    fprintf(output,"%d\n", c.value.args.arg1); break;
-          case CONST_NULL:      break;
-          case CONST_FIELDREF:  fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
-          case CONST_METHODREF: fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
-          case CONST_NAMETYPE:  fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
+        char name[10] = "";
+        fprintf(output,";Constant table size = %d;\n", table.size()-1);
+        int index = 0;
+        for (auto c : table) {
+                if(c.type != CONST_NULL) {
+                        fprintf(output,"%5d;%9s;  ", index, st_type_name(c.type, name));
+                }
+                switch (c.type) {
+                case CONST_UTF8:      fprintf(output,"'%s'\n", c.value.utf8);      break;
+                case CONST_INT:       fprintf(output,"%d\n", c.value.val_int);   break;
+                case CONST_FLOAT:     fprintf(output,"%f\n", c.value.val_float); break;
+                case CONST_DOUBLE:    fprintf(output,"%f\n", c.value.val_double); break;
+                case CONST_CLASS:     fprintf(output,"%d\n", c.value.val_int); break;
+                case CONST_STRING:    fprintf(output,"%d\n", c.value.args.arg1); break;
+                case CONST_NULL:      break;
+                case CONST_FIELDREF:  fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
+                case CONST_METHODREF: fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
+                case CONST_NAMETYPE:  fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
 
-          default:              fprintf(output,"%s","==WTF?==\n"); break;
-          }
-          index++;
-  }
+                default:              fprintf(output,"%s","==WTF?==\n"); break;
+                }
+                index++;
+        }
 
 }
 
