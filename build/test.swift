@@ -19,10 +19,18 @@ var trueBool:Bool = true
 var int:Int = 0
 
 
-int = 0
 
+var s:String = "some\""
 
-func main() -> Int{
+func main(s:Int) -> Int{
+
+    var cake:Int = 0
+    var badcake:Double = 1.9
+
+    return 1
+}
+
+func mains(s:Int) -> Int{
 
     var cake:Int = 0
     var badcake:Double = 1.9
@@ -37,5 +45,15 @@ func anotherone() -> Int{
     return 1
 }
 
-int = main()
+if(int > 1)
+{
+
+}
+
+for a in 1...10{
+
+}
+
+
+
 

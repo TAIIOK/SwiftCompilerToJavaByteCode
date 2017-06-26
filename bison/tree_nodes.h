@@ -64,8 +64,8 @@ enum NExprType {
     EXPR_STR,
     EXPR_MET,
     EXPR_AND,
-    EXPR_NOT,
-    EXPR_OR, //20
+    EXPR_NOT, //20
+    EXPR_OR,
     EXPR_MAS,
     EXPR_BOOL,
     EXPR_NIL,
