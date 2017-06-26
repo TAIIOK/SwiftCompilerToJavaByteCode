@@ -1,0 +1,27 @@
+;Constant table:;
+;Constant table size = 25;
+    1;     UTF8;  'Code'
+    2;     UTF8;  'Main'
+    3;    CLASS;  2
+    4;     UTF8;  'java/lang/Object'
+    5;    CLASS;  4
+    6;     UTF8;  'Main'
+    7;     UTF8;  '()V'
+    8; NAMETYPE;  6 7
+    9;METHODREF;  3 8
+   10;     UTF8;  'main'
+   11;     UTF8;  '()I '
+   12;      INT;  1
+   13;     UTF8;  'trueBool'
+   14;     UTF8;  'B '
+   15; NAMETYPE;  13 14
+   16; FIELDREF;  3 15
+   17;     UTF8;  'int'
+   18;     UTF8;  'I '
+   19; NAMETYPE;  17 18
+   20; FIELDREF;  3 19
+   21;      INT;  0
+   22;     UTF8;  'int'
+   23;     UTF8;  'I '
+   24; NAMETYPE;  22 23
+   25;METHODREF;  3 24

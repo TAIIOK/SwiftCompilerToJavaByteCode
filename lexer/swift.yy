@@ -218,10 +218,12 @@ int main(int argc,char* argv[])
 
         FILE* output;
         output = fopen("constant_table.csv","w");
+        fprintf(output, "%s", ";Constant table:;\n");
         create_table(root);
+        st_print_const_file(output);
         /*
         printf("Constant table:\n");
-        fprintf(output, "'%s'", ";Constant table:;\n");
+        fprintf(output, "%s", ";Constant table:;\n");
         st_fill_tables(root);
         st_print_const(st_const_table);
         st_print_const_file(output,st_const_table);

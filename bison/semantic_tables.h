@@ -73,7 +73,7 @@ void st_stmt_switch(struct NSwitch * node);
 int st_constant_index(enum st_const_types type, const void * value);
 int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int arg2);
 void st_print_const();
-void st_print_const_file(FILE *  output,STConst * table);
+void st_print_const_file(FILE *  output);
 char * st_type_name(enum st_const_types type, char name[10]);
 int    nexprlist_count(NExprList * start);
 char * st_gen_func_handle(NFunc * f, char * buffer);
@@ -113,19 +113,19 @@ char * update_varuble(NStmtList *root,NExpr *var)
         {
           switch (var->type ) {
             case EXPR_BOOL:
-            return "B;";
+            return "B ";
             break;
             case EXPR_INT:
-            return "I;";
+            return "I ";
             break;
             case EXPR_FLOAT:
-            return "F;";
+            return "F ";
             break;
             case EXPR_DOUBLE:
-            return "D;";
+            return "D ";
             break;
             case EXPR_STR:
-            return "S;";
+            return "S ";
             default:
             break;
 
@@ -174,20 +174,37 @@ char * update_varuble(NStmtList *root,NExpr *var)
 
 
                                         switch (current->var->vartype->type) {
-                                        case INTTy:       strcat(str,"I;");    break;
-                                        case FLOATTy:     strcat(str,"F;");    break;
-                                        case DOUBLETy:    strcat(str,"D;");    break;
-                                        case BOOLTy:      strcat(str,"B;");    break;
-                                        case STRINGTy:    strcat(str,"S;");    break;
-                                        case VOIDTy:      strcat(str,"V");     break;
+                                        case INTTy:       strcat(str,"I ");    break;
+                                        case FLOATTy:     strcat(str,"F ");    break;
+                                        case DOUBLETy:    strcat(str,"D ");    break;
+                                        case BOOLTy:      strcat(str,"B ");    break;
+                                        case STRINGTy:    strcat(str,"S ");    break;
+                                        case VOIDTy:      strcat(str,"V ");     break;
                                         case NULLTYPE:    exist = false;;      break;
-                                        default:          printf("==WTF?==;"); break;
+                                        default:          printf("==WTF?== "); break;
                                         }
                                         STConst type_var;
                                         type_var.next = NULL;
                                         type_var.type = CONST_UTF8;
                                         type_var.value.utf8  = str;
                                         table.push_back(type_var);
+
+                                        STConst name_type;
+                                        name_type.next = NULL;
+                                        name_type.type = CONST_NAMETYPE;
+                                        name_type.value.args.arg1 = table.size() - 2;
+                                        name_type.value.args.arg2 = table.size() - 1;
+                                        table.push_back(name_type);
+
+                                        STConst method_ref;
+                                        method_ref.next = NULL;
+                                        method_ref.type = CONST_METHODREF;
+                                        method_ref.value.args.arg1 = 3;
+                                        method_ref.value.args.arg2 = table.size() - 1;
+                                        table.push_back(method_ref);
+
+
+
                                         return str;
                                 }
                                 else {
@@ -215,6 +232,7 @@ void printTable()
 {
         char name[10] = "";
         int index = 0;
+        printf("Constant table size = %d\n", table.size()-1);  
         for (auto c : table) {
                 if(c.type != CONST_NULL) {
                         printf("%5d:  %9s  ", index, st_type_name(c.type, name));
@@ -227,8 +245,8 @@ void printTable()
                 case CONST_CLASS:     printf("%d\n", c.value.val_int); break;
                 case CONST_STRING:    printf("%d\n", c.value.args.arg1); break;
                 case CONST_NULL:      break;
-                case CONST_FIELDREF:  break;
-                case CONST_METHODREF: break;
+                case CONST_FIELDREF:  printf("%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
+                case CONST_METHODREF: printf("%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
                 case CONST_NAMETYPE:  printf("%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
 
                 default:              printf("==WTF?==\n"); break;
@@ -242,13 +260,13 @@ char * get_function_type(struct NFunc * f)
         char * str = (char*)malloc(sizeof(char)*33);;
 
         switch (f->vartype->type) {
-        case INTTy:       strcat(str,"I;");    break;
-        case FLOATTy:     strcat(str,"F;");    break;
-        case DOUBLETy:    strcat(str,"D;");    break;
-        case BOOLTy:      strcat(str,"B;");    break;
-        case STRINGTy:    strcat(str,"S;");    break;
-        case VOIDTy:      strcat(str,"V");     break;
-        default:          printf("==WTF?==;"); break;
+        case INTTy:       strcat(str,"I ");    break;
+        case FLOATTy:     strcat(str,"F ");    break;
+        case DOUBLETy:    strcat(str,"D ");    break;
+        case BOOLTy:      strcat(str,"B ");    break;
+        case STRINGTy:    strcat(str,"S ");    break;
+        case VOIDTy:      strcat(str,"V ");     break;
+        default:          printf("==WTF?== "); break;
         }
         return str;
 }
@@ -286,19 +304,19 @@ void check_function_args(struct NExpr * cur)
                                 switch(cura->type)
                                 {
                                 case EXPR_INT:
-                                        strcat(newstr,"I;");   break;
+                                        strcat(newstr,"I ");   break;
                                         break;
                                 case EXPR_DOUBLE:
-                                        strcat(newstr,"D;");   break;
+                                        strcat(newstr,"D ");   break;
                                         break;
                                 case EXPR_FLOAT:
-                                        strcat(newstr,"F;");   break;
+                                        strcat(newstr,"F ");   break;
                                         break;
                                 case EXPR_STR:
-                                        strcat(newstr,"S;");   break;
+                                        strcat(newstr,"S ");   break;
                                         break;
                                 case EXPR_BOOL:
-                                        strcat(newstr,"B;");   break;
+                                        strcat(newstr,"B ");   break;
                                         break;
                                 default:
                                         break;
@@ -337,13 +355,13 @@ char * get_function_args(struct NFunc * f)
         while(current != NULL)
         {
                 switch (current->vartype->type) {
-                case INTTy:       strcat(str,"I;");   break;
-                case FLOATTy:     strcat(str,"F;"); break;
-                case DOUBLETy:    strcat(str,"D;"); break;
-                case BOOLTy:      strcat(str,"B;"); break;
-                case STRINGTy:    strcat(str,"S;"); break;
-                case VOIDTy:      strcat(str,"S;"); break;
-                default:          printf("==WTF?==;"); break;
+                case INTTy:       strcat(str,"I ");   break;
+                case FLOATTy:     strcat(str,"F "); break;
+                case DOUBLETy:    strcat(str,"D "); break;
+                case BOOLTy:      strcat(str,"B "); break;
+                case STRINGTy:    strcat(str,"S "); break;
+                case VOIDTy:      strcat(str,"V "); break;
+                default:          printf("==WTF?== "); break;
                 }
                 current = current->next;
         }
@@ -375,7 +393,7 @@ void print_function_param(char * function,struct NStmt * current){
                         }
                         if(current->func->vartype == NULL)
                         {
-                                strcat(str,"V;");
+                                strcat(str,"V ");
                         }else{
                                 strcat(str,get_function_type(current->func));
                         }
@@ -412,7 +430,7 @@ void print_function_param(char * function, NStmtList *root){
                                 }
                                 if(current->func->vartype == NULL)
                                 {
-                                        strcat(str,"V;");
+                                        strcat(str,"V ");
                                 }else{
                                         strcat(str,get_function_type(current->func));
                                 }
@@ -478,6 +496,20 @@ void create_header(NStmtList *root){
         param.type = CONST_UTF8;
         param.value.utf8  = "()V";
         table.push_back(param);
+
+        STConst name_type;
+        name_type.next = NULL;
+        name_type.type = CONST_NAMETYPE;
+        name_type.value.args.arg1 = table.size() - 2;
+        name_type.value.args.arg2 = table.size() - 1;
+        table.push_back(name_type);
+
+        STConst method_ref;
+        method_ref.next = NULL;
+        method_ref.type = CONST_METHODREF;
+        method_ref.value.args.arg1 = 3;
+        method_ref.value.args.arg2 = table.size() - 1;
+        table.push_back(method_ref);
 
 
 }
@@ -703,19 +735,33 @@ void st_stmt_expr(struct NExpr * node) {
                                         table.push_back(var);
 
                                         switch (node->vartype->type) {
-                                        case INTTy:       strcat(str,"I;");   break;
-                                        case FLOATTy:     strcat(str,"F;"); break;
-                                        case DOUBLETy:    strcat(str,"D;"); break;
-                                        case BOOLTy:      strcat(str,"B;"); break;
-                                        case STRINGTy:    strcat(str,"S;"); break;
-                                        case VOIDTy:      strcat(str,"V"); break;
-                                        default:          printf("==WTF?==;"); break;
+                                        case INTTy:       strcat(str,"I ");   break;
+                                        case FLOATTy:     strcat(str,"F "); break;
+                                        case DOUBLETy:    strcat(str,"D "); break;
+                                        case BOOLTy:      strcat(str,"B "); break;
+                                        case STRINGTy:    strcat(str,"S "); break;
+                                        case VOIDTy:      strcat(str,"V "); break;
+                                        default:          printf("==WTF?== "); break;
                                         }
                                         STConst type_var;
                                         type_var.next = NULL;
                                         type_var.type = CONST_UTF8;
                                         type_var.value.utf8  = str;
                                         table.push_back(type_var);
+
+                                        STConst name_type;
+                                        name_type.next = NULL;
+                                        name_type.type = CONST_NAMETYPE;
+                                        name_type.value.args.arg1 = table.size() - 2;
+                                        name_type.value.args.arg2 = table.size() - 1;
+                                        table.push_back(name_type);
+
+                                        STConst field_ref;
+                                        field_ref.next = NULL;
+                                        field_ref.type = CONST_FIELDREF;
+                                        field_ref.value.args.arg1 = 3;
+                                        field_ref.value.args.arg2 = table.size() - 1;
+                                        table.push_back(field_ref);
                                 }
                         }
                 }
@@ -793,35 +839,31 @@ int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int 
         return -1;
 }
 
-void st_print_const_file(FILE * output, STConst * table) {
+void st_print_const_file(FILE * output) {
 
-        char name[10] = "";
-        STConst * cur = table;
-        int index = 0;
-        while (cur != 0) {
+  char name[10] = "";
+  fprintf(output,";Constant table size = %d;\n", table.size()-1);
+  int index = 0;
+  for (auto c : table) {
+          if(c.type != CONST_NULL) {
+                  fprintf(output,"%5d;%9s;  ", index, st_type_name(c.type, name));
+          }
+          switch (c.type) {
+          case CONST_UTF8:      fprintf(output,"'%s'\n", c.value.utf8);      break;
+          case CONST_INT:       fprintf(output,"%d\n", c.value.val_int);   break;
+          case CONST_FLOAT:     fprintf(output,"%f\n", c.value.val_float); break;
+          case CONST_DOUBLE:    fprintf(output,"%f\n", c.value.val_double); break;
+          case CONST_CLASS:     fprintf(output,"%d\n", c.value.val_int); break;
+          case CONST_STRING:    fprintf(output,"%d\n", c.value.args.arg1); break;
+          case CONST_NULL:      break;
+          case CONST_FIELDREF:  fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
+          case CONST_METHODREF: fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
+          case CONST_NAMETYPE:  fprintf(output,"%d %d\n", c.value.args.arg1, c.value.args.arg2); break;
 
-                fprintf(output, "%5d;%9s; ", index, st_type_name(cur->type, name));
-
-                //  printf("%5d:  %9s  ", index, st_type_name(cur->type, name));
-                switch (cur->type) {
-                case CONST_UTF8:      fprintf(output, "'%s'", cur->value.utf8);      break;
-                case CONST_INT:       fprintf(output, "%d", cur->value.val_int);   break;
-                case CONST_FLOAT:     fprintf(output, "%f", cur->value.val_float); break;
-                case CONST_DOUBLE:    fprintf(output, "%f", cur->value.val_double); break;
-                case CONST_CLASS:
-                case CONST_STRING:    fprintf(output, "%d", cur->value.args.arg1); break;
-
-                case CONST_FIELDREF:
-                case CONST_METHODREF:
-                case CONST_NAMETYPE: fprintf(output, "%d %d", cur->value.args.arg1, cur->value.args.arg2); break;
-
-                default:              fprintf(output,"%s", "==WTF?=="); break;
-                }
-                fprintf(output,"%s","\n");
-
-                cur = cur->next;
-                index++;
-        }
+          default:              fprintf(output,"%s","==WTF?==\n"); break;
+          }
+          index++;
+  }
 
 }
 
