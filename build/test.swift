@@ -22,11 +22,14 @@ int = 0
 
 func anal() -> String {
 
-    var asd:Int = 1
+
+    var i:Int = 5 * 4
+
+    print(a + 2)
 
     if (1 < 2){
 
-        return 1
+        return ""
 
     }
     return ""

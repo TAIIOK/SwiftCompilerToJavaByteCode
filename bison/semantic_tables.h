@@ -91,7 +91,6 @@ NStmtList *globalroot;
 
 bool check_return_function(NStmtList *root,char * type)
 {
-        printf("%s \n\n\n\n\n\n\n",type);
         bool result = false;
         bool inbodyresult = false;
         char * str = (char*)malloc(sizeof(char)*33);
@@ -235,6 +234,9 @@ bool check_return_function(NStmtList *root,char * type)
         }
         else if (result && inbodyresult) {
                   return true;
+        }
+        else if (inbodyresult){
+        return true;
         }
         else {
         return false;
@@ -663,6 +665,10 @@ void check_function_args(struct NExpr * cur)
 
         if (strcmp(cur->left->idlist->first->name, "print") == 0 )
         {
+          if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
+          {
+            check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
+          }
                 update_varuble(globalroot,cur->right->idlist->first);
                 return;
         }
@@ -1000,7 +1006,7 @@ void st_stmt(struct NStmt * node) {
                 // Умножение, деление при присвоении в переменную=========================
                 else {
 
-                        if(node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD) {
+                        if(node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD) {
 
                                 if(node->expr->left->type==EXPR_INT && node->expr->right->type==EXPR_INT) {
                                         char * str ="I\n";
