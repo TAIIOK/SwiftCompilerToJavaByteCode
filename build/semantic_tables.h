@@ -89,6 +89,162 @@ list<NFunc> functions_list;
 list<NExpr> function_call;
 NStmtList *globalroot;
 
+bool check_return_function(NStmtList *root,char * type)
+{
+        printf("%s \n\n\n\n\n\n\n",type);
+        bool result = false;
+        bool inbodyresult = false;
+        char * str = (char*)malloc(sizeof(char)*33);
+        char * strbody = (char*)malloc(sizeof(char)*33);
+        struct NStmt * current = root->first;
+
+        while (current != NULL && !result) {
+
+                switch (current->type) {
+                case STMT_WHILE: result = check_return_function(current->while_loop->body,type);                  break;
+                case STMT_FOR:   result =check_return_function(current->for_loop->body,type);                      break;
+                case STMT_EXPR:                           break;
+                case STMT_BLOCK: result = check_return_function(current->list,type);                         break;
+                case STMT_REPEAT: result = check_return_function(current->while_loop->body,type);                  break;
+                case STMT_RETURN:
+                        if (current->expr != NULL )
+                        {
+
+                                if(current->expr->type != EXPR_ID_LIST && current->expr->type != EXPR_ID)
+                                {
+
+                                        switch (current->expr->type ) {
+                                        case EXPR_BOOL:
+                                                strcat(str,"B ");
+                                                break;
+                                        case EXPR_INT:
+                                                strcat(str,"I ");
+                                                break;
+                                        case EXPR_FLOAT:
+                                                strcat(str,"F ");
+                                                break;
+                                        case EXPR_DOUBLE:
+                                                strcat(str,"D ");
+                                                break;
+                                        case EXPR_STR:
+                                                strcat(str,"S ");
+                                                break;
+                                        default:
+                                                break;
+
+                                        }
+                                }
+                                else{
+
+                                        strcat(str,update_varuble(globalroot,current->expr));
+                                }
+
+
+                                if(strcmp(str,type) == 0 )
+                                {
+                                        result = true;
+                                }
+                                else{
+                                  printf("Return doesnot exist or wrong return value");
+                                  exit(EXIT_FAILURE);
+                                        result = false;
+                                }
+
+                        }
+                        else if(strcmp(type, "V ") == 0)
+                        {
+                                result = true;
+                        }
+                        break;
+                case STMT_IF:
+
+                        result = check_return_function(current->if_tree->body,type);
+
+                        struct NIf* currentif = current->if_tree->elseiflist->first;
+
+                        while (currentif != NULL && !result)
+                        {
+                                result = check_return_function(currentif->body,type);
+                                currentif = currentif->next;
+                        }
+
+                        if(!result)
+                                result = check_return_function(current->if_tree->elsebody,type);
+
+                        break;
+                        //  case STMT_SWITCH:  result = check_return_function(node->switch_tree);               break;
+                }
+                current = current->next;
+        }
+
+
+        struct NStmt * currentbody = root->first;
+
+        while (currentbody != NULL && !inbodyresult )
+        {
+          if(currentbody->type == STMT_RETURN){
+
+                  if (currentbody->expr != NULL )
+                  {
+
+                          if(currentbody->expr->type != EXPR_ID_LIST && currentbody->expr->type != EXPR_ID)
+                          {
+
+                                  switch (currentbody->expr->type ) {
+                                  case EXPR_BOOL:
+                                          strcat(strbody,"B ");
+                                          break;
+                                  case EXPR_INT:
+                                          strcat(strbody,"I ");
+                                          break;
+                                  case EXPR_FLOAT:
+                                          strcat(strbody,"F ");
+                                          break;
+                                  case EXPR_DOUBLE:
+                                          strcat(strbody,"D ");
+                                          break;
+                                  case EXPR_STR:
+                                          strcat(strbody,"S ");
+                                          break;
+                                  default:
+                                          break;
+
+                                  }
+                          }
+                          else{
+                                  strcat(strbody,update_varuble(globalroot,currentbody->expr));
+                          }
+
+
+                          if(strcmp(strbody,type) == 0)
+                          {
+                                  inbodyresult = true;
+                          }
+                          else{
+                                  inbodyresult = false;
+                          }
+
+                  }
+        }
+        currentbody = currentbody->next;
+      }
+
+        if(strcmp(type, "V ") == 0)
+        {
+                return true;
+        }
+        else if (result && inbodyresult) {
+                  return true;
+        }
+        else {
+        return false;
+        }
+
+
+
+        return result;
+}
+
 int nexprlist_count(NExprList * start) {
         int count = 0;
         NExpr * cur = start->first;
@@ -103,6 +259,15 @@ void check_equal(char *left,char *right)
 {
         printf("%s left\n",left);
         printf("%s right\n",right);
+
+        if(strcmp("D ",left) == 0 || strcmp("F ",left) == 0)
+        {
+                if(strcmp("F ",right) || strcmp("D ",right) || strcmp("I ",right))
+                {
+                        return;
+                }
+        }
+
         if(strcmp(left,right) != 0)
         {
                 printf("Wrong equal TYPE\n");
@@ -158,6 +323,7 @@ void mult_declaration(NStmtList *root,NExpr *var)
 char * update_varuble(NStmtList *root,NExpr *var)
 {
 
+
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
                 switch (var->type ) {
@@ -180,8 +346,6 @@ char * update_varuble(NStmtList *root,NExpr *var)
 
                 }
 
-
-
                 return "";
         }
 
@@ -196,7 +360,8 @@ char * update_varuble(NStmtList *root,NExpr *var)
                         struct NStmt * currentf = current->func->body->first;
                         while(currentf != NULL)
                         {
-                                if(currentf->type == STMT_ASSIGN && var->type == EXPR_ID_LIST) {
+                                if(currentf->type == STMT_ASSIGN && var->type == EXPR_ID_LIST)
+                                {
                                         if(strcmp(var->idlist->first->name,currentf->var->idlist->first->name)==0)
                                         {
                                                 exist = true;
@@ -283,13 +448,13 @@ char * update_varuble(NStmtList *root,NExpr *var)
 
                 if(var->type == EXPR_ID  && current->type == STMT_ASSIGN)
                 {
-                        if(strcmp(current->var->idlist->first->name, var->name) == 0 )
+                        if(strcmp(current->var->idlist->first->name, var->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->name))
                         {
                                 exist = true;
                         }
                 }
                 if(current->type == STMT_ASSIGN && var->type == EXPR_ID_LIST) {
-                        if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
+                        if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0 && strlen(var->idlist->first->name) == strlen(current->var->idlist->first->name))
                         {
                                 exist = true;
                                 printf("Founded need Varuble\n");
@@ -303,7 +468,7 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                         {
                                                 if(var->vartype->type != NULL)
                                                 {
-                                                        if(var->vartype->type !=current->var->vartype->type)
+                                                        if(var->vartype->type != current->var->vartype->type)
                                                         {
                                                                 printf("Varuble have double declaration\n");
                                                                 exit(EXIT_FAILURE);
@@ -364,10 +529,37 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                 if(current->var->varconstant != NULL) {
                                         printf("Varuble found var->varconstant %d\n",current->var->varconstant->constant);
                                 }
+                                if(current->expr->type != NULL)
+                                {
+                                        switch (current->expr->type ) {
+                                        case EXPR_BOOL:
+                                                return "B ";
+                                                break;
+                                        case EXPR_INT:
+                                                return "I ";
+                                                break;
+                                        case EXPR_FLOAT:
+                                                return "F ";
+                                                break;
+                                        case EXPR_DOUBLE:
+                                                return "D ";
+                                                break;
+                                        case EXPR_STR:
+                                                return "S ";
+                                        default:
+                                                break;
+
+                                        }
+
+                                        return "";
+                                }
                                 printf("Varuble found expr->type %d\n",current->expr->type);
                                 break;
                         }
                 }
+
+
+
                 current = current->next;
         }
         if(!exist) {
@@ -748,28 +940,35 @@ void st_stmt(struct NStmt * node) {
         case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
 
         case STMT_FUNC: {
-               bool args = false;
-               bool func_type = false;
+                bool args = false;
+                bool func_type = false;
                 for (auto c : functions_list)
                 {
-                  if (strcmp(c.name->last->name,node->func->name->last->name) == 0)
-                  {
-                    if(strcmp(get_function_args(&c),get_function_args(node->func)) == 0)
-                    {
-                      args = true;
-                    }
-                    if(strcmp(get_function_type(&c),get_function_type(node->func)) == 0)
-                    {
-                      func_type = true;
-                    }
+                        if (strcmp(c.name->last->name,node->func->name->last->name) == 0)
+                        {
+                                if(strcmp(get_function_args(&c),get_function_args(node->func)) == 0)
+                                {
+                                        args = true;
+                                }
+                                if(strcmp(get_function_type(&c),get_function_type(node->func)) == 0)
+                                {
+                                        func_type = true;
+                                }
 
-                    if(args && func_type)
-                    {
-                      printf("redefine function\n");
-                      exit(EXIT_FAILURE);
-                    }
+                                if(args && func_type)
+                                {
+                                        printf("redefine function\n");
+                                        exit(EXIT_FAILURE);
+                                }
 
-                  }
+                        }
+                }
+
+                if(!check_return_function(node->func->body,get_function_type(node->func)))
+                {
+
+                        printf("Return doesnot exist or wrong return value\n");
+                        exit(EXIT_FAILURE);
                 }
                 functions_list.push_back(*node->func);
 
@@ -798,9 +997,30 @@ void st_stmt(struct NStmt * node) {
                         }
 
                 }
+                // Умножение, деление при присвоении в переменную=========================
                 else {
-                        check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+
+                        if(node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD) {
+
+                                if(node->expr->left->type==EXPR_INT && node->expr->right->type==EXPR_INT) {
+                                        char * str ="I\n";
+
+                                        check_equal(update_varuble(globalroot,node->var), update_varuble(globalroot,node->expr->left));
+
+                                }
+                                if(node->expr->left->type==EXPR_DOUBLE) {
+                                        check_equal(update_varuble(globalroot,node->var), update_varuble(globalroot,node->expr->left));
+                                }
+                                if(node->expr->right->type==EXPR_DOUBLE) {
+                                        check_equal(update_varuble(globalroot,node->var), update_varuble(globalroot,node->expr->right));
+                                }
+                        }else{
+                                check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+                        }
                 }
+
+
+
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);
 

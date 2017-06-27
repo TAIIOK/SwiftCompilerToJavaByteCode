@@ -14,48 +14,20 @@
  }
  */
 
-var trueBool:Bool = true
-
 var int:Int = 0
 
+var ints:Double = 0
 
+int = 0
 
-var s:String = "some\""
+func anal() -> String {
 
-s = " hgjghjghhgjhgjjhg"
+    var asd:Int = 1
 
+    if (1 < 2){
 
-func main(s:Int) -> Int{
+        return 1
 
-    var cake:Int = 0
-    var badcake:Double = 1.9
-
-    return 1
+    }
+    return ""
 }
-
-func main(s:Int) -> Double{
-
-    var cake:Int = 0
-    var badcake:Double = 1.9
-
-    return 1
-}
-
-func anotherone() -> Int{
-
-    var pie:Int = 0
-
-    return 1
-}
-
-if(int > 1)
-{
-
-}
-
-for a in 1...10{
-
-}
-
-
-
