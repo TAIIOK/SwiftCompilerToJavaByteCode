@@ -23,7 +23,7 @@ int = 0
 
 
 
-func anal() -> String {
+func testing() -> Double {
 
 
     var i:Int = 5 * 4
@@ -32,8 +32,8 @@ func anal() -> String {
 
     if (1 < 2){
 
-        return ""
+        return 1
 
     }
-    return ""
+    return 2
 }

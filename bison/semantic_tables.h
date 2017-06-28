@@ -128,15 +128,25 @@ bool check_return_function(NStmtList *root,char * type)
                                 }
 
 
-                                if(strcmp(str,type) == 0 )
+                                if(strcmp("D ",type) == 0 || strcmp("F ",type) == 0)
+                                {
+                                        if(strcmp("F ",str) || strcmp("D ",str) || strcmp("I ",str))
+                                        {
+                                                result = true;;
+                                        }
+                                }
+
+                                else if(strcmp(str,type) == 0)
                                 {
                                         result = true;
                                 }
                                 else{
-                                        printf("Return doesnot exist or wrong return value");
-                                        exit(EXIT_FAILURE);
-                                        result = false;
+                                  printf("Return doesnot exist or wrong return value");
+                                  exit(EXIT_FAILURE);
+                                  result = false;
                                 }
+
+
 
                         }
                         else if(strcmp(type, "V ") == 0)
@@ -203,8 +213,15 @@ bool check_return_function(NStmtList *root,char * type)
                                         strcat(strbody,update_varuble(globalroot,currentbody->expr));
                                 }
 
+                                if(strcmp("D ",type) == 0 || strcmp("F ",type) == 0)
+                                {
+                                        if(strcmp("F ",strbody) || strcmp("D ",strbody) || strcmp("I ",strbody))
+                                        {
+                                                inbodyresult = true;;
+                                        }
+                                }
 
-                                if(strcmp(strbody,type) == 0)
+                                else if(strcmp(strbody,type) == 0)
                                 {
                                         inbodyresult = true;
                                 }

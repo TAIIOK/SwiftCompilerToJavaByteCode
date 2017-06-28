@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 34;
+;Constant table size = 32;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -9,8 +9,8 @@
     7;     UTF8;  '()V'
     8; NAMETYPE;  6 7
     9;METHODREF;  3 8
-   10;     UTF8;  'anal'
-   11;     UTF8;  '()S '
+   10;     UTF8;  'testing'
+   11;     UTF8;  '()D '
    12;     UTF8;  'i'
    13;     UTF8;  'I '
    14; NAMETYPE;  12 13
@@ -23,20 +23,17 @@
    21;METHODREF;  3 20
    22;      INT;  2
    23;      INT;  1
-   24;     UTF8;  ''
-   25;   STRING;  24
-   26;     UTF8;  'int'
-   27;     UTF8;  'I '
-   28; NAMETYPE;  26 27
-   29; FIELDREF;  3 28
-   30;      INT;  0
-   31;     UTF8;  'ints'
-   32;     UTF8;  'D '
-   33; NAMETYPE;  31 32
-   34; FIELDREF;  3 33
+   24;     UTF8;  'int'
+   25;     UTF8;  'I '
+   26; NAMETYPE;  24 25
+   27; FIELDREF;  3 26
+   28;      INT;  0
+   29;     UTF8;  'ints'
+   30;     UTF8;  'D '
+   31; NAMETYPE;  29 30
+   32; FIELDREF;  3 31
 Method list size = 1
-anal:;
+testing:;
 ;List local varubles:;
     1:; 'i'
     2:; 'i'
-    3:; ''
