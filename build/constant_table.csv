@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 15;
+;Constant table size = 19;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -9,13 +9,20 @@
     7;     UTF8;  '()V'
     8; NAMETYPE;  6 7
     9;METHODREF;  3 8
-   10;     UTF8;  's'
+   10;     UTF8;  'sa'
    11;     UTF8;  '()V '
-   12;     UTF8;  'ss'
-   13;     UTF8;  'S '
-   14; NAMETYPE;  12 13
-   15; FIELDREF;  3 14
-Method list size = 1
+   12;     UTF8;  's'
+   13;     UTF8;  '()V '
+   14;     UTF8;  'array'
+   15;     UTF8;  'S '
+   16; NAMETYPE;  14 15
+   17;METHODREF;  3 16
+   18;     UTF8;  ''
+   19;   STRING;  18
+Method list size = 2
+sa:;
+;List local varubles:;
 s:;
 ;List local varubles:;
-    1:; 'ss'
+    1:; 'array'
+    2:; ''

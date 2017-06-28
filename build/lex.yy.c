@@ -2524,7 +2524,7 @@ int main(int argc,char* argv[])
 
         yyparse();
         update_tree_parent_func(root);
-        update_tree_stmtlist(root,root);
+      //  update_tree_stmtlist(root,root);
         print_tree(root);
 
         FILE* output;

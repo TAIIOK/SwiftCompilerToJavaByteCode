@@ -1,9 +1,12 @@
 
-func s() {
-
-    var ss:String = readLine()
-
-//    return
+func sa() {
 }
 
-//var o:String  = s()
+func s() {
+
+    sa()
+
+    var array:[String] = ""
+}
+
+

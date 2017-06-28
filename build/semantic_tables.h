@@ -334,6 +334,7 @@ char * update_varuble(NStmtList *root,NExpr *var)
 {
 
 
+
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
                 switch (var->type ) {
@@ -700,8 +701,9 @@ void check_function_args(struct NExpr * cur)
                 if (strcmp(c.name->last->name, cur->left->idlist->first->name) == 0)
                 {
                         exist = true;
-
-                        strcat(str,get_function_args(&c));
+                        strcat(str,"");
+                        strcpy(str,get_function_args(&c));
+                        printf("%s\n\n\n",str);
                         struct NExpr * cura = cur->right->idlist->first;
                         strcat(newstr,"(");
                         while (cura != NULL) {
@@ -752,6 +754,7 @@ void check_function_args(struct NExpr * cur)
                         }
                         strcat(newstr,")");
 
+
                         printf("%s\n\n\n",str);
                         printf("%s\n\n\n",newstr);
 
@@ -774,10 +777,11 @@ void check_function_args(struct NExpr * cur)
 }
 char * get_function_args(struct NFunc * f)
 {
-        char * str = (char*)malloc(sizeof(char)*33);;
-
-        struct NExpr * current = f->args->first;
+        char * str = (char*)malloc(sizeof(char)*33);
         strcat(str,"(");
+        if(f->args != NULL){
+        struct NExpr * current = f->args->first;
+
 
         while(current != NULL)
         {
@@ -793,7 +797,13 @@ char * get_function_args(struct NFunc * f)
                 }
                 current = current->next;
         }
+      }
         strcat(str,")");
+        printf("%s get_function_args\n\n\n\n\n\n",str);
+        if(strcmp(str,"()") == 0)
+        {
+          return "()";
+        }
         return str;
 }
 void print_function_param(char * function,struct NStmt * current){
@@ -952,7 +962,7 @@ void create_table(NStmtList *root){
                 current = current->next;
         }
         printTable();
-        printLocalVars();
+      //  printLocalVars();
 }
 void create_main_table(NStmtList *root){
         struct NStmt * current = root->first;
@@ -974,6 +984,7 @@ void st_stmt_list(struct NStmtList * node) {
         }
 }
 void st_stmt(struct NStmt * node) {
+  printf("%d\n\n\n\n\n\n\n",node->type);
         switch (node->type) {
         case STMT_WHILE:  st_stmt_while(node->while_loop);                  break;
         case STMT_FOR:    st_stmt_for(node->for_loop);                      break;
