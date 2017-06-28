@@ -19,10 +19,4 @@
    17;METHODREF;  3 16
    18;     UTF8;  ''
    19;   STRING;  18
-Method list size = 2
-sa:;
-;List local varubles:;
-s:;
-;List local varubles:;
-    1:; 'array'
-    2:; ''
+Method list size = 0

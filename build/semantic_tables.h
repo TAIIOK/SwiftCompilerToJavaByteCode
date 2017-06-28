@@ -14,6 +14,8 @@
 #include <iterator> // заголовок итераторов
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
+
 using namespace std;
 
 
@@ -70,11 +72,13 @@ char * st_gen_func_handle(NFunc * f, char * buffer);
 char * get_function_args(struct NFunc * f);
 char * update_varuble(NStmtList *root,NExpr *var);
 void mult_declaration(NStmtList *root,NExpr *var);
+void collect_functions(struct NStmtList * node);
 //############################################################################//
 
 list<st_const> table;
 list<NFunc> functions_list;
 list<NExpr> function_call;
+list<NFunc> main_functions_list;
 list<st_const> Main_table;
 NStmtList *globalroot;
 
@@ -173,7 +177,7 @@ bool check_return_function(NStmtList *root,char * type)
                                 result = check_return_function(current->if_tree->elsebody,type);
 
                         break;
-                        //  case STMT_SWITCH:  result = check_return_function(node->switch_tree);               break;
+
                 }
                 current = current->next;
         }
@@ -548,7 +552,6 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                 }
                                 if(current->expr->type != NULL && exist)
                                 {
-                                  printf("%d\n\n\n\n",current->expr->type);
                                         switch (current->expr->type ) {
                                         case EXPR_BOOL:
                                                 return "B ";
@@ -592,7 +595,22 @@ void printLocalVars()
         list<st_const> tempTable;
         tempTable = table;
         int index = 1;
-        printf("Method list size = %d\n",functions_list.size());
+        printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
+        for (auto t : main_functions_list) {
+                table.clear();
+
+                st_stmt_list(t.body);
+                printf("%s:\n",t.name->last->name);
+                printf("List local varubles:\n");
+                for (auto c : table) {
+                        switch (c.type) {
+                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
+                        }
+                }
+                printf("\n");
+                index = 1;
+        }
+
         for (auto t : functions_list) {
                 table.clear();
 
@@ -601,7 +619,7 @@ void printLocalVars()
                 printf("List local varubles:\n");
                 for (auto c : table) {
                         switch (c.type) {
-                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
+                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
                         }
                 }
                 printf("\n");
@@ -703,7 +721,6 @@ void check_function_args(struct NExpr * cur)
                         exist = true;
                         strcat(str,"");
                         strcpy(str,get_function_args(&c));
-                        printf("%s\n\n\n",str);
                         struct NExpr * cura = cur->right->idlist->first;
                         strcat(newstr,"(");
                         while (cura != NULL) {
@@ -754,10 +771,6 @@ void check_function_args(struct NExpr * cur)
                         }
                         strcat(newstr,")");
 
-
-                        printf("%s\n\n\n",str);
-                        printf("%s\n\n\n",newstr);
-
                         if (strcmp(str, newstr) != 0)
                         {
                                 printf("Fuction has wrong arguments\n");
@@ -770,6 +783,73 @@ void check_function_args(struct NExpr * cur)
                 }
         }
 
+        for (auto c : main_functions_list) {
+                if (strcmp(c.name->last->name, cur->left->idlist->first->name) == 0)
+                {
+                        exist = true;
+                        strcat(str,"");
+                        strcpy(str,get_function_args(&c));
+                        struct NExpr * cura = cur->right->idlist->first;
+                        strcat(newstr,"(");
+                        while (cura != NULL) {
+                          if(cura->idlist->first != NULL && cura->idlist->first->vartype != NULL){
+                            switch(cura->idlist->first->vartype->type)
+                            {
+                            case INTTy:
+                                    strcat(newstr,"I ");   break;
+                                    break;
+                            case DOUBLETy:
+                                    strcat(newstr,"D ");   break;
+                                    break;
+                            case FLOATTy:
+                                    strcat(newstr,"F ");   break;
+                                    break;
+                            case STRINGTy:
+                                    strcat(newstr,"S ");   break;
+                                    break;
+                            case BOOLTy:
+                                    strcat(newstr,"B ");   break;
+                                    break;
+                            default:
+                                    break;
+                            }
+                          }
+                                switch(cura->type)
+                                {
+                                case EXPR_INT:
+                                        strcat(newstr,"I ");   break;
+                                        break;
+                                case EXPR_DOUBLE:
+                                        strcat(newstr,"D ");   break;
+                                        break;
+                                case EXPR_FLOAT:
+                                        strcat(newstr,"F ");   break;
+                                        break;
+                                case EXPR_STR:
+                                        strcat(newstr,"S ");   break;
+                                        break;
+                                case EXPR_BOOL:
+                                        strcat(newstr,"B ");   break;
+                                        break;
+                                default:
+                                        break;
+                                }
+
+                                cura = cura->next;
+                        }
+                        strcat(newstr,")");
+
+                        if (strcmp(str, newstr) != 0)
+                        {
+                                printf("Fuction has wrong arguments\n");
+                                exit (EXIT_FAILURE);
+                        }
+                        else{
+
+                        }
+                        break;
+                }
+        }
         if(!exist) {
                 printf("fuction doesnot exist\n");
                 exit (EXIT_FAILURE);
@@ -799,7 +879,6 @@ char * get_function_args(struct NFunc * f)
         }
       }
         strcat(str,")");
-        printf("%s get_function_args\n\n\n\n\n\n",str);
         if(strcmp(str,"()") == 0)
         {
           return "()";
@@ -955,6 +1034,7 @@ void create_table(NStmtList *root){
         globalroot = root;
 
 
+        collect_functions(globalroot);
 
         struct NStmt * current = root->first;
         while (current != NULL) {
@@ -962,7 +1042,7 @@ void create_table(NStmtList *root){
                 current = current->next;
         }
         printTable();
-      //  printLocalVars();
+        printLocalVars();
 }
 void create_main_table(NStmtList *root){
         struct NStmt * current = root->first;
@@ -983,8 +1063,27 @@ void st_stmt_list(struct NStmtList * node) {
                 current = current->next;
         }
 }
+
+void collect_functions(struct NStmtList * node)
+{
+  struct NStmt * current = node->first;
+  while (current != NULL) {
+          if(current->type == STMT_FUNC)
+          {
+            for (auto c : main_functions_list)
+            {
+                    if (strcmp(c.name->last->name,current->func->name->last->name) == 0)
+                    {
+                                    printf("redefine function\n");
+                                    exit(EXIT_FAILURE);
+                    }
+            }
+            main_functions_list.push_back(*current->func);
+          }
+          current = current->next;
+  }
+}
 void st_stmt(struct NStmt * node) {
-  printf("%d\n\n\n\n\n\n\n",node->type);
         switch (node->type) {
         case STMT_WHILE:  st_stmt_while(node->while_loop);                  break;
         case STMT_FOR:    st_stmt_for(node->for_loop);                      break;
@@ -997,27 +1096,13 @@ void st_stmt(struct NStmt * node) {
         case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
 
         case STMT_FUNC: {
-                bool args = false;
-                bool func_type = false;
+
                 for (auto c : functions_list)
                 {
                         if (strcmp(c.name->last->name,node->func->name->last->name) == 0)
                         {
-                                if(strcmp(get_function_args(&c),get_function_args(node->func)) == 0)
-                                {
-                                        args = true;
-                                }
-                                if(strcmp(get_function_type(&c),get_function_type(node->func)) == 0)
-                                {
-                                        func_type = true;
-                                }
-
-                                if(args && func_type)
-                                {
                                         printf("redefine function\n");
                                         exit(EXIT_FAILURE);
-                                }
-
                         }
                 }
 
@@ -1026,6 +1111,18 @@ void st_stmt(struct NStmt * node) {
                         printf("Return doesnot exist or wrong return value\n");
                         exit(EXIT_FAILURE);
                 }
+                bool flag = false;
+
+
+                for(auto cf : main_functions_list)
+                {
+                  if (strcmp(cf.name->last->name,node->func->name->last->name) == 0)
+                  {
+                                  flag = true;
+                                  break;
+                  }
+                }
+                if(!flag)
                 functions_list.push_back(*node->func);
 
                 // Fill table.
