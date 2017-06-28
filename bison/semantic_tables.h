@@ -278,7 +278,7 @@ void check_equal(char *left,char *right)
 
         if(strcmp("D ",left) == 0 || strcmp("F ",left) == 0)
         {
-                if(strcmp("F ",right) || strcmp("D ",right) || strcmp("I ",right))
+                if(strcmp("F ",right) == 0 || strcmp("D ",right) == 0 || strcmp("I ",right) == 0)
                 {
                         return;
                 }
@@ -1088,10 +1088,25 @@ void collect_functions(struct NStmtList * node)
   }
 }
 void st_stmt(struct NStmt * node) {
+  if (node->type == STMT_EXPR)
+
         switch (node->type) {
         case STMT_WHILE:  st_stmt_while(node->while_loop);                  break;
         case STMT_FOR:    st_stmt_for(node->for_loop);                      break;
-        case STMT_EXPR:   st_stmt_expr(node->expr);                         break;
+        case STMT_EXPR:
+
+if(node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD) {
+
+check_equal(update_varuble(globalroot,node->expr->left),update_varuble(globalroot,node->expr->right));
+st_stmt_expr(node->expr->left);
+st_stmt_expr(node->expr->right);
+}
+else{
+
+        st_stmt_expr(node->expr);
+      }
+
+                            break;
         case STMT_BLOCK:  st_stmt_list(node->list);                         break;
         case STMT_REPEAT: st_stmt_while(node->while_loop);                  break;
         case STMT_LFUNC:  st_stmt_func(node);                               break;
@@ -1178,9 +1193,9 @@ void st_stmt(struct NStmt * node) {
                                 if(node->expr->left != NULL && node->expr->right != NULL)
                               check_equal(update_varuble(globalroot,node->expr->left), update_varuble(globalroot,node->expr->right));
 
-                        }else{
-                                check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                         }
+                                check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+
                 }
 
 
