@@ -130,9 +130,12 @@ bool check_return_function(NStmtList *root,char * type)
 
                                 if(strcmp("D ",type) == 0 || strcmp("F ",type) == 0)
                                 {
-                                        if(strcmp("F ",str) || strcmp("D ",str) || strcmp("I ",str))
+                                        if(strcmp("F ",str) == 0 || strcmp("D ",str) == 0 || strcmp("I ",str) == 0)
                                         {
                                                 result = true;;
+                                        }
+                                        else{
+                                          result = false;
                                         }
                                 }
 
@@ -141,9 +144,9 @@ bool check_return_function(NStmtList *root,char * type)
                                         result = true;
                                 }
                                 else{
-                                  printf("Return doesnot exist or wrong return value");
-                                  exit(EXIT_FAILURE);
-                                  result = false;
+                                        printf("Return doesnot exist or wrong return value");
+                                        exit(EXIT_FAILURE);
+                                        result = false;
                                 }
 
 
@@ -215,9 +218,12 @@ bool check_return_function(NStmtList *root,char * type)
 
                                 if(strcmp("D ",type) == 0 || strcmp("F ",type) == 0)
                                 {
-                                        if(strcmp("F ",strbody) || strcmp("D ",strbody) || strcmp("I ",strbody))
+                                        if(strcmp("F ",strbody) == 0 || strcmp("D ",strbody) == 0 || strcmp("I ",strbody) == 0)
                                         {
                                                 inbodyresult = true;;
+                                        }
+                                        else{
+                                          inbodyresult = false;
                                         }
                                 }
 
@@ -507,21 +513,27 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                                 type_var.value.utf8  = str;
                                                 table.push_back(type_var);
 
-                                        STConst name_type;
-                                        name_type.next = NULL;
-                                        name_type.type = CONST_NAMETYPE;
-                                        name_type.value.args.arg1 = table.size() - 2;
-                                        name_type.value.args.arg2 = table.size() - 1;
-                                        table.push_back(name_type);
+                                                STConst name_type;
+                                                name_type.next = NULL;
+                                                name_type.type = CONST_NAMETYPE;
+                                                name_type.value.args.arg1 = table.size() - 2;
+                                                name_type.value.args.arg2 = table.size() - 1;
+                                                table.push_back(name_type);
 
-                                        STConst method_ref;
-                                        method_ref.next = NULL;
-                                        method_ref.type = CONST_FIELDREF;
-                                        method_ref.value.args.arg1 = 3;
-                                        method_ref.value.args.arg2 = table.size() - 1;
-                                        table.push_back(method_ref);
-                                      }
+                                                STConst method_ref;
+                                                method_ref.next = NULL;
+                                                method_ref.type = CONST_FIELDREF;
+                                                method_ref.value.args.arg1 = 3;
+                                                method_ref.value.args.arg2 = table.size() - 1;
+                                                table.push_back(method_ref);
+                                        }
 
+                                        if(strcmp(str,"") == 0)
+                                        {
+                                          printf("Varuble doest exist\n");
+                                          exit(EXIT_FAILURE);
+
+                                        }
 
                                         return str;
                                         break;
@@ -533,8 +545,9 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                 if(current->var->varconstant != NULL) {
                                         printf("Varuble found var->varconstant %d\n",current->var->varconstant->constant);
                                 }
-                                if(current->expr->type != NULL)
+                                if(current->expr->type != NULL && exist)
                                 {
+                                  printf("%d\n\n\n\n",current->expr->type);
                                         switch (current->expr->type ) {
                                         case EXPR_BOOL:
                                                 return "B ";
@@ -692,6 +705,28 @@ void check_function_args(struct NExpr * cur)
                         struct NExpr * cura = cur->right->idlist->first;
                         strcat(newstr,"(");
                         while (cura != NULL) {
+                          if(cura->idlist->first != NULL && cura->idlist->first->vartype != NULL){
+                            switch(cura->idlist->first->vartype->type)
+                            {
+                            case INTTy:
+                                    strcat(newstr,"I ");   break;
+                                    break;
+                            case DOUBLETy:
+                                    strcat(newstr,"D ");   break;
+                                    break;
+                            case FLOATTy:
+                                    strcat(newstr,"F ");   break;
+                                    break;
+                            case STRINGTy:
+                                    strcat(newstr,"S ");   break;
+                                    break;
+                            case BOOLTy:
+                                    strcat(newstr,"B ");   break;
+                                    break;
+                            default:
+                                    break;
+                            }
+                          }
                                 switch(cura->type)
                                 {
                                 case EXPR_INT:
@@ -717,6 +752,8 @@ void check_function_args(struct NExpr * cur)
                         }
                         strcat(newstr,")");
 
+                        printf("%s\n\n\n",str);
+                        printf("%s\n\n\n",newstr);
 
                         if (strcmp(str, newstr) != 0)
                         {
@@ -744,6 +781,7 @@ char * get_function_args(struct NFunc * f)
 
         while(current != NULL)
         {
+
                 switch (current->vartype->type) {
                 case INTTy:       strcat(str,"I ");   break;
                 case FLOATTy:     strcat(str,"F "); break;
@@ -917,15 +955,15 @@ void create_table(NStmtList *root){
         printLocalVars();
 }
 void create_main_table(NStmtList *root){
-  struct NStmt * current = root->first;
-  while (current != NULL) {
+        struct NStmt * current = root->first;
+        while (current != NULL) {
 
-    if (current->type == STMT_ASSIGN && current->type == STMT_LASSIGN){
-      st_stmt_expr(current->var);
-      st_stmt_expr(current->expr);
-    }
-          current = current->next;
-  }
+                if (current->type == STMT_ASSIGN && current->type == STMT_LASSIGN) {
+                        st_stmt_expr(current->var);
+                        st_stmt_expr(current->expr);
+                }
+                current = current->next;
+        }
 }
 //############################################################################//
 void st_stmt_list(struct NStmtList * node) {
@@ -1019,6 +1057,10 @@ void st_stmt(struct NStmt * node) {
                                 if(node->expr->right->type==EXPR_DOUBLE) {
                                         check_equal(update_varuble(globalroot,node->var), update_varuble(globalroot,node->expr->right));
                                 }
+
+                                if(node->expr->left != NULL && node->expr->right != NULL)
+                              check_equal(update_varuble(globalroot,node->expr->left), update_varuble(globalroot,node->expr->right));
+
                         }else{
                                 check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                         }

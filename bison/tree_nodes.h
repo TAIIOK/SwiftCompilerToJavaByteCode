@@ -14,8 +14,8 @@ enum NVarEnumType{
 };
 
 enum NConstantEnum{
-  VART,
-  LETT
+  VART = 1,
+  LETT = 2
 };
 
 enum NSwitchCaseType {
