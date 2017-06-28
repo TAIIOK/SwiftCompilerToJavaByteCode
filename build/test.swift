@@ -20,12 +20,15 @@ var ints:Double = 0
 
 int = 0
 
+
+
+
 func anal() -> String {
 
 
     var i:Int = 5 * 4
 
-    print(a + 2)
+    print(i + 2)
 
     if (1 < 2){
 

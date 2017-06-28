@@ -17,14 +17,6 @@
 using namespace std;
 
 
-
-/*
- * Table structure declarations.
- */
-
-/**
- * Constant types.
- */
 enum st_const_types {
         CONST_UTF8      = 1,
         CONST_DOUBLE    = 2,
@@ -39,10 +31,6 @@ enum st_const_types {
 };
 
 
-/**
- * A record of constants table.
- * Singly-Linked list element.
- */
 typedef struct st_const STConst;
 struct st_const {
         enum st_const_types type;
@@ -87,6 +75,7 @@ void mult_declaration(NStmtList *root,NExpr *var);
 list<st_const> table;
 list<NFunc> functions_list;
 list<NExpr> function_call;
+list<st_const> Main_table;
 NStmtList *globalroot;
 
 bool check_return_function(NStmtList *root,char * type)
@@ -144,8 +133,8 @@ bool check_return_function(NStmtList *root,char * type)
                                         result = true;
                                 }
                                 else{
-                                  printf("Return doesnot exist or wrong return value");
-                                  exit(EXIT_FAILURE);
+                                        printf("Return doesnot exist or wrong return value");
+                                        exit(EXIT_FAILURE);
                                         result = false;
                                 }
 
@@ -181,72 +170,71 @@ bool check_return_function(NStmtList *root,char * type)
 
         while (currentbody != NULL && !inbodyresult )
         {
-          if(currentbody->type == STMT_RETURN){
+                if(currentbody->type == STMT_RETURN) {
 
-                  if (currentbody->expr != NULL )
-                  {
+                        if (currentbody->expr != NULL )
+                        {
 
-                          if(currentbody->expr->type != EXPR_ID_LIST && currentbody->expr->type != EXPR_ID)
-                          {
+                                if(currentbody->expr->type != EXPR_ID_LIST && currentbody->expr->type != EXPR_ID)
+                                {
 
-                                  switch (currentbody->expr->type ) {
-                                  case EXPR_BOOL:
-                                          strcat(strbody,"B ");
-                                          break;
-                                  case EXPR_INT:
-                                          strcat(strbody,"I ");
-                                          break;
-                                  case EXPR_FLOAT:
-                                          strcat(strbody,"F ");
-                                          break;
-                                  case EXPR_DOUBLE:
-                                          strcat(strbody,"D ");
-                                          break;
-                                  case EXPR_STR:
-                                          strcat(strbody,"S ");
-                                          break;
-                                  default:
-                                          break;
+                                        switch (currentbody->expr->type ) {
+                                        case EXPR_BOOL:
+                                                strcat(strbody,"B ");
+                                                break;
+                                        case EXPR_INT:
+                                                strcat(strbody,"I ");
+                                                break;
+                                        case EXPR_FLOAT:
+                                                strcat(strbody,"F ");
+                                                break;
+                                        case EXPR_DOUBLE:
+                                                strcat(strbody,"D ");
+                                                break;
+                                        case EXPR_STR:
+                                                strcat(strbody,"S ");
+                                                break;
+                                        default:
+                                                break;
 
-                                  }
-                          }
-                          else{
-                                  strcat(strbody,update_varuble(globalroot,currentbody->expr));
-                          }
+                                        }
+                                }
+                                else{
+                                        strcat(strbody,update_varuble(globalroot,currentbody->expr));
+                                }
 
 
-                          if(strcmp(strbody,type) == 0)
-                          {
-                                  inbodyresult = true;
-                          }
-                          else{
-                                  inbodyresult = false;
-                          }
+                                if(strcmp(strbody,type) == 0)
+                                {
+                                        inbodyresult = true;
+                                }
+                                else{
+                                        inbodyresult = false;
+                                }
 
-                  }
+                        }
+                }
+                currentbody = currentbody->next;
         }
-        currentbody = currentbody->next;
-      }
 
         if(strcmp(type, "V ") == 0)
         {
                 return true;
         }
         else if (result && inbodyresult) {
-                  return true;
+                return true;
         }
-        else if (inbodyresult){
-        return true;
+        else if (inbodyresult) {
+                return true;
         }
         else {
-        return false;
+                return false;
         }
 
 
 
         return result;
 }
-
 int nexprlist_count(NExprList * start) {
         int count = 0;
         NExpr * cur = start->first;
@@ -256,7 +244,6 @@ int nexprlist_count(NExprList * start) {
         }
         return count;
 }
-
 void check_equal(char *left,char *right)
 {
         printf("%s left\n",left);
@@ -277,7 +264,6 @@ void check_equal(char *left,char *right)
         }
         return;
 }
-
 void mult_declaration(NStmtList *root,NExpr *var)
 {
         int count = 0;
@@ -321,7 +307,6 @@ void mult_declaration(NStmtList *root,NExpr *var)
                 exit(EXIT_FAILURE);
         }
 }
-
 char * update_varuble(NStmtList *root,NExpr *var)
 {
 
@@ -492,7 +477,7 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                         case NULLTYPE:    exist = false;;      break;
                                         default:          printf("==WTF?== "); break;
                                         }
-                                        if (st_constant_index(CONST_UTF8, (void *)&(current->var->idlist->first->name)) == -1) {
+                                        if (st_constant_index(CONST_UTF8, (void *)(current->var->idlist->first->name)) == -1) {
                                                 STConst name;
                                                 name.next = NULL;
                                                 name.type = CONST_UTF8;
@@ -504,7 +489,7 @@ char * update_varuble(NStmtList *root,NExpr *var)
                                                 type_var.type = CONST_UTF8;
                                                 type_var.value.utf8  = str;
                                                 table.push_back(type_var);
-                                        }
+
                                         STConst name_type;
                                         name_type.next = NULL;
                                         name_type.type = CONST_NAMETYPE;
@@ -514,11 +499,11 @@ char * update_varuble(NStmtList *root,NExpr *var)
 
                                         STConst method_ref;
                                         method_ref.next = NULL;
-                                        method_ref.type = CONST_METHODREF;
+                                        method_ref.type = CONST_FIELDREF;
                                         method_ref.value.args.arg1 = 3;
                                         method_ref.value.args.arg2 = table.size() - 1;
                                         table.push_back(method_ref);
-
+                                      }
 
 
                                         return str;
@@ -593,7 +578,6 @@ void printLocalVars()
         }
         table = tempTable;
 }
-
 void printLocalVars_file(FILE *output)
 {
         list<st_const> tempTable;
@@ -616,7 +600,6 @@ void printLocalVars_file(FILE *output)
         }
         table = tempTable;
 }
-
 void printTable()
 {
         char name[10] = "";
@@ -643,7 +626,6 @@ void printTable()
                 index++;
         }
 }
-
 char * get_function_type(struct NFunc * f)
 {
         char * str = (char*)malloc(sizeof(char)*33);;
@@ -659,16 +641,15 @@ char * get_function_type(struct NFunc * f)
         }
         return str;
 }
-
 void check_function_args(struct NExpr * cur)
 {
 
         if (strcmp(cur->left->idlist->first->name, "print") == 0 )
         {
-          if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
-          {
-            check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
-          }
+                if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
+                {
+                        check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
+                }
                 update_varuble(globalroot,cur->right->idlist->first);
                 return;
         }
@@ -737,7 +718,6 @@ void check_function_args(struct NExpr * cur)
                 exit (EXIT_FAILURE);
         }
 }
-
 char * get_function_args(struct NFunc * f)
 {
         char * str = (char*)malloc(sizeof(char)*33);;
@@ -761,8 +741,6 @@ char * get_function_args(struct NFunc * f)
         strcat(str,")");
         return str;
 }
-
-
 void print_function_param(char * function,struct NStmt * current){
         char * str = (char*)malloc(sizeof(char)*33);;
 
@@ -798,7 +776,6 @@ void print_function_param(char * function,struct NStmt * current){
                 }
         }
 }
-
 void print_function_param(char * function, NStmtList *root){
         char * str = (char*)malloc(sizeof(char)*33);;
         struct NStmt * current = root->first;
@@ -840,7 +817,6 @@ void print_function_param(char * function, NStmtList *root){
         table.push_back(code);
 
 }
-
 void create_header(NStmtList *root){
         STConst null;
         null.next = NULL;
@@ -923,7 +899,17 @@ void create_table(NStmtList *root){
         printTable();
         printLocalVars();
 }
+void create_main_table(NStmtList *root){
+  struct NStmt * current = root->first;
+  while (current != NULL) {
 
+    if (current->type == STMT_ASSIGN && current->type == STMT_LASSIGN){
+      st_stmt_expr(current->var);
+      st_stmt_expr(current->expr);
+    }
+          current = current->next;
+  }
+}
 //############################################################################//
 void st_stmt_list(struct NStmtList * node) {
         struct NStmt * current = node->first;
@@ -932,7 +918,6 @@ void st_stmt_list(struct NStmtList * node) {
                 current = current->next;
         }
 }
-
 void st_stmt(struct NStmt * node) {
         switch (node->type) {
         case STMT_WHILE:  st_stmt_while(node->while_loop);                  break;
@@ -972,13 +957,10 @@ void st_stmt(struct NStmt * node) {
 
                 if(!check_return_function(node->func->body,get_function_type(node->func)))
                 {
-
                         printf("Return doesnot exist or wrong return value\n");
                         exit(EXIT_FAILURE);
                 }
                 functions_list.push_back(*node->func);
-
-
 
                 // Fill table.
                 st_stmt_func(node);
@@ -1003,7 +985,7 @@ void st_stmt(struct NStmt * node) {
                         }
 
                 }
-                // Умножение, деление при присвоении в переменную=========================
+
                 else {
 
                         if(node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD) {
@@ -1040,7 +1022,6 @@ void st_stmt(struct NStmt * node) {
                 break;
         }
 }
-
 void st_stmt_switch_list(struct NCaseList * node) {
         struct NCase * current = node->first;
         while (current != NULL) {
@@ -1065,7 +1046,6 @@ void st_stmt_while(struct NWhile * node) {
         st_stmt_expr(node->condition);
         st_stmt_list(node->body);
 }
-
 void st_stmt_for(struct NFor * node) {
         //  update_varuble(globalroot,node->name);
         st_stmt_expr(node->name);
@@ -1073,12 +1053,10 @@ void st_stmt_for(struct NFor * node) {
         st_stmt_expr(node->step);
         st_stmt_list(node->body);
 }
-
 void st_stmt_func(struct NStmt * node) {
         print_function_param(node->func->name->last->name,node);
         st_stmt_list(node->func->body);
 }
-
 void st_stmt_if(struct NIf * node) {
         update_varuble(globalroot,node->condition->left);
         update_varuble(globalroot,node->condition->right);
@@ -1094,7 +1072,6 @@ void st_stmt_if(struct NIf * node) {
 
         st_stmt_list(node->elsebody);
 }
-
 void st_stmt_expr(struct NExpr * node) {
 
         switch (node->type) {
@@ -1232,7 +1209,6 @@ void st_stmt_expr(struct NExpr * node) {
                 st_stmt_expr(node->right);
         }
 }
-
 int st_constant_index(enum st_const_types type, const void * value) {
 
         int index = 0;
@@ -1273,7 +1249,6 @@ int st_constant_index(enum st_const_types type, const void * value) {
         }
         return -1;
 }
-
 int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int arg2) {
         STConst * cur = table;
         int index = 0;
@@ -1289,7 +1264,6 @@ int st_constant_index2(STConst * table, enum st_const_types type, int arg1, int 
         }
         return -1;
 }
-
 void st_print_const_file(FILE * output) {
 
         char name[10] = "";
@@ -1317,7 +1291,6 @@ void st_print_const_file(FILE * output) {
         }
 
 }
-
 char * st_type_name(enum st_const_types type, char name[10]) {
         switch (type) {
         case CONST_UTF8:      strcpy(name, "UTF8");      break;
@@ -1333,7 +1306,5 @@ char * st_type_name(enum st_const_types type, char name[10]) {
         }
         return name;
 }
-
-
 
 #endif

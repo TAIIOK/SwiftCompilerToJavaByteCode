@@ -1,1 +1,42 @@
 ;Constant table:;
+;Constant table size = 34;
+    1;     UTF8;  'Code'
+    2;     UTF8;  'Main'
+    3;    CLASS;  2
+    4;     UTF8;  'java/lang/Object'
+    5;    CLASS;  4
+    6;     UTF8;  'Main'
+    7;     UTF8;  '()V'
+    8; NAMETYPE;  6 7
+    9;METHODREF;  3 8
+   10;     UTF8;  'anal'
+   11;     UTF8;  '()S '
+   12;     UTF8;  'i'
+   13;     UTF8;  'I '
+   14; NAMETYPE;  12 13
+   15;METHODREF;  3 14
+   16;      INT;  5
+   17;      INT;  4
+   18;     UTF8;  'i'
+   19;     UTF8;  'I '
+   20; NAMETYPE;  18 19
+   21;METHODREF;  3 20
+   22;      INT;  2
+   23;      INT;  1
+   24;     UTF8;  ''
+   25;   STRING;  24
+   26;     UTF8;  'int'
+   27;     UTF8;  'I '
+   28; NAMETYPE;  26 27
+   29; FIELDREF;  3 28
+   30;      INT;  0
+   31;     UTF8;  'ints'
+   32;     UTF8;  'D '
+   33; NAMETYPE;  31 32
+   34; FIELDREF;  3 33
+Method list size = 1
+anal:;
+;List local varubles:;
+    1:; 'i'
+    2:; 'i'
+    3:; ''
