@@ -1,14 +1,2 @@
 
-func sa() {
-}
-
-
-func s() {
-
-    sa()
-
-    var array:[String] = ""
-}
-
-
-
+asdasd = readLine()

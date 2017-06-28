@@ -336,9 +336,6 @@ void mult_declaration(NStmtList *root,NExpr *var)
 }
 char * update_varuble(NStmtList *root,NExpr *var)
 {
-
-
-
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
                 switch (var->type ) {
@@ -677,6 +674,10 @@ void printTable()
 }
 char * get_function_type(struct NFunc * f)
 {
+  if(strcmp("readLine",f->name->last->name) == 0)
+  {
+    return "S ";
+  }
         char * str = (char*)malloc(sizeof(char)*33);;
 
         switch (f->vartype->type) {
@@ -695,11 +696,14 @@ void check_function_args(struct NExpr * cur)
 
         if (strcmp(cur->left->idlist->first->name, "print") == 0 )
         {
+          if(cur->right->idlist->first != NULL){
                 if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
                 {
                         check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
                 }
+
                 update_varuble(globalroot,cur->right->idlist->first);
+                }
                 return;
         }
 
@@ -710,7 +714,7 @@ void check_function_args(struct NExpr * cur)
                         printf("Function have extra argument\n");
                         exit (EXIT_FAILURE);
                 }
-                return;
+                return ;
         }
         char * str = (char*)malloc(sizeof(char)*33);
         char * newstr = (char*)malloc(sizeof(char)*33);
@@ -1145,6 +1149,11 @@ void st_stmt(struct NStmt * node) {
                                         check_equal(update_varuble(globalroot,node->var),get_function_type(&c));
                                         break;
                                 }
+                        }
+                        if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
+                        {
+                          check_equal(update_varuble(globalroot,node->var),"S ");
+                          break;
                         }
 
                 }
