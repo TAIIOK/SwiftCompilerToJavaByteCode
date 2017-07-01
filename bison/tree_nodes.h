@@ -44,35 +44,35 @@ enum NStmtType {
 };
 
 enum NExprType {
-    EXPR_EQ,
-    EXPR_NQ,
-    EXPR_PLUS,
-    EXPR_MINUS,
-    EXPR_DIV,
-    EXPR_MUL,
-    EXPR_POW,
-    EXPR_LE,
-    EXPR_GE,
-    EXPR_LT,
-    EXPR_GT, //10
-    EXPR_MOD,
-    EXPR_ID,
-    EXPR_INT,
-    EXPR_DOUBLE,
-    EXPR_FLOAT,
-    EXPR_RANGE,
-    EXPR_STR,
-    EXPR_MET,
-    EXPR_AND,
-    EXPR_NOT, //20
-    EXPR_OR,
-    EXPR_MAS,
-    EXPR_BOOL,
-    EXPR_NIL,
-    EXPR_UMIN,
-    EXPR_FUNC_DEC_ANON,
-    EXPR_TABLE,
-    EXPR_ID_LIST,
+    EXPR_EQ,    //0
+    EXPR_NQ,    //1
+    EXPR_PLUS,  //2
+    EXPR_MINUS, //3
+    EXPR_DIV,   //4
+    EXPR_MUL,   //5
+    EXPR_POW,   //6
+    EXPR_LE,    //7
+    EXPR_GE,    //8
+    EXPR_LT,    //9
+    EXPR_GT,    //10
+    EXPR_MOD,   //11
+    EXPR_ID,    //12
+    EXPR_INT,   //13
+    EXPR_DOUBLE,//14
+    EXPR_FLOAT, //15
+    EXPR_RANGE, //16
+    EXPR_STR,   //17
+    EXPR_MET,   //18
+    EXPR_AND,   //19
+    EXPR_NOT,   //20
+    EXPR_OR,    //21
+    EXPR_MAS,   //22
+    EXPR_BOOL,  //23
+    EXPR_NIL,   //24
+    EXPR_UMIN,  //25
+    EXPR_FUNC_DEC_ANON, //26
+    EXPR_TABLE, //27
+    EXPR_ID_LIST, //28
 };
 struct NImport
 {

@@ -82,7 +82,8 @@
      NOT = 298,
      ENDL = 299,
      OR = 300,
-     AND = 301
+     AND = 301,
+     UMINUS = 302
    };
 #endif
 /* Tokens.  */
@@ -130,6 +131,7 @@
 #define ENDL 299
 #define OR 300
 #define AND 301
+#define UMINUS 302
 
 
 
@@ -165,7 +167,7 @@ typedef union YYSTYPE
 
 }
 /* Line 1529 of yacc.c.  */
-#line 169 "swift.tab.h"
+#line 171 "swift.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

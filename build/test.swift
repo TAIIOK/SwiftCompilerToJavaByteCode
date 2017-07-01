@@ -1,6 +1,5 @@
 
-var double = 1
 
-var string = ""
+var a:Int = 2 + 2 * 2 / ( * 2) * 2
 
-double + string
+

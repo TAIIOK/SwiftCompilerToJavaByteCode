@@ -127,7 +127,7 @@
 %left  '<' '>' LE GE EQ NE RANGE  /* < > <= >= == != */
 %left  '+' '-'
 %left  '*' '/' '%'
-%left NOT
+%left  NOT UMINUS
 
 
 %%
@@ -226,6 +226,7 @@ expr:                 var {printf("expr var\n");$$ = $1;}
                     | FLOAT {printf("expr FLOAT\n");$$ = create_expr_float(yylval.Double);}
                     | NIL {printf("expr NIL\n");$$ = create_expr_nil(); }
                     | NOT expr {printf("not expr "); $$ = create_op_expr(EXPR_NOT, $2, NULL);}
+                    | '-' expr %prec UMINUS    { $$ = create_op_expr(EXPR_UMIN, $2, NULL); }
                     | expr NOT {printf("expr not type\n");}
                     | expr AND expr {printf("expr and expr\n");$$ = create_op_expr(EXPR_AND, $1, $3);}
                     | expr OR  expr {printf("expr or expr\n"); $$ = create_op_expr(EXPR_OR, $1, $3);}
