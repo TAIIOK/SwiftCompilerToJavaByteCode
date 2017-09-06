@@ -2,6 +2,19 @@
 #define _H_TREE_NODES_
 
 typedef struct st_const STConst;
+
+
+#include <iostream>
+#include <list>     // подключаем заголовок списка
+#include <iterator> // заголовок итераторов
+#include <ctime>
+#include <cstdlib>
+#include <algorithm>
+
+using namespace std;
+
+
+
 enum NVarEnumType{
   NULLTYPE = 0,
   STRINGTy = 1,

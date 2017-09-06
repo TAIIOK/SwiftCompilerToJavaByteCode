@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <cmath>
+
+
 /*
  * Function definition
  */
@@ -10,6 +12,7 @@ void update_tree(struct NStmt* current, NStmt* prev, NStmtList* root, NStmtList*
 void update_tree_if(struct NIf* current, struct NStmtList* root);
 void set_parent_func(struct NStmt* child, struct NFunc* parent);
 void set_null_field_expr(struct NExpr* expr);
+
 
 struct NExpr * get_clone_for_clojure(struct NExpr * expr)
 {
@@ -696,6 +699,29 @@ struct NStmt* create_stmt_while(struct NWhile* While, int rep)
     return result;
 }
 
+list<NExpr *> create_stack(NExpr *var){
+        list<NExpr *> var_stack;
+
+        if(var->left->type==EXPR_MINUS ||var->left->type==EXPR_PLUS || var->left->type==EXPR_MUL || var->left->type==EXPR_DIV || var->left->type==EXPR_MOD) {
+                list<NExpr *> temp = create_stack(var->left);
+                var_stack.insert(var_stack.end(), temp.begin(), temp.end());
+                temp.clear();
+        }
+        else{
+                var_stack.push_back(var->left);
+        }
+
+        if(var->right->type==EXPR_MINUS ||var->right->type==EXPR_PLUS || var->right->type==EXPR_MUL || var->right->type==EXPR_DIV || var->right->type==EXPR_MOD) {
+                list<NExpr *> temp = create_stack(var->right);
+                var_stack.insert(var_stack.end(), temp.begin(), temp.end());
+                temp.clear();
+        }
+        else{
+                var_stack.push_back(var->right);
+        }
+
+        return var_stack;
+}
 
 
 struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int local)
@@ -713,6 +739,10 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
       EXPR_FLOAT,
       EXPR_STR
       */
+
+
+
+
       struct NVarType* varType = (NVarType*)malloc(sizeof(NVarType));
 
       switch (expr->type)
@@ -730,6 +760,29 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
         varType->type = STRINGTy;
         break;
         default:
+        list<NExpr * > temp = create_stack(expr);
+          if(temp.size() > 0)
+          {
+            struct NExpr* re = (NExpr*)malloc(sizeof(NExpr));
+            re = temp.front();
+            switch (re->type)
+            {
+              case EXPR_INT:
+              varType->type = INTTy;
+              break;
+              case EXPR_DOUBLE:
+              varType->type = DOUBLETy;
+              break;
+              case EXPR_FLOAT:
+              varType->type = FLOATTy;
+              break;
+              case EXPR_STR:
+              varType->type = STRINGTy;
+              break;
+              default:
+              break;
+            }
+          }
           break;
       }
       if(var->vartype == NULL && var->varconstant != NULL)
