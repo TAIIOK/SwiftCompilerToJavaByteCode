@@ -1,12 +1,10 @@
 
 func a() {
-var c = 2 - 2
-
 var c = 2
+
+    var c = 4
+    var c = 2
+    a = 4
 }
 
-func b() {
-    var c = 2
-
-    var c = 2
-}
+var a = 4

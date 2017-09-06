@@ -1338,6 +1338,8 @@ char * st_type_name(enum st_const_types type, char name[10]) {
         return name;
 }
 void printLocalVars(){
+        NStmtList * tempGlobal = globalroot;
+
         list<st_const> tempTable;
         tempTable = table;
         int index = 1;
@@ -1346,7 +1348,7 @@ void printLocalVars(){
         printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
         for (auto t : main_functions_list) {
                 table.clear();
-
+                globalroot = t.body;
                 st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
                 printf("List local varubles:\n");
@@ -1361,7 +1363,7 @@ void printLocalVars(){
 
         for (auto t : functions_list) {
                 table.clear();
-
+                globalroot = t.body;
                 st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
                 printf("List local varubles:\n");
@@ -1373,6 +1375,7 @@ void printLocalVars(){
                 printf("\n");
                 index = 1;
         }
+        globalroot = tempGlobal;
         table = tempTable;
 }
 void printLocalVars_file(FILE *output){
