@@ -519,6 +519,7 @@ void set_parent_func(struct NStmt* child, struct NFunc* parent)
 
 void set_null_field_expr(struct NExpr* expr)
 {
+    expr->isArray = false;
     expr->Int = 0;
     expr->Double = 0;
     expr->name = NULL;
@@ -622,7 +623,20 @@ struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varu
     result->idlist = value;
     result->varconstant = varlet;
     result->vartype = varubltype;
+    result->type = EXPR_ID_LIST;
 
+    return result;
+}
+
+struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varubltype ,struct NConstant* varlet,bool isArray)
+{
+
+    NExpr* result = (NExpr*)malloc(sizeof(NExpr));
+    set_null_field_expr(result);
+    result->idlist = value;
+    result->varconstant = varlet;
+    result->vartype = varubltype;
+    result->isArray = isArray;
     result->type = EXPR_ID_LIST;
 
     return result;
@@ -773,6 +787,19 @@ struct  NExprList* create_expr_list(struct NExpr* first , struct NVarType* type)
     }
     result->last = result->first;
     return result;
+}
+
+struct NExprList* add_expr_to_list(struct NExprList* list, struct NExpr* element,struct NVarType* type, bool isArray )
+{
+    if (type != NULL)
+    {
+      element->vartype = type;
+      element->type = EXPR_ID;
+    }
+    element->isArray = isArray;
+    list->last->next = element;
+    list->last = element;
+    return list;
 }
 
 struct NExprList* add_expr_to_list(struct NExprList* list, struct NExpr* element,struct NVarType* type )

@@ -84,7 +84,11 @@ list<NFunc> functions_list;
 list<NExpr> function_call;
 list<NFunc> main_functions_list;
 list<st_const> Main_table;
+list<NExpr> Main_varubles;
 NStmtList *globalroot;
+NStmtList *rootwithoutfunc;
+
+
 
 
 list<NExpr *> create_stack_operation(NExpr *var){
@@ -108,8 +112,6 @@ list<NExpr *> create_stack_operation(NExpr *var){
                 var_stack.push_back(var->right);
         }
 
-
-        printf("%d SIZE STACK \n\n\n",var_stack.size());
         return var_stack;
 }
 
@@ -123,15 +125,15 @@ char * check_stack_operation(list <NExpr *> operations){
                 strcpy(type,update_varuble(globalroot,operations.front()));
         }
 
-        printf("%s",type);
+
         for (auto op : operations)
         {
 
-                printf("op type %d\n",op->type);
+
 
                 if(op->type != EXPR_ID_LIST && op->type != EXPR_ID)
                 {
-                        printf("%s 1 \n\n\n",return_Expr_Init_Type(op));
+
                         if(strcmp(type,return_Expr_Init_Type(op)) != 0)
                         {
 
@@ -140,7 +142,7 @@ char * check_stack_operation(list <NExpr *> operations){
                         }
                 }
                 else{
-                        printf("%s 2 \n\n\n",update_varuble(globalroot,op));
+
                         if(strcmp(type,update_varuble(globalroot,op)) != 0)
                         {
                                 printf("2Varuble have wrong type or not declarate\n");
@@ -349,11 +351,12 @@ char * update_varuble(NStmtList *root,NExpr *var){
                 {
                         if(strcmp(current->var->idlist->first->name, var->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->name))
                         {
+                              printf("YA EBAL SSSSSSSSS\n" );
                                 exist = true;
                         }
                 }
                 if(current->type == STMT_ASSIGN && var->type == EXPR_ID_LIST) {
-                        if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0 && strlen(var->idlist->first->name) == strlen(current->var->idlist->first->name))
+                        if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
                         {
                                 exist = true;
                                 printf("Founded need Varuble\n");
@@ -427,10 +430,16 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                 }
                                 if(current->expr->type != NULL && exist)
                                 {
+                                    if(current->expr->isArray == true)
+                                    {
+                                      return "return_Expr_Init_Type(current->expr)";
+                                    }
                                         return return_Expr_Init_Type(current->expr);
                                 }
                                 printf("Varuble found expr->type %d\n",current->expr->type);
                                 break;
+
+
                         }
                 }
 
@@ -717,7 +726,7 @@ char * get_function_args(struct NFunc * f){
 }
 void print_function_param(char * function,struct NStmt * current){
         char * str = (char*)malloc(sizeof(char)*33);;
-
+        int func_num = -1;
         if(current->type == STMT_FUNC)
         {
                 STConst name;
@@ -725,7 +734,7 @@ void print_function_param(char * function,struct NStmt * current){
                 name.type = CONST_UTF8;
                 name.value.utf8  = function;
                 table.push_back(name);
-
+                func_num = table.size();
                 if(strcmp(current->func->name->last->name,function) == 0)
                 {
                         if(current->func->args->first == NULL)
@@ -742,11 +751,27 @@ void print_function_param(char * function,struct NStmt * current){
                         }else{
                                 strcat(str,get_function_type(current->func));
                         }
+                        if((st_constant_index( CONST_UTF8, (void*)(str)) == -1)){
                         STConst code;
                         code.next = NULL;
                         code.type = CONST_UTF8;
                         code.value.utf8  = str;
                         table.push_back(code);
+                        }
+
+                        STConst name_type;
+                        name_type.next = NULL;
+                        name_type.type = CONST_NAMETYPE;
+                        name_type.value.args.arg1  = func_num;
+                        name_type.value.args.arg2  = (st_constant_index( CONST_UTF8, (void*)(str)));
+                        table.push_back(name_type);
+                        STConst method_ref;
+                        method_ref.next = NULL;
+                        method_ref.type = CONST_METHODREF;
+                        method_ref.value.args.arg1  = 3;
+                        method_ref.value.args.arg2  = table.size()-1;
+                        table.push_back(method_ref);
+
                 }
         }
 }
@@ -889,6 +914,7 @@ void create_table(NStmtList *root){
                 st_stmt(current);
                 current = current->next;
         }
+
         printTable();
         printLocalVars();
 }
@@ -897,6 +923,7 @@ void create_main_table(NStmtList *root){
         while (current != NULL) {
 
                 if (current->type == STMT_ASSIGN && current->type == STMT_LASSIGN) {
+
                         st_stmt_expr(current->var);
                         st_stmt_expr(current->expr);
                 }
@@ -999,6 +1026,7 @@ void st_stmt(struct NStmt * node) {
 
                         }
                 }
+
                 else{
                         check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                 }
@@ -1047,7 +1075,9 @@ void st_stmt_for(struct NFor * node) {
         st_stmt_list(node->body);
 }
 void st_stmt_func(struct NStmt * node) {
+
         print_function_param(node->func->name->last->name,node);
+
         st_stmt_list(node->func->body);
 }
 void st_stmt_if(struct NIf * node) {
@@ -1066,7 +1096,7 @@ void st_stmt_if(struct NIf * node) {
         st_stmt_list(node->elsebody);
 }
 void st_stmt_expr(struct NExpr * node) {
-
+      printf("%d st_stmt_expr node->type\n",node->type);
         switch (node->type) {
         case EXPR_INT: {
                 if (st_constant_index(CONST_INT, (void *)&(node->Int)) == -1) {
@@ -1134,7 +1164,13 @@ void st_stmt_expr(struct NExpr * node) {
 
         case EXPR_MET: {
                 function_call.push_back(*node);
-                check_function_args(node);
+              //  check_function_args(node);
+
+                printf("%s",node->left->idlist->first->name );
+                printf("%d\n\n\n",node->left->idlist->first->type);
+                check_equal("",update_varuble(globalroot,node->left->idlist->first));
+
+
                 struct NExpr * cur = node->right->idlist->first;
                 while (cur != NULL) {
                         st_stmt_expr(cur);
@@ -1305,6 +1341,8 @@ void printLocalVars(){
         list<st_const> tempTable;
         tempTable = table;
         int index = 1;
+
+
         printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
         for (auto t : main_functions_list) {
                 table.clear();

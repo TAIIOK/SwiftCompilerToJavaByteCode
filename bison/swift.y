@@ -210,8 +210,8 @@ varlet:               VAR {printf("var \n"); $$ = create_var_constant_type(VART)
 var:                  id_chain {printf("varuble 1\n"); $$ = create_expr_exprlist($1,NULL,NULL); }
                     | var'[' expr ']'         { $$ = create_op_expr(EXPR_MAS, $1, $3); }
                     | varlet id_chain {printf("varuble 2\n");$$ = create_expr_exprlist($2,NULL,$1); }
-                    | varlet id_chain  ':' '[' varubleType ']' {printf("varuble 4\n");$$ = create_expr_exprlist($2,$5,$1); }
-                    | varlet id_chain ':' varubleType {printf("varuble 5\n");$$ = create_expr_exprlist($2,$4,$1);}
+                    | varlet id_chain  ':' '[' varubleType ']' {printf("varuble 4\n");$$ = create_expr_exprlist($2,$5,$1,true); }
+                    | varlet id_chain ':' varubleType {printf("varuble 5\n");$$ = create_expr_exprlist($2,$4,$1,false);}
 
 ;
 

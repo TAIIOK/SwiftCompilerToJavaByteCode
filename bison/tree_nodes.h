@@ -105,6 +105,7 @@ struct NRange
 
 struct NExpr
 {
+    bool isArray;
     char * name;
     struct NExpr * left;
     struct NExpr * right;
