@@ -12,7 +12,7 @@ void update_tree(struct NStmt* current, NStmt* prev, NStmtList* root, NStmtList*
 void update_tree_if(struct NIf* current, struct NStmtList* root);
 void set_parent_func(struct NStmt* child, struct NFunc* parent);
 void set_null_field_expr(struct NExpr* expr);
-
+NVarEnumType get_var_type(NExpr*  temp);
 
 struct NExpr * get_clone_for_clojure(struct NExpr * expr)
 {
@@ -641,16 +641,38 @@ struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varu
     result->vartype = varubltype;
     result->isArray = isArray;
     result->type = EXPR_ID_LIST;
-
+    printf("Pointer %d  \n", isArray);
     return result;
 }
+struct NVarType*  get_array_type(struct NTable* value)
+{
+  NTblElem* Element = (NTblElem*)malloc(sizeof(NTblElem));
+  NVarType* resultType = (NVarType*)malloc(sizeof(NVarType));
+  Element = value->first;
 
+  if(Element == NULL)
+  {
+    resultType->type = ARRAYTy;
+  return resultType;
+  }
+////////////////
+  resultType->type = get_var_type(Element->value) ;
+  return resultType;
+
+}
 struct NExpr* create_expr_table(struct NTable* value, struct NVarType* varubltype)
 {
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
+
     result->table = value;
+
+    if(varubltype == NULL){
+      result->vartype = get_array_type(value);
+    }
+    else{
     result->vartype = varubltype;
+    }
     result->type = EXPR_TABLE;
     return result;
 }
@@ -723,74 +745,70 @@ list<NExpr *> create_stack(NExpr *var){
         return var_stack;
 }
 
+NVarEnumType get_var_type(NExpr*  temp)
+{
+
+  switch (temp->type)
+  {
+    case EXPR_INT:
+    return INTTy;
+    break;
+    case EXPR_DOUBLE:
+    return  DOUBLETy;
+    break;
+    case EXPR_FLOAT:
+    return FLOATTy;
+    break;
+    case EXPR_STR:
+    return STRINGTy;
+    break;
+    default:
+    return VOIDTy;
+    break;
+
+  }
+}
 
 struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int local)
 {
     struct NStmt* result = (NStmt*)malloc(sizeof(NStmt));
     result->var = var;
     result->expr = expr;
+
+    printf("VAR %d\n",var->type);
+    printf("EXPR %d\n",expr->type);
+
+    struct NVarType* varType = (NVarType*)malloc(sizeof(NVarType));
+
+
     if (local)
         result->type = STMT_LASSIGN;
-    else
-    if(var->type == EXPR_ID_LIST){
-      /*
-      EXPR_INT,
-      EXPR_DOUBLE,
-      EXPR_FLOAT,
-      EXPR_STR
-      */
+    else if(var->type == EXPR_ID_LIST){
 
+      varType->type = get_var_type(expr);
 
-
-
-      struct NVarType* varType = (NVarType*)malloc(sizeof(NVarType));
-
-      switch (expr->type)
-      {
-        case EXPR_INT:
-        varType->type = INTTy;
-        break;
-        case EXPR_DOUBLE:
-        varType->type = DOUBLETy;
-        break;
-        case EXPR_FLOAT:
-        varType->type = FLOATTy;
-        break;
-        case EXPR_STR:
-        varType->type = STRINGTy;
-        break;
-        default:
-        list<NExpr * > temp = create_stack(expr);
-          if(temp.size() > 0)
+        if(varType->type == VOIDTy)
+        {
+          if(expr->type !=  EXPR_TABLE)
           {
-            struct NExpr* re = (NExpr*)malloc(sizeof(NExpr));
-            re = temp.front();
-            switch (re->type)
-            {
-              case EXPR_INT:
-              varType->type = INTTy;
-              break;
-              case EXPR_DOUBLE:
-              varType->type = DOUBLETy;
-              break;
-              case EXPR_FLOAT:
-              varType->type = FLOATTy;
-              break;
-              case EXPR_STR:
-              varType->type = STRINGTy;
-              break;
-              default:
-              break;
-            }
+            list<NExpr * > temp = create_stack(expr);
+              if(temp.size() > 0)
+              {
+              varType->type = get_var_type(temp.front());
+              }
+
           }
-          break;
-      }
+
+        }
       if(var->vartype == NULL && var->varconstant != NULL)
       {
         result->var->vartype = varType;
       }
-    }
+
+      }
+      printf("3");
         result->type = STMT_ASSIGN;
+
     return result;
 }
 

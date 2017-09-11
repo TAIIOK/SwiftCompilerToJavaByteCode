@@ -129,8 +129,6 @@ char * check_stack_operation(list <NExpr *> operations){
         for (auto op : operations)
         {
 
-
-
                 if(op->type != EXPR_ID_LIST && op->type != EXPR_ID)
                 {
 
@@ -157,6 +155,12 @@ char * check_stack_operation(list <NExpr *> operations){
 void check_equal(char *left,char *right){
         printf("%s left\n",left);
         printf("%s right\n",right);
+
+        if(strcmp("A ",right) == 0)
+        {
+
+          return;
+        }
 
         if(strcmp("D ",left) == 0 || strcmp("F ",left) == 0)
         {
@@ -224,6 +228,7 @@ char * return_varuble_type(NExpr *var){
         case BOOLTy:      strcat(str,"B ");    break;
         case STRINGTy:    strcat(str,"S ");    break;
         case VOIDTy:      strcat(str,"V ");     break;
+        case ARRAYTy:      strcat(str,"A ");     break;
         default:          printf("==WTF?== "); break;
         }
         return str;
@@ -255,6 +260,15 @@ char * return_Expr_Init_Type(NExpr *var){
         return "";
 }
 char * update_varuble(NStmtList *root,NExpr *var){
+
+        if(var->type == EXPR_TABLE)
+        {
+          char * str = (char*)malloc(sizeof(char)*33);
+          strcat(str,return_varuble_type(var));
+
+          return str;
+        }
+
         if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
         {
                 return return_Expr_Init_Type(var);

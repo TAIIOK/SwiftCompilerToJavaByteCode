@@ -23,7 +23,8 @@ enum NVarEnumType{
   FLOATTy = 4,
   BOOLTy = 5,
   CHARACTERTy = 6,
-  VOIDTy = 7
+  VOIDTy = 7,
+  ARRAYTy = 8
 };
 
 enum NConstantEnum{
