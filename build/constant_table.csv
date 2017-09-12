@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 13;
+;Constant table size = 15;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -13,4 +13,6 @@
    11;     UTF8;  'I '
    12; NAMETYPE;  10 11
    13; FIELDREF;  3 12
+   14;      INT;  2
+   15;      INT;  4
 Method list size = 0

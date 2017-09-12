@@ -179,7 +179,7 @@ void check_equal(char *left,char *right){
 }
 void mult_declaration(NStmtList *root,NExpr *var){
         int count = 0;
-
+        printf("Mult_Declaration");
         struct NStmt * current = root->first;
         printf("%d VAR Type of statement\n",var->type );
         while (current != NULL) {
@@ -191,11 +191,19 @@ void mult_declaration(NStmtList *root,NExpr *var){
                 }
 
                 if(current->type == STMT_ASSIGN && var->type == EXPR_ID_LIST) {
+                  printf("1 var->idlist->first->name %d\n",var->idlist->first->type);
+                  printf("1 current->var->type %d\n",current->var->type);  // need check array type here
+
+                  if(current->var->type != EXPR_MAS){
+                  printf("1 current->var->idlist->first->name %d\n",current->var->idlist->first->type);
                         if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
                         {
+                          printf("2\n");
                                 if(current->var->vartype != NULL && current->var->varconstant != NULL) {
+                                  printf("3\n");
                                         if(var->vartype != NULL)
                                         {
+                                          printf("4\n");
                                                 if(var->vartype->type != NULL)
                                                 {
                                                         if(var->vartype->type ==current->var->vartype->type)
@@ -210,6 +218,7 @@ void mult_declaration(NStmtList *root,NExpr *var){
                                 }
                         }
                 }
+              }
                 current = current->next;
         }
 
@@ -260,7 +269,7 @@ char * return_Expr_Init_Type(NExpr *var){
         return "";
 }
 char * update_varuble(NStmtList *root,NExpr *var){
-
+  printf("Update_varuble %d \n",var->type );
         if(var->type == EXPR_TABLE)
         {
           char * str = (char*)malloc(sizeof(char)*33);
@@ -269,7 +278,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
           return str;
         }
 
-        if(var->type != EXPR_ID_LIST && var->type != EXPR_ID)
+        if(var->type != EXPR_ID_LIST && var->type != EXPR_ID && var->type != EXPR_MAS)
         {
                 return return_Expr_Init_Type(var);
         }
@@ -361,9 +370,19 @@ char * update_varuble(NStmtList *root,NExpr *var){
                         }
                 }
 
-                if(var->type == EXPR_ID  && current->type == STMT_ASSIGN)
+                if((var->type == EXPR_MAS || var->type == EXPR_ID ) && current->type == STMT_ASSIGN)
                 {
-                        if(strcmp(current->var->idlist->first->name, var->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->name))
+                    if(var->type == EXPR_MAS)
+                    {
+                      if(var->left->idlist != NULL){
+                        if(strcmp(current->var->idlist->first->name, var->left->idlist->first->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->left->idlist->first->name))
+                          {
+                                  exist = true;
+                                
+                          }
+                        }
+                    }
+                      else  if(strcmp(current->var->idlist->first->name, var->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->name))
                         {
                               printf("YA EBAL SSSSSSSSS\n" );
                                 exist = true;
