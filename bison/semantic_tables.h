@@ -372,22 +372,31 @@ char * update_varuble(NStmtList *root,NExpr *var){
 
                 if((var->type == EXPR_MAS || var->type == EXPR_ID ) && current->type == STMT_ASSIGN)
                 {
-                    if(var->type == EXPR_MAS)
+                  printf("Varuble Type %d\n",var->type);
+                  if(var->type == EXPR_ID){
+                    printf("Varyble Name IN MASS %s\n",var->name);
+                    printf("Current Varuble type  %d\n",current->var->type );
+                  }
+                  if (current->var->type != EXPR_MAS){
+                    if(var->type == EXPR_MAS && current->var->type != EXPR_MAS)
                     {
                       if(var->left->idlist != NULL){
                         if(strcmp(current->var->idlist->first->name, var->left->idlist->first->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->left->idlist->first->name))
                           {
                                   exist = true;
+                                  printf("Array founded with type %s\n",return_varuble_type(current->var));
                                  return return_varuble_type(current->var);
                           }
                         }
                     }
-                      else  if(strcmp(current->var->idlist->first->name, var->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->name))
+                      else if(strcmp(current->var->idlist->first->name, var->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->name))
                         {
                               printf("YA EBAL SSSSSSSSS\n" );
                                 exist = true;
                         }
                 }
+              }
+                printf("GET GET GET GET\n");
                 if(current->type == STMT_ASSIGN && var->type == EXPR_ID_LIST) {
                         if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
                         {
