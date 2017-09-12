@@ -378,7 +378,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                         if(strcmp(current->var->idlist->first->name, var->left->idlist->first->name) == 0  && strlen(current->var->idlist->first->name) == strlen(var->left->idlist->first->name))
                           {
                                   exist = true;
-                                  return "I ";
+                                 return return_varuble_type(current->var);
                           }
                         }
                     }
