@@ -396,9 +396,18 @@ char * update_varuble(NStmtList *root,NExpr *var){
                         }
                 }
               }
-                printf("GET GET GET GET\n");
+                if(current->type == STMT_ASSIGN ){
+                printf("GET GET GET GET %d  %d current->var->idlist->first->name  \n",current->var->type,var->type);
+                }
+
                 if(current->type == STMT_ASSIGN && var->type == EXPR_ID_LIST) {
-                        if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
+
+                        if(current->var->type == EXPR_MAS)
+                        {
+
+                        }
+
+                      else  if(strcmp(var->idlist->first->name,current->var->idlist->first->name)==0)
                         {
                                 exist = true;
                                 printf("Founded need Varuble\n");
@@ -472,10 +481,6 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                 }
                                 if(current->expr->type != NULL && exist)
                                 {
-                                    if(current->expr->isArray == true)
-                                    {
-                                      return "return_Expr_Init_Type(current->expr)";
-                                    }
                                         return return_Expr_Init_Type(current->expr);
                                 }
                                 printf("Varuble found expr->type %d\n",current->expr->type);
