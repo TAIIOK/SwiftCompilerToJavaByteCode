@@ -32,14 +32,14 @@ var i = 0
 */
 var a:Int = 2
 
-func vv(s:Int) -> Int{
+func vv(s:Int,d:Int) -> Int{
 
     return 2
 }
 
 
 
-a  = vv(s:2)
+a  = vv(s:a,d:2)
 
 
 /*

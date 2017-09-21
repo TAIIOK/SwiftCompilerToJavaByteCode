@@ -15,7 +15,7 @@
    13; FIELDREF;  3 12
    14;      INT;  2
    15;     UTF8;  'vv'
-   16;     UTF8;  '(I )I '
+   16;     UTF8;  '(I I )I '
    17; NAMETYPE;  16 16
    18;METHODREF;  3 17
 Method list size = 0

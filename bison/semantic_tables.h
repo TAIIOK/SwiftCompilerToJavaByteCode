@@ -665,7 +665,109 @@ char * get_function_type(struct NFunc * f){
 }
 void check_function_args(struct NExpr * cur){
 
+        if (strcmp(cur->left->idlist->first->name, "print") == 0 )
+        {
+                if(cur->right->idlist->first != NULL) {
+                        if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
+                        {
+                                check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
+                        }
+                        update_varuble(globalroot,cur->right->idlist->first);
+                }
+                return;
+        }
 
+        if(strcmp(cur->left->idlist->first->name, "readLine") == 0 )
+        {
+                if(cur->right->idlist->first != NULL)
+                {
+                        printf("Function have extra argument\n");
+                        exit (EXIT_FAILURE);
+                }
+                return;
+        }
+        char * str = (char*)malloc(sizeof(char)*33);
+        char * newstr = (char*)malloc(sizeof(char)*33);
+        bool exist = false;
+        for (auto c : functions_list) {
+                if (strcmp(c.name->last->name, cur->left->idlist->first->name) == 0)
+                {
+                        exist = true;
+                        strcat(str,"");
+                        strcpy(str,get_function_args(&c));
+                        struct NExpr * cura = cur->right->idlist->first;
+                        strcat(newstr,"(");
+                        while (cura != NULL) {
+                          printf("%d cura->type\n", cura->type);
+                              if(cura->type == EXPR_ID_LIST){
+                                    strcat(newstr,update_varuble(globalroot,cura));
+                              }
+                              else{
+                                strcat(newstr,return_Expr_Init_Type(cura));
+                              }
+
+                                cura = cura->next;
+                        }
+                        strcat(newstr,")");
+
+
+
+                        if (strcmp(str, newstr) != 0)
+                        {
+                          printf("function_list 1 \n");
+                          printf("%s\n",str);
+                          printf("%s\n",newstr);
+                                printf("Fuction has wrong arguments\n");
+                                exit (EXIT_FAILURE);
+                        }
+                        else{
+
+                        }
+                        break;
+                }
+        }
+
+        for (auto c : main_functions_list) {
+                if (strcmp(c.name->last->name, cur->left->idlist->first->name) == 0)
+                {
+                        exist = true;
+                        strcat(str,"");
+                        strcpy(str,get_function_args(&c));
+                        struct NExpr * cura = cur->right->idlist->first;
+                        strcat(newstr,"(");
+
+                        while (cura != NULL) {
+                            printf("%d cura->type\n", cura->type);
+                                    if(cura->type == EXPR_ID_LIST){
+                                          strcat(newstr,update_varuble(globalroot,cura));
+                                    }
+                                    else{
+                                      strcat(newstr,return_Expr_Init_Type(cura));
+                                    }
+
+                                cura = cura->next;
+                        }
+                        strcat(newstr,")");
+
+
+                        if (strcmp(str, newstr) != 0)
+                        {
+                          printf("main_function_list 1 \n");
+                          printf("%s\n",str);
+                          printf("%s\n",newstr);
+                                printf("Fuction has wrong arguments\n");
+                                exit (EXIT_FAILURE);
+                        }
+                        else{
+
+                        }
+                        break;
+                }
+        }
+        if(!exist) {
+                printf("fuction doesnot exist\n");
+                exit (EXIT_FAILURE);
+        }
 }
 char * get_function_args(struct NFunc * f){
         char * str = (char*)malloc(sizeof(char)*33);
