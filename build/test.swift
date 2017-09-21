@@ -2,13 +2,13 @@
 //var a:[String] = ["2","2","s"]
 
 //a[2] = "s"
-
+/*
 var a:[Int] = [1,2,3]
 
 a[2] = 4
 
 var n = a.count()
-var i = 0
+
 
 var b = 1 - (1 + 2)
 
@@ -27,6 +27,19 @@ while (i >= 0){
     }
     i = i - 1
 }
+
+var i = 0
+*/
+var a:Int = 2
+
+func vv(s:Int) -> Int{
+
+    return 2
+}
+
+
+
+a  = vv(s:2)
 
 
 /*

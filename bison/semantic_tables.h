@@ -641,6 +641,10 @@ bool check_return_function(NStmtList *root,char * type){
 
         return result;
 }
+
+void check_function_call(NStmtList *root,NExpr *var){
+
+}
 char * get_function_type(struct NFunc * f){
         if(strcmp("readLine",f->name->last->name) == 0)
         {
@@ -661,94 +665,7 @@ char * get_function_type(struct NFunc * f){
 }
 void check_function_args(struct NExpr * cur){
 
-        if (strcmp(cur->left->idlist->first->name, "print") == 0 )
-        {
-                if(cur->right->idlist->first != NULL) {
-                        if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
-                        {
-                                check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
-                        }
-                        update_varuble(globalroot,cur->right->idlist->first);
-                }
-                return;
-        }
 
-        if(strcmp(cur->left->idlist->first->name, "readLine") == 0 )
-        {
-                if(cur->right->idlist->first != NULL)
-                {
-                        printf("Function have extra argument\n");
-                        exit (EXIT_FAILURE);
-                }
-                return;
-        }
-        char * str = (char*)malloc(sizeof(char)*33);
-        char * newstr = (char*)malloc(sizeof(char)*33);
-        bool exist = false;
-        for (auto c : functions_list) {
-                if (strcmp(c.name->last->name, cur->left->idlist->first->name) == 0)
-                {
-                        exist = true;
-                        strcat(str,"");
-                        strcpy(str,get_function_args(&c));
-                        struct NExpr * cura = cur->right->idlist->first;
-                        strcat(newstr,"(");
-                        while (cura != NULL) {
-                                if(cura->idlist->first != NULL && cura->idlist->first->vartype != NULL) {
-                                        strcat(newstr,return_varuble_type(cura->idlist->first));
-                                }
-                                strcat(newstr,return_Expr_Init_Type(cura->idlist->first));
-
-                                cura = cura->next;
-                        }
-                        strcat(newstr,")");
-
-                        if (strcmp(str, newstr) != 0)
-                        {
-                                printf("Fuction has wrong arguments\n");
-                                exit (EXIT_FAILURE);
-                        }
-                        else{
-
-                        }
-                        break;
-                }
-        }
-
-        for (auto c : main_functions_list) {
-                if (strcmp(c.name->last->name, cur->left->idlist->first->name) == 0)
-                {
-                        exist = true;
-                        strcat(str,"");
-                        strcpy(str,get_function_args(&c));
-                        struct NExpr * cura = cur->right->idlist->first;
-                        strcat(newstr,"(");
-                        while (cura != NULL) {
-                                if(cura->idlist->first != NULL && cura->idlist->first->vartype != NULL) {
-                                        strcat(newstr,return_varuble_type(cura->idlist->first));
-
-                                }
-                                strcat(newstr,return_Expr_Init_Type(cura));
-
-                                cura = cura->next;
-                        }
-                        strcat(newstr,")");
-
-                        if (strcmp(str, newstr) != 0)
-                        {
-                                printf("Fuction has wrong arguments\n");
-                                exit (EXIT_FAILURE);
-                        }
-                        else{
-
-                        }
-                        break;
-                }
-        }
-        if(!exist) {
-                printf("fuction doesnot exist\n");
-                exit (EXIT_FAILURE);
-        }
 }
 char * get_function_args(struct NFunc * f){
         char * str = (char*)malloc(sizeof(char)*33);
@@ -1211,11 +1128,11 @@ void st_stmt_expr(struct NExpr * node) {
 
         case EXPR_MET: {
                 function_call.push_back(*node);
-              //  check_function_args(node);
+                check_function_args(node);
 
                 printf("%s",node->left->idlist->first->name );
                 printf("%d\n\n\n",node->left->idlist->first->type);
-                check_equal("",update_varuble(globalroot,node->left->idlist->first));
+                //check_equal("",update_varuble(globalroot,node->left->idlist->first));
 
 
                 struct NExpr * cur = node->right->idlist->first;
