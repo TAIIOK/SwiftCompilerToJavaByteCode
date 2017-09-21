@@ -17,6 +17,8 @@
 void generate_var_code(NExpr *var);
 void generate_class_file();
 void generate_stmt_code(NStmt *stmt);
+void write_byte_code(std::vector<char> & code);
+std::vector<char> all_code;
 
 
 union u4
@@ -315,7 +317,7 @@ union s4 make_reversed_float_s4(float number)
 
 void code_number(unsigned long int number, int size)
 {
-	/*
+
 	int i;
 	if (size == 1)
 	{
@@ -337,7 +339,7 @@ void code_number(unsigned long int number, int size)
 			all_code.insert(all_code.end(), temp.bytes[i]);
 		}
 	}
-	*/
+
 }
 
 void code_float_number(float number, int size)
@@ -1359,7 +1361,7 @@ void generate_class_file()
 	strcpy(file_name,"Main_Class");
 	strcat(file_name, ".class");
 	FILE* file_of_class;
-	file_of_class = fopen("Main_Class.class","w");
+	file_of_class = fopen("Main_Class.class","rb+wb");
 
 	//����������� ��������� �����
 	number = 0xCAFEBABE;
@@ -1373,10 +1375,10 @@ void generate_class_file()
 	code_const_table();
 	number = 0x01;
 	code_number(number, 2);
-//	number = parent_class->classname->id;
+	number = 2;
 	code_number(number, 2);
 	//�������� Object
-//	number = parent_class->parentname->id;
+	number = 4;
 	code_number(number, 2);
 	//����������
 	number = 0;
@@ -1391,19 +1393,20 @@ void generate_class_file()
 	// �������� � ����
 	number = 0;
 	code_number(number, 2);
-	//write_byte_code(all_code);
+	write_byte_code(all_code);
 	fclose(file_of_class);
 }
 
 void write_byte_code(std::vector<char> & code)
 {
 	FILE* output;
-	output = fopen("Main_Class.class","w");
+	output = fopen("Main_Class.class","rb+wb");
 	//FILE* myFile ("Main_Class.class", std::ios::out | std::ios::binary);
 
 	if (code.size() != 0)
 	{
-	//	file_of_class.write(&code[0], code.size());
+		fwrite(&code[0] , sizeof(char), sizeof(code), output);
+		//file_of_class.write(&code[0], code.size());
 	}
 }
 
