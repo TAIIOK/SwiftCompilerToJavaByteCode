@@ -2,7 +2,7 @@
 //var a:[String] = ["2","2","s"]
 
 //a[2] = "s"
-/*
+
 var a:[Int] = [1,2,3]
 
 a[2] = 4
@@ -29,8 +29,8 @@ while (i >= 0){
 }
 
 var i = 0
-*/
-var a:Int = 2
+
+
 
 func vv(s:Int,d:Int) -> Int{
 
@@ -39,7 +39,7 @@ func vv(s:Int,d:Int) -> Int{
 
 
 
-a  = vv(s:a,d:2)
+i  = vv(s:i,d:2)
 
 
 /*

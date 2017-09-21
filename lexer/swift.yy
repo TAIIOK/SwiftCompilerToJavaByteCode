@@ -219,43 +219,8 @@ int main(int argc,char* argv[])
         create_table(root);
         st_print_const_file(output);
         printLocalVars_file(output);
-        /*
-        printf("Constant table:\n");
-        fprintf(output, "%s", ";Constant table:;\n");
-        st_fill_tables(root);
-        st_print_const(st_const_table);
-        st_print_const_file(output,st_const_table);
-        struct NStmt * current = root->first;
-        while (current != NULL)
-        {
-            if (current->type == STMT_FUNC)
-            {
-                printf("Function constant table:\n");
-                st_print_const(current->func->const_table);
-                fprintf(output, "'%s'", ";Function constant table:;\n");
-                st_print_const_file(output,current->func->const_table);
-            }
-            current = current->next;
-        }
 
-        printf("Function list:\n");
-        fprintf(output, "'%s'", ";Function list:;\n");
-        SList * cur = func_list;
-        while (cur != NULL)
-        {
-            printf("function %s\n", ((NFunc *)(cur->data))->name->last->name );
-            fprintf(output, ";'%s';",((NFunc *)(cur->data))->name->last->name);
-            cur = cur->next;
-        }
-
-        printf("Function methodrefs:\n");
-        fprintf(output, "%s",";Function methodrefs:;\n");
-        st_print_const(st_func_handles);
-        st_print_const_file(output,st_func_handles);
-        fclose(output);
-
-        cg_generate_bytecode(root);
-        */
+      //  generate_byte_code(std::vector<struct SemanticalElement*>& constT, std::vector<struct ClassElement>& classT, "Main.class")
     }
     return 0;
 }

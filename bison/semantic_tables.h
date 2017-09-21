@@ -650,6 +650,10 @@ char * get_function_type(struct NFunc * f){
         {
                 return "S ";
         }
+        if(strcmp("count",f->name->last->name) == 0)
+        {
+                return "I ";
+        }
         char * str = (char*)malloc(sizeof(char)*33);;
 
         switch (f->vartype->type) {
@@ -686,6 +690,19 @@ void check_function_args(struct NExpr * cur){
                 }
                 return;
         }
+
+if(cur->left->idlist->first->next != NULL){
+        if(strcmp(cur->left->idlist->first->next->name, "count") == 0 )
+        {
+                if(cur->right->idlist->first != NULL)
+                {
+                        printf("Function have extra argument\n");
+                        exit (EXIT_FAILURE);
+                }
+                return;
+        }
+      }
+
         char * str = (char*)malloc(sizeof(char)*33);
         char * newstr = (char*)malloc(sizeof(char)*33);
         bool exist = false;
@@ -765,7 +782,7 @@ void check_function_args(struct NExpr * cur){
                 }
         }
         if(!exist) {
-                printf("fuction doesnot exist\n");
+                printf("fuction  doesnot exist \n");
                 exit (EXIT_FAILURE);
         }
 }
@@ -1089,6 +1106,11 @@ void st_stmt(struct NStmt * node) {
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
                                 check_equal(update_varuble(globalroot,node->var),"S ");
+
+                        }
+                        if(strcmp(node->expr->left->idlist->first->name,"count" )==0)
+                        {
+                                check_equal(update_varuble(globalroot,node->var),"I ");
 
                         }
                 }
