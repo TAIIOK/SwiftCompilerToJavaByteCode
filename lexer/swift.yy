@@ -10,6 +10,7 @@
     #include "swift.tab.h"
     #include "semantic_tables.h"
     #include "tree_print.h"
+    #include "codegen.h"
 
 
     #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
@@ -219,8 +220,8 @@ int main(int argc,char* argv[])
         create_table(root);
         st_print_const_file(output);
         printLocalVars_file(output);
-
-      //  generate_byte_code(std::vector<struct SemanticalElement*>& constT, std::vector<struct ClassElement>& classT, "Main.class")
+        fclose(output);
+      generate_byte_code();
     }
     return 0;
 }

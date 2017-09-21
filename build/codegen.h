@@ -8,21 +8,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <vector>
 #include <fstream>
 #include "semantic_tables.h"
 #include "codegenconst.h"
 
+void generate_var_code(NExpr *var);
+void generate_class_file();
+void generate_stmt_code(NStmt *stmt);
 
-std::ofstream file_of_class; // ���� ������
-std::vector<std::vector<char>> code_of_methods; //���� ��� ��� �������
-std::vector<char> all_code; //���� ���� ���
-std::string file_name; //��� �����
-MethodElement* cur_method; //������� ����� � ������� �������
-int methodCounter = -1;
-int loopCounter = -1;
-char* loopVarName;
-std::vector<char*> loopVarNames;
-bool arrInitializing = false;
+
 union u4
 {
 	unsigned long int number;
@@ -51,48 +47,49 @@ union s2
 
 void code_const_table()
 {
+	/*
 	int i;
 	for(i=0;i<table_of_const.size();i++)
 	{
 		switch(table_of_const[i]->type)
 		{
-		case CONST_Utf8:
+		case CONST_UTF8:
 			{
 				code_number(1,1);
 				code_utf8(table_of_const[i]);
 				break;
 			}
-		case CONST_Integer:
+		case CONST_INT:
 			{
 				code_number(3,1);
 				code_integer(table_of_const[i]);
 				break;
 			}
-		case CONST_Float:
+		case CONST_FLOAT:
 			{
 				code_number(4,1);
 				code_float(table_of_const[i]);
 				break;
 			}
-		case CONST_Class:
+		case CONST_CLASS:
 			{
 				code_number(7,1);
 				code_class(table_of_const[i]);
 				break;
 			}
-		case CONST_String:
+		case CONST_STRING:
 			{
 				code_number(8,1);
 				code_string(table_of_const[i]);
 				break;
 			}
-		case CONST_Methodref:
+		case CONST_METHODREF:
 			{
 				code_number(10,1);
 				code_methodref(table_of_const[i]);
 				break;
 			}
-		case CONST_NameAndType:
+		case CONST_NAMETYPE:
 			{
 				code_number(12,1);
 				code_name_and_type(table_of_const[i]);
@@ -100,11 +97,12 @@ void code_const_table()
 			}
 		}
 	}
+	*/
 }
 
 void code_method_table()
 {
-
+	/*
 	for (int i = 0; i < parent_class->methods->size(); i++)
 	{
 		unsigned long int number;
@@ -123,10 +121,11 @@ void code_method_table()
 		//1000 ���. ����������
 		code_method_class(code_of_methods[i], 1000);
 	}
+	*/
 }
 
 void code_to_file(std::vector<char> & byte_code)
-{
+{/*
 	char* arr;
 	std::ofstream classFile ("byteCode.class", std::ios::binary|std::ios::out);
 
@@ -134,11 +133,12 @@ void code_to_file(std::vector<char> & byte_code)
 	{
 		file_of_class.write(&byte_code[0], byte_code.size());
 	}
-
+	*/
 }
 
 void code_method_class(std::vector<char> & byte_code, int index)
 {
+	/*
 	unsigned long int number;
 	number = table_of_const.at(table_of_const.size()-1)->id;
 	code_number(number, 2);
@@ -157,6 +157,7 @@ void code_method_class(std::vector<char> & byte_code, int index)
 	number = 0;
 	code_number(number, 2);
 	code_number(number, 2);
+	*/
 }
 
 
@@ -168,62 +169,77 @@ void code_class_table()
 
 void code_methodref(SemanticalElement* element)
 {
+	/*
 	int number;
 	number = element->first->id;
 	code_number(number, 2);
 	number = element->second->id;
 	code_number(number, 2);
+	*/
 }
 
 void code_float(SemanticalElement* element)
 {
+	/*
 	float number;
 	number = element->const_float;
 	code_float_number(number, 4);
+	*/
 }
 
 void code_fieldref(SemanticalElement* element)
 {
+	/*
 	int number;
 	number = element->first->id;
 	code_number(number, 2);
 	number = element->second->id;
 	code_number(number, 2);
+	*/
 }
 
 void code_class(SemanticalElement* element)
 {
+	/*
 	int number;
 	number = element->first->id;
 	code_number(number, 2);
+	*/
 }
 
 void code_name_and_type(SemanticalElement* element)
 {
+	/*
 	int number;
 	number = element->first->id;
 	code_number(number, 2);
 	number = element->second->id;
 	code_number(number, 2);
+	*/
 }
 
 void code_string(SemanticalElement* element)
 {
+	/*
 	int number;
 	number = element->first->id;
 	code_number(number, 2);
+	*/
 }
 
 
 void code_integer(SemanticalElement* element)
 {
+	/*
 	int number;
 	number = element->const_int;
 	code_number(number, 4);
+	*/
 }
 
 void code_utf8(SemanticalElement* element)
 {
+	/*
 	int number;
 	char* bytes = (char*) malloc(element->str.length());
 	number = element->str.length();
@@ -234,6 +250,7 @@ void code_utf8(SemanticalElement* element)
 		number = bytes[i];
 		code_number(number, 1);
 	}
+	*/
 }
 
 
@@ -298,6 +315,7 @@ union s4 make_reversed_float_s4(float number)
 
 void code_number(unsigned long int number, int size)
 {
+	/*
 	int i;
 	if (size == 1)
 	{
@@ -319,10 +337,12 @@ void code_number(unsigned long int number, int size)
 			all_code.insert(all_code.end(), temp.bytes[i]);
 		}
 	}
+	*/
 }
 
 void code_float_number(float number, int size)
 {
+	/*
 	int i;
 	if (size == 1)
 	{
@@ -344,11 +364,12 @@ void code_float_number(float number, int size)
 			all_code.insert(all_code.end(), temp.bytes[i]);
 		}
 	}
+	*/
 }
 
 void write_code_to_class_file(unsigned long int number, int size)
 {
-
+/*
 	int i;
 	if (size == 1)
 	{
@@ -365,10 +386,12 @@ void write_code_to_class_file(unsigned long int number, int size)
 		union u4 temp = make_reversed_u4(number);
 		file_of_class.write(&temp.bytes[0], 4);
 	}
+	*/
 }
 
-void generate_expr_code(NExpression*expr)
+void generate_expr_code(NExpr *expr)
 {
+	/*
 	switch (expr->type)
 	{
 	case name_list:
@@ -728,26 +751,32 @@ void generate_expr_code(NExpression*expr)
 	{
 		generate_expr_code(expr->next);
 	}
+	*/
 }
 
 void generate_expr_list_code(NExprList*list)
 {
+	/*
 	if(list!=NULL)
 	{
 		generate_expr_code(list->first);
 	}
+	*/
 }
 
-void generate_varlist_code(NVariableList*list)
+void generate_varlist_code(NExprList*list)
 {
+	/*
 	if(list!=NULL)
 	{
 		generate_var_code(list->first);
 	}
+	*/
 }
 
-void generate_var_code(NVariable*var)
+void generate_var_code(NExpr*var)
 {
+	/*
 	if (var->value != NULL)
 	{
 		generate_expr_code(var->value);
@@ -762,8 +791,10 @@ void generate_var_code(NVariable*var)
 	{
 		generate_var_code(var->next);
 	}
+	*/
 }
 
+/*
 void generate_name_code(NName*name)
 {
 	if(name!=NULL)
@@ -810,18 +841,23 @@ void generate_name_code(NName*name)
 		}
 		generate_name_code(name->next);
 	}
-}
 
+}
+*/
+/*
 void generate_name_list_code(NNameList*list)
 {
+
 	if(list!=NULL)
 	{
 		generate_name_code(list->first);
 	}
-}
 
-void generate_if_code(NIfStruct * If)
+}
+*/
+void generate_if_code(NIf * If)
 {
+	/*
 	int size2;
 	union s2 temp;
 	//1. ������� GenerateCodeForExpression ��� ���������� ��������� ��������� � ��������� ��� ���������� �� ���� (0 � ����);
@@ -874,16 +910,20 @@ void generate_if_code(NIfStruct * If)
 		union s2 changer = make_reversed_s2(all_code.size() - size);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size + i) = changer.bytes[i];
-	}*/
+			*/
+	}
 
-void generate_elsif_list_code(NElsifList*list)
+void generate_elsif_list_code(NIfList *list)
 {
+	/*
 	if(list!=NULL)
 		generate_elsif_code(list->first);
+		*/
 }
 
-void generate_elsif_code(NElsif*elsif)
+void generate_elsif_code(NIf*elsif)
 {
+	/*
 	if(elsif!=NULL)
 	{
 		generate_expr_code(elsif->elsifExpr);
@@ -896,21 +936,23 @@ void generate_elsif_code(NElsif*elsif)
 			all_code.at(size + i) = temp.bytes[i];
 		generate_elsif_code(elsif->next);
 	}
+	*/
 }
-void generate_stmt_list_code(NStatementList*list)
+void generate_stmt_list_code(NStmtList *list)
 {
 	generate_stmt_code(list->first);
 }
 
-void generate_stmt_code(NStatement*stmt)
+void generate_stmt_code(NStmt*stmt)
 {
+	/*
 	switch (stmt->type)
 	{
 	case array_var:
 		{
 			std::vector<struct LocalElement> *vars;
 			int arrId;
-			NExpression *arrExpr;
+			NExpr *arrExpr;
 			if (stmt->arr_var->expression != NULL)
 				arrExpr = stmt->arr_var->expression->first;
 			for (arrId = 0; arrId < table_of_classes[1].methods->size(); arrId++)
@@ -1030,10 +1072,12 @@ void generate_stmt_code(NStatement*stmt)
 	{
 		generate_stmt_code(stmt->next);
 	}
+	*/
 }
 
-void generate_varlist_assign_code(NVarListAssign * assign)
+void generate_varlist_assign_code(NExprList * assign)
 {
+	/*
 	NVariable*var = assign->variables->first;
 	while(var!=NULL)
 	{
@@ -1069,10 +1113,12 @@ void generate_varlist_assign_code(NVarListAssign * assign)
 		}
 		var=var->next;
 	}
+	*/
 }
 
-void generate_while_code(NWhileLoop * While)
+void generate_while_code(NWhile * While)
 {
+	/*
 	int size;	//����� ������������ ��������
 	int size2;
 	int startCondition;
@@ -1113,10 +1159,11 @@ void generate_while_code(NWhileLoop * While)
 		for (int i = 0; i < 2; i++)
 			all_code.push_back(temp.bytes[i]);
 	}
-
+*/
 }
-void generate_for_code(NForLoop* For)
+void generate_for_code(NFor *For)
 {
+	/*
 	loopVarName = (char*)malloc(sizeof(char) * strlen(For->condition->first->name)+1);
 	loopVarName = For->condition->first->name;
 	loopVarNames.push_back(loopVarName);
@@ -1225,11 +1272,13 @@ void generate_for_code(NForLoop* For)
 	}
 	loopVarNames.erase(loopVarNames.begin()+loopVarNames.size()-1);
 	loopCounter--;
+	*/
 }
 
 
-void generate_arr_var_code(NArrayVar * var)
+void generate_arr_var_code(NExpr * var)
 {
+	/*
 	if (var!= NULL)
 	{
 		generate_expr_list_code(var->expression);
@@ -1240,10 +1289,12 @@ void generate_arr_var_code(NArrayVar * var)
 			code_number(local->id, 1);
 		}
 	}
+	*/
 }
 std::vector<char> empty_code;
-void generate_func_proc_code(NFuncProc*func)
+void generate_func_proc_code(NFunc *func)
 {
+	/*
 	code_of_methods.insert(code_of_methods.end(), empty_code);
 	if (methodCounter >= 0)
 	{
@@ -1266,47 +1317,50 @@ void generate_func_proc_code(NFuncProc*func)
 		code_of_methods[methodCounter].push_back(el);
 	all_code.clear();
 	current_method = method1;
+	*/
 }
 
-void generate_return_code(NVarType type)
+void generate_return_code(NVarEnumType type)
 {
-	if (type == String || type == Array)
+	if (type == STRINGTy || type == ARRAYTy)
 	{
 		code_number(ARETURN, 1);
 	}
-	else if (type == Integer || type == Character || type == Boolean)
+	else if (type == INTTy || type == CHARACTERTy || type == BOOLTy)
 	{
 		code_number(IRETURN, 1);
 	}
-	else if (type == Real || type == Float)
+	else if (type == DOUBLETy || type == FLOATTy)
 	{
 		code_number(FRETURN, 1);
 	}
 }
 
-void generate_enum_code(NVariable * var)
+void generate_enum_code(NExpr * var)
 {
 	generate_var_code(var);
-	generate_name_list_code(var->list);
+	//generate_name_list_code(var->idlist);
 }
 
-void generate_byte_code(std::vector<struct SemanticalElement*>& constT, std::vector<struct ClassElement>& classT, std::string file)
+void generate_byte_code()
 {
-	table_of_const = constT;
-	table_of_classes = classT;
-	file_name = file;
-	generate_stmt_list_code(Root);
+//	table_of_const = constT;
+//	table_of_classes = classT;
+//	file_name = "Main.class";
+	//generate_stmt_list_code(Root);
 	generate_class_file();
 }
 
 void generate_class_file()
 {
-	all_code.clear();
+	//all_code.clear();
 	char file_name [20];
 	unsigned long int number;
 	strcpy(file_name,"Main_Class");
 	strcat(file_name, ".class");
-	file_of_class = std::ofstream (file_name, std::ios::out | std::ios::binary);
+	FILE* file_of_class;
+	file_of_class = fopen("Main_Class.class","w");
+
 	//����������� ��������� �����
 	number = 0xCAFEBABE;
 	code_number(number, 4);
@@ -1314,15 +1368,15 @@ void generate_class_file()
 	code_number(number, 2);
 	number = 52;
 	code_number(number, 2);
-	number = table_of_const.size() + 1;
+	number = table.size() + 1;
 	code_number(number, 2);
 	code_const_table();
 	number = 0x01;
 	code_number(number, 2);
-	number = parent_class->classname->id;
+//	number = parent_class->classname->id;
 	code_number(number, 2);
 	//�������� Object
-	number = parent_class->parentname->id;
+//	number = parent_class->parentname->id;
 	code_number(number, 2);
 	//����������
 	number = 0;
@@ -1331,23 +1385,25 @@ void generate_class_file()
 	number = 0;
 	code_number(number, 2);
 	//������ ������
-	number = parent_class->methods->size();
+	//number = parent_class->methods->size();
 	code_number(number, 2);
 	code_method_table();
 	// �������� � ����
 	number = 0;
 	code_number(number, 2);
-	write_byte_code(all_code);
-	file_of_class.close();
+	//write_byte_code(all_code);
+	fclose(file_of_class);
 }
 
 void write_byte_code(std::vector<char> & code)
 {
-	std::ofstream myFile ("Main_Class.class", std::ios::out | std::ios::binary);
+	FILE* output;
+	output = fopen("Main_Class.class","w");
+	//FILE* myFile ("Main_Class.class", std::ios::out | std::ios::binary);
 
 	if (code.size() != 0)
 	{
-		file_of_class.write(&code[0], code.size());
+	//	file_of_class.write(&code[0], code.size());
 	}
 }
 

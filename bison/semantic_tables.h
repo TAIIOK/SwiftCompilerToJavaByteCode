@@ -18,6 +18,39 @@
 
 using namespace std;
 
+enum SemanticalConst
+{
+    CONST_Utf8 = 1,
+    CONST_Integer = 3,
+	CONST_Float = 4,
+	CONST_Class = 7,
+    CONST_String = 8,
+	CONST_Fieldref = 9,
+    CONST_Methodref = 10,
+    CONST_NameAndType = 12
+};
+
+struct SemanticalElement
+{
+	int id;
+	std::string str;
+	float const_float;
+	int const_int;
+	struct SemanticalElement* first;
+	struct SemanticalElement* second;
+	enum SemanticalConst type;
+
+	SemanticalElement()
+    {
+		first = NULL;
+		second = NULL;
+        id = 0;
+        const_int = -1;
+		const_float = -1;
+		str.clear();
+    }
+};
+
 
 enum st_const_types {
         CONST_UTF8      = 1,
