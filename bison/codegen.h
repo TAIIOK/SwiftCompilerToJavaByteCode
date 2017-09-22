@@ -17,8 +17,16 @@
 void generate_var_code(NExpr *var);
 void generate_class_file();
 void generate_stmt_code(NStmt *stmt);
+void generate_stmt_list_code(NStmtList *list);
+void generate_expr_list_code(NExprList*list);
+void generate_for_code(NFor *For);
+void generate_while_code(NWhile * While);
 void write_byte_code(std::vector<char> & code);
+void generate_name_list_code(NExprList*list);
+void generate_name_code(NExpr*name);
 std::vector<char> all_code;
+char* loopVarName;
+std::vector<char*> loopVarNames;
 
 
 union u4
@@ -393,14 +401,16 @@ void write_code_to_class_file(unsigned long int number, int size)
 
 void generate_expr_code(NExpr *expr)
 {
-	/*
+ bool arrInitializing = false;
+
 	switch (expr->type)
 	{
-	case name_list:
+	case EXPR_ID_LIST:
 		{
-			generate_name_list_code(expr->list);
+			generate_name_list_code(expr->idlist);
 			break;
 		}
+		/*
 	case assign:
 		{
 			if (loopVarName!=NULL && expr->left->type!=func && strcmp(loopVarName, expr->left->list->first->name) == 0)
@@ -747,23 +757,24 @@ void generate_expr_code(NExpr *expr)
 				code_number(ICONST_0, 1);
 			break;
 		}
+		*/
 	}
 
 	if (expr->next != NULL && !arrInitializing)
 	{
 		generate_expr_code(expr->next);
 	}
-	*/
+
 }
 
-void generate_expr_list_code(NExprList*list)
+void generate_expr_list_code(NExprList *list)
 {
-	/*
+
 	if(list!=NULL)
 	{
 		generate_expr_code(list->first);
 	}
-	*/
+
 }
 
 void generate_varlist_code(NExprList*list)
@@ -796,8 +807,22 @@ void generate_var_code(NExpr*var)
 	*/
 }
 
-/*
-void generate_name_code(NName*name)
+struct NExpr* is_in_local_vars(char*name)
+{
+	/*
+	std::vector<struct LocalElement> *vars = current_method->localvars;
+	int i;
+	for (i = 0; i < vars->size(); i++)
+	{
+		if(stricmp(name,vars->at(i).name.c_str())==0)
+			return &(vars->at(i));
+	}
+	*/
+	return NULL;
+}
+
+
+void generate_name_code(NExpr*name)
 {
 	if(name!=NULL)
 	{
@@ -814,28 +839,28 @@ void generate_name_code(NName*name)
 		}
 		else
 		{
-			LocalElement*elem = is_in_local_vars(name->name);
-			if (elem->var->type == Integer || elem->var->type == Root_Integer)
+			NExpr *elem = is_in_local_vars(name->name);
+			if (elem->vartype->type == INTTy )
 			{
 				code_number(ILOAD, 1);
 				code_number(elem->id, 1);
 			}
-			else if (elem->var->type == Boolean)
+			else if (elem->vartype->type == BOOLTy)
 			{
 				code_number(ILOAD, 1);
 				code_number(elem->id, 1);
 			}
-			else if (elem->var->type == Real || elem->var->type == Float)
+			else if (elem->vartype->type == DOUBLETy || elem->vartype->type == FLOATTy)
 			{
 				code_number(FLOAD, 1);
 				code_number(elem->id, 1);
 			}
-			else if (elem->var->type == String)
+			else if (elem->vartype->type == STRINGTy)
 			{
 				code_number(ALOAD, 1);
 				code_number(elem->id, 1);
 			}
-			else if (elem->var->type == Array)
+			else if (elem->vartype->type == ARRAYTy)
 			{
 				code_number(ALOAD, 1);
 				code_number(elem->id, 1);
@@ -845,9 +870,9 @@ void generate_name_code(NName*name)
 	}
 
 }
-*/
-/*
-void generate_name_list_code(NNameList*list)
+
+
+void generate_name_list_code(NExprList*list)
 {
 
 	if(list!=NULL)
@@ -856,7 +881,7 @@ void generate_name_list_code(NNameList*list)
 	}
 
 }
-*/
+
 void generate_if_code(NIf * If)
 {
 	/*
@@ -947,9 +972,10 @@ void generate_stmt_list_code(NStmtList *list)
 
 void generate_stmt_code(NStmt*stmt)
 {
-	/*
+
 	switch (stmt->type)
 	{
+		/*
 	case array_var:
 		{
 			std::vector<struct LocalElement> *vars;
@@ -1022,40 +1048,40 @@ void generate_stmt_code(NStmt*stmt)
 			int x = 1;
 			break;
 		}
+		*/
+		/*
 	case var_list_assign:
 		{
 			generate_varlist_assign_code(stmt->list);
 			break;
 		}
-	case expr:
+		*/
+	case STMT_EXPR:
 		{
-			generate_expr_list_code(stmt->expressions);
+			generate_expr_list_code(stmt->expr->idlist);
 			break;
 		}
 
-	case func_call:
+	case STMT_FUNC:
 		{
 			break;
 		}
-	case if_:
+	case STMT_IF:
 		{
-			generate_if_code(stmt->if_struct);
+			generate_if_code(stmt->if_tree);
 			break;
 		}
-	case case_:
-		{
-			break;
-		}
-	case for_:
+	case STMT_FOR:
 		{
 			generate_for_code(stmt->for_loop);
 			break;
 		}
-	case while_:
+	case STMT_WHILE:
 		{
 			generate_while_code(stmt->while_loop);
 			break;
 		}
+		/*
 	case func_pr:
 		{
 			for (char el : all_code)
@@ -1064,17 +1090,20 @@ void generate_stmt_code(NStmt*stmt)
 			generate_func_proc_code(stmt->func_proc);
 			break;
 		}
+		*/
+		/*
 	case en:
 		{
 
 			break;
 		}
+		*/
 	}
 	if (stmt->next != NULL)
 	{
 		generate_stmt_code(stmt->next);
 	}
-	*/
+
 }
 
 void generate_varlist_assign_code(NExprList * assign)
@@ -1349,13 +1378,13 @@ void generate_byte_code()
 //	table_of_const = constT;
 //	table_of_classes = classT;
 //	file_name = "Main.class";
-	//generate_stmt_list_code(Root);
+	generate_stmt_list_code(root);
 	generate_class_file();
 }
 
 void generate_class_file()
 {
-	//all_code.clear();
+	all_code.clear();
 	char file_name [20];
 	unsigned long int number;
 	strcpy(file_name,"Main_Class");
@@ -1401,12 +1430,10 @@ void write_byte_code(std::vector<char> & code)
 {
 	FILE* output;
 	output = fopen("Main_Class.class","rb+wb");
-	//FILE* myFile ("Main_Class.class", std::ios::out | std::ios::binary);
 
 	if (code.size() != 0)
 	{
 		fwrite(&code[0] , sizeof(char), sizeof(code), output);
-		//file_of_class.write(&code[0], code.size());
 	}
 }
 
