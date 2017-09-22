@@ -527,57 +527,48 @@ void generate_expr_code(NExpr *expr)
 			}
 			break;
 		}
-	case sum:
+		*/
+	case EXPR_PLUS:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->type == Integer)
+			if(expr->left->vartype->type == INTTy)
 				code_number(IADD, 1);
-			if (expr->left->type == Real || expr->left->type == Float)
+			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
 				code_number(FADD, 1);
 			break;
 		}
-	case mul:
+	case EXPR_MUL:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->type == Integer)
+			if(expr->left->vartype->type == INTTy)
 				code_number(IMUL, 1);
-			if (expr->left->type == Real || expr->left->type == Float)
+			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
 				code_number(FMUL, 1);
 			break;
 		}
-	case Div:
+	case EXPR_DIV:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->type == Integer)
+			if(expr->left->vartype->type == INTTy)
 				code_number(IDIV, 1);
-			if (expr->left->type == Real || expr->left->type == Float)
+			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
 				code_number(FDIV, 1);
 			break;
 		}
-	case sub:
+	case EXPR_MINUS:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->type == Integer)
+			if(expr->left->vartype->type == INTTy)
 				code_number(ISUB, 1);
-			if (expr->left->type == Real || expr->left->type == Float)
+			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
 				code_number(FSUB, 1);
 			break;
 		}
-	case grade:
-		{
-			generate_expr_code(expr->left);
-			for(int i=0;i<expr->right->const_int;i++)
-			{
-				code_number(DUP, 1);
-				code_number(IMUL, 1);
-			}
-			break;
-		}
-	case greater:
+	case EXPR_GT:
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
@@ -589,7 +580,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case equal:
+	case EXPR_EQ:
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
@@ -601,7 +592,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case less:
+	case EXPR_LT:
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
@@ -613,7 +604,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case not:
+	case EXPR_NOT:
 		{
 			generate_expr_code(expr->left);
 			code_number(ICONST_0, 1);
@@ -625,7 +616,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case ne:
+	case EXPR_NQ:
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
@@ -637,7 +628,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case ge:
+	case EXPR_GE:
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
@@ -649,7 +640,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case le:
+	case EXPR_LE:
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
@@ -661,6 +652,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
+		/*
 	case xor:
 		{
 			generate_expr_code(expr->left);
@@ -675,7 +667,8 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case and:
+		*/
+	case EXPR_AND:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
@@ -689,7 +682,7 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case or:
+	case EXPR_OR:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
@@ -703,14 +696,10 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-	case concat:
-		{
 
-			break;
-		}
-	case uminus:
+	case EXPR_UMIN:
 		{
-			if (expr->left->type == Integer || expr->left->type == c_i)
+			if (expr->left->vartype->type == INTTy || expr->left->vartype->type == EXPR_INT)
 			{
 				code_number(BIPUSH, 1);
 				code_number(0, 1);
@@ -725,39 +714,33 @@ void generate_expr_code(NExpr *expr)
 			}
 			break;
 		}
-	case c_i:
+	case EXPR_INT:
 		{
 			code_number(LDC, 1);
-			code_number(expr->ident, 1);
+			code_number(expr->id, 1);
 			break;
 		}
-	case c_d:
+	case EXPR_DOUBLE:
 		{
 			code_number(LDC_W, 1);
-			code_number(expr->ident, 2);
+			code_number(expr->id, 2);
 			break;
 		}
-	case c_s:
+	case EXPR_STR:
 		{
 			code_number(LDC, 1);
-			code_number(expr->ident, 1);
+			code_number(expr->id, 1);
 			break;
 		}
-	case c_c:
+	case EXPR_BOOL:
 		{
-			code_number(LDC, 1);
-			code_number(expr->ident, 1);
-			break;
-		}
-	case c_b:
-		{
-			if (expr->const_bool)
+			if (expr->Int)
 				code_number(ICONST_1, 1);
 			else
 				code_number(ICONST_0, 1);
 			break;
 		}
-		*/
+
 	}
 
 	if (expr->next != NULL && !arrInitializing)
