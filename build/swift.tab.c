@@ -1906,7 +1906,7 @@ yyreduce:
 
   case 36:
 #line 193 "../bison/swift.y"
-    {printf("stmt_while\n");(yyval.While) = create_while((yyvsp[(2) - (3)].Expr), (yyvsp[(3) - (3)].SL));;}
+    {printf("stmt_while\n");(yyval.While) = create_while((yyvsp[(2) - (3)].Expr), (yyvsp[(3) - (3)].SL),false);;}
     break;
 
   case 37:
@@ -1916,7 +1916,7 @@ yyreduce:
 
   case 38:
 #line 197 "../bison/swift.y"
-    {printf("stmt_repeat\n");(yyval.While) = create_while((yyvsp[(4) - (4)].Expr), (yyvsp[(2) - (4)].SL)); ;}
+    {printf("stmt_repeat\n");(yyval.While) = create_while((yyvsp[(4) - (4)].Expr), (yyvsp[(2) - (4)].SL),true); ;}
     break;
 
   case 39:

@@ -101,6 +101,7 @@ struct NWhile
 {
     struct NExpr * condition;
     struct NStmtList * body;
+    bool doWhile;
 };
 
 struct NFor

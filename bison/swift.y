@@ -190,11 +190,11 @@ case_label:           CASE expr ':' {printf("case label\n");$$ = create_label_ca
 ;
 default_label:        DEFAULT ':' {printf("default label \n");$$ = create_label_case(NULL,DEFAULTT);}
 
-stmt_while:           WHILE expr stmt_block {printf("stmt_while\n");$$ = create_while($2, $3);}
+stmt_while:           WHILE expr stmt_block {printf("stmt_while\n");$$ = create_while($2, $3,false);}
 ;
 stmt_for:             FOR alone_id IN expr stmt_block {printf("stmt_for\n");$$ = create_for($2, $4, $5, create_expr_int(1));}
 ;
-stmt_repeat:          REPEAT stmt_block WHILE expr   {printf("stmt_repeat\n");$$ = create_while($4, $2); }
+stmt_repeat:          REPEAT stmt_block WHILE expr   {printf("stmt_repeat\n");$$ = create_while($4, $2,true); }
 ;
 /* == Expressions == */
 alone_id:             ID {printf("alone_id\n");$$ = create_expr_id(yylval.Id);}

@@ -15,6 +15,7 @@
 #include "codegenconst.h"
 
 void generate_var_code(NExpr *var);
+void generate_expr_code(NExpr *expr);
 void generate_class_file();
 void generate_stmt_code(NStmt *stmt);
 void generate_stmt_list_code(NStmtList *list);
@@ -34,12 +35,14 @@ void code_methodref(int first , int second);
 void code_name_and_type(int first , int second);
 void code_float_number(float number, int size);
 struct NExpr* is_in_local_vars(char*name);
+void generate_expr_assign(NExpr *expr);
+void generate_elsif_code(NIf*elsif);
 
 std::vector<char> all_code;
 char* loopVarName;
 std::vector<char*> loopVarNames;
 std::vector<char> empty_code;
-
+int loopCounter = -1;
 FILE* file_of_class;
 
 union u4
@@ -367,6 +370,27 @@ void write_code_to_class_file(unsigned long int number, int size)
 
 }
 
+void generate_expr_assign(NExpr *expr)
+{
+			std::vector<NExpr> *vars;
+			NExpr * el;
+
+				generate_expr_code(expr->right);
+				if (expr->left->idlist->first->vartype->type ==INTTy || expr->left->idlist->first->vartype->type == BOOLTy  || expr->left->idlist->first->vartype->type == CHARACTERTy)
+				{
+					code_number(ISTORE, 1);
+				}
+				else if (expr->left->idlist->first->vartype->type == DOUBLETy || expr->left->idlist->first->vartype->type == FLOATTy)
+				{
+					code_number(FSTORE, 1);
+				}
+				else
+				{
+					code_number(ASTORE, 1);
+				}
+				el = is_in_local_vars(expr->left->idlist->first->name);
+				code_number(el->id, 1);
+}
 void generate_expr_code(NExpr *expr)
 {
  bool arrInitializing = false;
@@ -819,43 +843,43 @@ void generate_name_list_code(NExprList*list)
 
 void generate_if_code(NIf * If)
 {
-	/*
+
 	int size2;
 	union s2 temp;
 	//1. ������� GenerateCodeForExpression ��� ���������� ��������� ��������� � ��������� ��� ���������� �� ���� (0 � ����);
-	generate_expr_code(If->ifExpr);
+	generate_expr_code(If->condition);
 	//2. ������������� ������� ifeq ��� �������� � ������ ������� �������, ��������� ����� ���� ������� ��� ��������� ����� �������� �����;
 	code_number(IFEQ, 1);
 	int size = all_code.size();
 	code_number(0, 2);
 	//3. ������������� ���, ������������� ��� ������ �������, ��������� ������� GenerateCodeForBlock;
-	generate_stmt_list_code(If->ifStmt);
-	if (If->elseStmt != NULL)
+	generate_stmt_list_code(If->body);
+	if (If->elsebody != NULL)
 	{
 		//4. ���� ������������ ����� "�����", �� ������������� �������� ������������ �������� � ��������� ��� ����� ��� ����������� ��������� �����;
 		code_number(GO_TO, 1);
 		size2 = all_code.size();
 	}
 	//5. ��������� ����� ������� �� ������ 2 �� ���������� ���;
-	if (If->elseStmt == NULL)
+	if (If->elsebody == NULL)
 	{
 		temp = make_reversed_s2(all_code.size() + 1 - size);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size + i) = temp.bytes[i];
 	}
-	else if (If->elseStmt != NULL)
+	else if (If->elsebody != NULL)
 	{
 		code_number(0, 2);
 		temp = make_reversed_s2(all_code.size() + 1 - size);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size + i) = temp.bytes[i];
 		//6. ���� ������������ ����� "�����", �� ������������� ��� ��� ��� ��������� GenerateCodeForBlock � ��������� ����� �������� �� ������ 4 �� ���������� ���.
-		generate_stmt_list_code(If->elseStmt);
+		generate_stmt_list_code(If->elsebody);
 		temp = make_reversed_s2(all_code.size() + 1 - size2);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size2 + i) = temp.bytes[i];
 	}
-}
+
 	//�������� elseif � else
 	/*if(If->elsifList!=NULL)
 	{
@@ -873,22 +897,22 @@ void generate_if_code(NIf * If)
 		for (int i = 0; i < 2; i++)
 			all_code.at(size + i) = changer.bytes[i];
 			*/
-	}
+}
 
 void generate_elsif_list_code(NIfList *list)
 {
-	/*
+
 	if(list!=NULL)
 		generate_elsif_code(list->first);
-		*/
+
 }
 
 void generate_elsif_code(NIf*elsif)
 {
-	/*
+
 	if(elsif!=NULL)
 	{
-		generate_expr_code(elsif->elsifExpr);
+		generate_expr_code(elsif->condition);
 		code_number(IFEQ, 1);
 		int size = all_code.size();
 		code_number(0, 2);
@@ -898,7 +922,7 @@ void generate_elsif_code(NIf*elsif)
 			all_code.at(size + i) = temp.bytes[i];
 		generate_elsif_code(elsif->next);
 	}
-	*/
+
 }
 void generate_stmt_list_code(NStmtList *list)
 {
@@ -991,6 +1015,9 @@ void generate_stmt_code(NStmt*stmt)
 			break;
 		}
 		*/
+	case STMT_ASSIGN:
+ 	generate_expr_assign(stmt->expr);
+		break;
 	case STMT_EXPR:
 		{
 			generate_expr_list_code(stmt->expr->idlist);
@@ -1084,7 +1111,7 @@ void generate_varlist_assign_code(NExprList * assign)
 
 void generate_while_code(NWhile * While)
 {
-	/*
+
 	int size;	//����� ������������ ��������
 	int size2;
 	int startCondition;
@@ -1125,23 +1152,22 @@ void generate_while_code(NWhile * While)
 		for (int i = 0; i < 2; i++)
 			all_code.push_back(temp.bytes[i]);
 	}
-*/
+
 }
 void generate_for_code(NFor *For)
 {
-	/*
-	loopVarName = (char*)malloc(sizeof(char) * strlen(For->condition->first->name)+1);
-	loopVarName = For->condition->first->name;
+
+	loopVarName = (char*)malloc(sizeof(char) * strlen(For->name->name)+1);
+	loopVarName = For->name->name;
 	loopVarNames.push_back(loopVarName);
 	loopCounter++;
 	int size;	//����� ������������ ��������
 	int size2;
 	int startCondition;
 	union s2 temp;
-	if (For->inReverse == false)
-	{
+
 		//������ � ���������� ����� ����� �������
-		generate_expr_code(For->begin);
+		generate_expr_code(For->start->left );
 		code_number(ISTORE, 1);
 		code_number(200 + loopCounter, 1);
 		// ������������� ��� ��� �������� ������������ �������� � ��������� �� ����� ��� ���������� ����� �������� � ����������;
@@ -1150,7 +1176,7 @@ void generate_for_code(NFor *For)
 		size = all_code.size();
 
 		//������������� ��� ���� �����, ��������� GenerateCodeForBlock;
-		generate_stmt_list_code(For->body);
+		generate_stmt_list_code(For->body );
 		code_number(ILOAD, 1);
 		code_number(200 + loopCounter, 1);
 		code_number(ICONST_1, 1);
@@ -1164,7 +1190,7 @@ void generate_for_code(NFor *For)
 
 		code_number(ILOAD, 1);
 		code_number(200 + loopCounter, 1);
-		generate_expr_code(For->end);
+		generate_expr_code(For->start->right);
 		code_number(IF_ICMPLE, 1);
 		code_number(7, 2);
 		code_number(ICONST_0, 1);
@@ -1184,52 +1210,8 @@ void generate_for_code(NFor *For)
 		temp = make_reversed_s2(size + 1 - all_code.size());
 		for (int i = 0; i < 2; i++)
 			all_code.push_back(temp.bytes[i]);
-	}
-	else
-	{
-		//������ � ���������� ����� ������ �������
-		generate_expr_code(For->end);
-		code_number(ISTORE, 1);
-		code_number(200 + loopCounter, 1);
-		// ������������� ��� ��� �������� ������������ �������� � ��������� �� ����� ��� ���������� ����� �������� � ����������;
-		code_number(GO_TO, 1);
-		code_number(0, 2);
-		size = all_code.size();
 
-		//������������� ��� ���� �����, ��������� GenerateCodeForBlock;
-		generate_stmt_list_code(For->body);
-		code_number(ILOAD, 1);
-		code_number(200 + loopCounter, 1);
-		code_number(ICONST_1, 1);
-		code_number(ISUB, 1);
-		code_number(ISTORE, 1);
-		code_number(200 + loopCounter, 1);
 
-		size2 = all_code.size();
-
-		//3. ������������� ��� ���������� ��������� ���������
-
-		code_number(ILOAD, 1);
-		code_number(200 + loopCounter, 1);
-		generate_expr_code(For->begin);
-		code_number(IF_ICMPGE, 1);
-		code_number(7, 2);
-		code_number(ICONST_0, 1);
-		code_number(GO_TO, 1);
-		code_number(4, 2);
-		code_number(ICONST_1, 1);
-
-		//-----��������� ������� � ������ ���, ����� �� �������� �� ������ ���������� ���������;
-		temp = make_reversed_s2(size2 - size + 3);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size - 2 + i) = temp.bytes[i];
-
-		//4. ������������� ��� �������� ifne ��� �������� � ������ ���� �����.
-		code_number(IFNE, 1);
-		temp = make_reversed_s2(size + 1 - all_code.size());
-		for (int i = 0; i < 2; i++)
-			all_code.push_back(temp.bytes[i]);
-	}
 	loopVarName = NULL;
 	if (loopVarNames.size()>0)
 	{
@@ -1238,7 +1220,7 @@ void generate_for_code(NFor *For)
 	}
 	loopVarNames.erase(loopVarNames.begin()+loopVarNames.size()-1);
 	loopCounter--;
-	*/
+
 }
 
 

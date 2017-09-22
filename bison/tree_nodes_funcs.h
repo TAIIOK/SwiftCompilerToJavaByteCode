@@ -917,11 +917,12 @@ struct NFor* create_for(struct NExpr* operand, struct NExpr* start, struct NStmt
     return result;
 }
 
-struct NWhile* create_while(struct NExpr* condition, struct NStmtList* body)
+struct NWhile* create_while(struct NExpr* condition, struct NStmtList* body,bool doWhile)
 {
     struct NWhile* result = (NWhile*)malloc(sizeof(NWhile));
     result->condition = condition;
     result->body = body;
+    result->doWhile = doWhile;
     return result;
 }
 struct NStmt* create_stmt_switch(struct NSwitch* switch_tree)
