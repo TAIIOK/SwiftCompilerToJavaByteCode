@@ -33,6 +33,7 @@ void code_string(int number);
 void code_methodref(int first , int second);
 void code_name_and_type(int first , int second);
 void code_float_number(float number, int size);
+struct NExpr* is_in_local_vars(char*name);
 
 std::vector<char> all_code;
 char* loopVarName;
@@ -141,18 +142,6 @@ void code_method_table()
 		code_number(number, 2);
 		//1000 ���. ����������
 		code_method_class(code_of_methods[i], 1000);
-	}
-	*/
-}
-
-void code_to_file(std::vector<char> & byte_code)
-{/*
-	char* arr;
-	std::ofstream classFile ("byteCode.class", std::ios::binary|std::ios::out);
-
-	if (byte_code.size() != 0)
-	{
-		file_of_class.write(&byte_code[0], byte_code.size());
 	}
 	*/
 }
@@ -725,21 +714,21 @@ void generate_expr_list_code(NExprList *list)
 
 void generate_varlist_code(NExprList*list)
 {
-	/*
+
 	if(list!=NULL)
 	{
 		generate_var_code(list->first);
 	}
-	*/
+
 }
 
 void generate_var_code(NExpr*var)
 {
-	/*
-	if (var->value != NULL)
+
+	if (var != NULL)
 	{
-		generate_expr_code(var->value);
-		LocalElement * local = is_in_local_vars(var->var_name);
+		generate_expr_code(var);
+		NExpr * local = is_in_local_vars(var->name);
 		if(local != NULL)
 		{
 			code_number(ASTORE, 1);
@@ -750,7 +739,7 @@ void generate_var_code(NExpr*var)
 	{
 		generate_var_code(var->next);
 	}
-	*/
+
 }
 
 struct NExpr* is_in_local_vars(char*name)
@@ -1336,7 +1325,7 @@ void generate_class_file()
 	strcpy(file_name,"Main_Class");
 	strcat(file_name, ".class");
 
-	file_of_class = fopen("Main_Class.class","rb+wb");
+	file_of_class = fopen("Main_Class.class","wb");
 
 	//����������� ��������� �����
 	number = 0xCAFEBABE;
