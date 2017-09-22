@@ -24,10 +24,22 @@ void generate_while_code(NWhile * While);
 void write_byte_code(std::vector<char> & code);
 void generate_name_list_code(NExprList*list);
 void generate_name_code(NExpr*name);
+void code_number(unsigned long int number, int size);
+void code_utf8(char* bytes);
+void code_integer(int number);
+void code_float(float number);
+void code_class(int number);
+void code_string(int number);
+void code_methodref(int first , int second);
+void code_name_and_type(int first , int second);
+void code_float_number(float number, int size);
+
 std::vector<char> all_code;
 char* loopVarName;
 std::vector<char*> loopVarNames;
+std::vector<char> empty_code;
 
+FILE* file_of_class;
 
 union u4
 {
@@ -57,57 +69,56 @@ union s2
 
 void code_const_table()
 {
-	/*
+
 	int i;
-	for(i=0;i<table_of_const.size();i++)
-	{
-		switch(table_of_const[i]->type)
-		{
-		case CONST_UTF8:
-			{
-				code_number(1,1);
-				code_utf8(table_of_const[i]);
-				break;
-			}
-		case CONST_INT:
-			{
-				code_number(3,1);
-				code_integer(table_of_const[i]);
-				break;
-			}
-		case CONST_FLOAT:
-			{
-				code_number(4,1);
-				code_float(table_of_const[i]);
-				break;
-			}
-		case CONST_CLASS:
-			{
-				code_number(7,1);
-				code_class(table_of_const[i]);
-				break;
-			}
-		case CONST_STRING:
-			{
-				code_number(8,1);
-				code_string(table_of_const[i]);
-				break;
-			}
-		case CONST_METHODREF:
-			{
-				code_number(10,1);
-				code_methodref(table_of_const[i]);
-				break;
-			}
-		case CONST_NAMETYPE:
-			{
-				code_number(12,1);
-				code_name_and_type(table_of_const[i]);
-				break;
-			}
-		}
+	for (auto c : table) {
+					if(c.type != CONST_NULL) {
+
+					}
+					switch (c.type) {
+					case CONST_UTF8:
+					code_number(1,1);
+					code_utf8(c.value.utf8);
+					break;
+					case CONST_INT:
+					code_number(3,1);
+					code_integer(c.value.val_int);
+					break;
+					case CONST_FLOAT:
+					code_number(4,1);
+					code_float(c.value.val_float);
+					break;
+					case CONST_DOUBLE:
+					code_number(4,1);
+					code_float(c.value.val_double);
+					break;
+					case CONST_CLASS:
+					code_number(7,1);
+					code_class(c.value.val_int);
+					break;
+					case CONST_STRING:
+					code_number(8,1);
+					code_string(c.value.args.arg1);
+					break;
+					case CONST_NULL:      break;
+					case CONST_FIELDREF:/*
+					code_number(9,1);
+					code_fieldref(c.value.args.arg1, c.value.args.arg2);
+					*/
+					 break;
+					case CONST_METHODREF:
+					code_number(10,1);
+					code_methodref(c.value.args.arg1, c.value.args.arg2);
+					break;
+					case CONST_NAMETYPE:
+					code_number(12,1);
+					code_name_and_type(c.value.args.arg1, c.value.args.arg2);
+					break;
+
+					default:              fprintf(output,"%s","==WTF?==\n"); break;
+					}
 	}
-	*/
+
 }
 
 void code_method_table()
@@ -177,90 +188,55 @@ void code_class_table()
 
 }
 
-void code_methodref(SemanticalElement* element)
+void code_methodref(int first , int second)
 {
-	/*
-	int number;
-	number = element->first->id;
-	code_number(number, 2);
-	number = element->second->id;
-	code_number(number, 2);
-	*/
+	code_number(first, 2);
+	code_number(second, 2);
 }
 
-void code_float(SemanticalElement* element)
+void code_float(float number)
 {
-	/*
-	float number;
-	number = element->const_float;
 	code_float_number(number, 4);
-	*/
 }
 
-void code_fieldref(SemanticalElement* element)
+void code_fieldref(int first , int second)
 {
-	/*
-	int number;
-	number = element->first->id;
-	code_number(number, 2);
-	number = element->second->id;
-	code_number(number, 2);
-	*/
+	code_number(first, 2);
+	code_number(second, 2);
 }
 
-void code_class(SemanticalElement* element)
+void code_class(int number)
 {
-	/*
-	int number;
-	number = element->first->id;
 	code_number(number, 2);
-	*/
 }
 
-void code_name_and_type(SemanticalElement* element)
+void code_name_and_type(int first , int second)
 {
-	/*
-	int number;
-	number = element->first->id;
-	code_number(number, 2);
-	number = element->second->id;
-	code_number(number, 2);
-	*/
+	code_number(first, 2);
+	code_number(second, 2);
 }
 
-void code_string(SemanticalElement* element)
+void code_string(int number)
 {
-	/*
-	int number;
-	number = element->first->id;
 	code_number(number, 2);
-	*/
 }
 
 
-void code_integer(SemanticalElement* element)
+void code_integer(int number)
 {
-	/*
-	int number;
-	number = element->const_int;
 	code_number(number, 4);
-	*/
 }
 
-void code_utf8(SemanticalElement* element)
+void code_utf8(char* bytes)
 {
-	/*
-	int number;
-	char* bytes = (char*) malloc(element->str.length());
-	number = element->str.length();
+	int number = strlen(bytes);
 	code_number(number, 2);
-	strcpy(bytes, element->str.c_str());
-	for (int i = 0; i < element->str.length(); i++)
+	for (int i = 0; i < number; i++)
 	{
 		number = bytes[i];
 		code_number(number, 1);
 	}
-	*/
+
 }
 
 
@@ -352,7 +328,7 @@ void code_number(unsigned long int number, int size)
 
 void code_float_number(float number, int size)
 {
-	/*
+
 	int i;
 	if (size == 1)
 	{
@@ -374,29 +350,32 @@ void code_float_number(float number, int size)
 			all_code.insert(all_code.end(), temp.bytes[i]);
 		}
 	}
-	*/
+
 }
 
 void write_code_to_class_file(unsigned long int number, int size)
 {
-/*
+
 	int i;
 	if (size == 1)
 	{
 		char temp = (char)number;
-		file_of_class.write(&temp, 4);
+		fwrite(&temp , sizeof(char), sizeof(temp), file_of_class);
+		//file_of_class.write(&temp, 4);
 	}
 	else if (size == 2)
 	{
 		union u2 temp = make_reversed_u2(number);
-		file_of_class.write(&temp.bytes[0], 2);
+		fwrite(&temp.bytes[0] , sizeof(union u2), sizeof(&temp.bytes[0]), file_of_class);
+		//file_of_class.write(&temp.bytes[0], 2);
 	}
 	else if (size == 4)
 	{
 		union u4 temp = make_reversed_u4(number);
-		file_of_class.write(&temp.bytes[0], 4);
+		fwrite(&temp.bytes[0] , sizeof(union u4), sizeof(&temp.bytes[0]), file_of_class);
+	//	file_of_class.write(&temp.bytes[0], 4);
 	}
-	*/
+
 }
 
 void generate_expr_code(NExpr *expr)
@@ -652,22 +631,6 @@ void generate_expr_code(NExpr *expr)
 			code_number(ICONST_1, 1);
 			break;
 		}
-		/*
-	case xor:
-		{
-			generate_expr_code(expr->left);
-			generate_expr_code(expr->right);
-			code_number(IXOR, 1);
-			code_number(ICONST_1, 1);
-			code_number(IF_ICMPEQ, 1);
-			code_number(7, 2);
-			code_number(ICONST_0, 1);
-			code_number(GO_TO, 1);
-			code_number(4, 2);
-			code_number(ICONST_1, 1);
-			break;
-		}
-		*/
 	case EXPR_AND:
 		{
 			generate_expr_code(expr->left);
@@ -1305,7 +1268,7 @@ void generate_arr_var_code(NExpr * var)
 	}
 	*/
 }
-std::vector<char> empty_code;
+
 void generate_func_proc_code(NFunc *func)
 {
 	/*
@@ -1372,7 +1335,7 @@ void generate_class_file()
 	unsigned long int number;
 	strcpy(file_name,"Main_Class");
 	strcat(file_name, ".class");
-	FILE* file_of_class;
+
 	file_of_class = fopen("Main_Class.class","rb+wb");
 
 	//����������� ��������� �����
@@ -1411,13 +1374,12 @@ void generate_class_file()
 
 void write_byte_code(std::vector<char> & code)
 {
-	FILE* output;
-	output = fopen("Main_Class.class","rb+wb");
 
 	if (code.size() != 0)
 	{
-		fwrite(&code[0] , sizeof(char), sizeof(code), output);
+		fwrite(&code[0] , sizeof(char), sizeof(code), file_of_class);
 	}
+
 }
 
 #endif

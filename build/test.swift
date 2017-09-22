@@ -9,6 +9,7 @@ a[2] = 4
 
 var n = a.count()
 
+var s = "String"
 
 var b = 1 - (1 + 2)
 
