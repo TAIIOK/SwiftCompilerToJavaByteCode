@@ -119,7 +119,7 @@ void code_const_table()
 					code_name_and_type(c.value.args.arg1, c.value.args.arg2);
 					break;
 
-					default:              fprintf(output,"%s","==WTF?==\n"); break;
+					default:   break;
 					}
 	}
 
@@ -151,9 +151,9 @@ void code_method_table()
 
 void code_method_class(std::vector<char> & byte_code, int index)
 {
-	/*
+
 	unsigned long int number;
-	number = table_of_const.at(table_of_const.size()-1)->id;
+	number = table.size()-1;
 	code_number(number, 2);
 	number = 12 + byte_code.size();
 	code_number(number, 4);
@@ -170,7 +170,7 @@ void code_method_class(std::vector<char> & byte_code, int index)
 	number = 0;
 	code_number(number, 2);
 	code_number(number, 2);
-	*/
+
 }
 
 
@@ -926,7 +926,9 @@ void generate_elsif_code(NIf*elsif)
 }
 void generate_stmt_list_code(NStmtList *list)
 {
+	if(list->first != NULL){
 	generate_stmt_code(list->first);
+	}
 }
 
 void generate_stmt_code(NStmt*stmt)
@@ -1226,18 +1228,18 @@ void generate_for_code(NFor *For)
 
 void generate_arr_var_code(NExpr * var)
 {
-	/*
+
 	if (var!= NULL)
 	{
-		generate_expr_list_code(var->expression);
-		LocalElement * local = is_in_local_vars(var->arr_name);
+		generate_expr_list_code(var->idlist);
+		NExpr * local = is_in_local_vars(var->name);
 		if(local != NULL)
 		{
 			code_number(ASTORE, 1);
 			code_number(local->id, 1);
 		}
 	}
-	*/
+
 }
 
 void generate_func_proc_code(NFunc *func)
@@ -1321,10 +1323,10 @@ void generate_class_file()
 	code_const_table();
 	number = 0x01;
 	code_number(number, 2);
-	number = 2;
+	number = 2; //parent_class->classname->id;
 	code_number(number, 2);
 	//�������� Object
-	number = 4;
+	number = 4; // parent_class->parentname->id;
 	code_number(number, 2);
 	//����������
 	number = 0;
@@ -1333,7 +1335,7 @@ void generate_class_file()
 	number = 0;
 	code_number(number, 2);
 	//������ ������
-	//number = parent_class->methods->size();
+	number = 0;  // parent_class->methods->size();
 	code_number(number, 2);
 	code_method_table();
 	// �������� � ����
