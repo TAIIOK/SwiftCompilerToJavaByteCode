@@ -39,7 +39,7 @@
    37; NAMETYPE;  35 36
    38; FIELDREF;  3 37
    39;      INT;  2
-   40;     UTF8;  'd'
+   40;     UTF8;  'a'
    41;     UTF8;  'I '
    42; NAMETYPE;  40 41
    43; FIELDREF;  3 42

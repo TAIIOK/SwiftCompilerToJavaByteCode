@@ -562,8 +562,10 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                                 }
                                                         }
                                                         printf("Varuble found current->var->vartype->type %d\n",currentf->var->vartype->type);
+
                                                         exist = true;
                                                         char * str = (char*)malloc(sizeof(char)*33);;
+
                                                         strcat(str,return_varuble_type(currentf->var));
 
                                                         STConst type_var;
@@ -677,7 +679,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                           printf("SYKKKAAA %s ",update_varuble(globalroot,current->expr));
 
                                           switch (update_varuble(globalroot,current->expr)[0]) {
-                                          case 'I':    var->vartype->type = INTTy;    break;
+                                          case 'I':    var->vartype->type = INTTy;     break;
                                           case 'F':     var->vartype->type = FLOATTy;    break;
                                           case 'D':    var->vartype->type = DOUBLETy;    break;
                                           case 'B':     var->vartype->type = BOOLTy;    break;
@@ -685,9 +687,6 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                           case 'A':     var->vartype->type = ARRAYTy;     break;
                                           default:          printf("==WTF?== "); break;
                                           }
-
-                                        //  var->vartype = current->expr->vartype;
-                                        //  current->var->vartype = current->expr->vartype;
                                         }
                                         strcat(str,return_varuble_type(current->var));
                                         if (st_constant_index(CONST_UTF8, (void *)(current->var->idlist->first->name)) == -1) {

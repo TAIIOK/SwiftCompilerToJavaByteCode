@@ -1,6 +1,6 @@
+var s = 2
 
-var s = 2 + 2
+var a = s + 2
 
-var d = s
+a = s
 
-d = s

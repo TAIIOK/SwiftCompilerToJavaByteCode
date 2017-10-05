@@ -794,19 +794,24 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
             list<NExpr * > temp = create_stack(expr);
               if(temp.size() > 0)
               {
-              varType->type = get_var_type(temp.front());
+                for (auto c : temp) {
+                  varType->type = get_var_type(c);
+                  if(varType->type != VOIDTy)
+                  {
+                    break;
+                  }
+                }
               }
 
           }
 
         }
-      if(var->vartype == NULL && var->varconstant != NULL)
+      if((var->vartype == NULL || var->vartype->type == VOIDTy) && var->varconstant != NULL)
       {
         result->var->vartype = varType;
       }
 
       }
-      printf("3");
         result->type = STMT_ASSIGN;
 
     return result;
