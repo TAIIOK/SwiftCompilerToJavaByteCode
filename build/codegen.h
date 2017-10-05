@@ -35,7 +35,7 @@ void code_methodref(int first , int second);
 void code_name_and_type(int first , int second);
 void code_float_number(float number, int size);
 struct NExpr* is_in_local_vars(char*name);
-void generate_expr_assign(NExpr *expr);
+void generate_expr_assign(NStmt *expr);
 void generate_elsif_code(NIf*elsif);
 
 std::vector<char> all_code;
@@ -43,7 +43,9 @@ char* loopVarName;
 std::vector<char*> loopVarNames;
 std::vector<char> empty_code;
 int loopCounter = -1;
-FILE* file_of_class;
+//FILE* file_of_class;
+
+std::ofstream file_of_class ("Main.class", std::ios::out | std::ios::binary);
 
 union u4
 {
@@ -73,7 +75,7 @@ union s2
 
 void code_const_table()
 {
-
+	printf("ALL CODE SIZE %d\n",all_code.size());
 	int i;
 	for (auto c : table) {
 					if(c.type != CONST_NULL) {
@@ -122,12 +124,37 @@ void code_const_table()
 					default:   break;
 					}
 	}
-
+	printf("%d\n",all_code.size());
 }
 
 void code_method_table()
 {
-	/*
+
+code_number(0x0001 | 0x0008, 2);
+
+code_number(4, 2);
+
+code_number(5, 2);
+
+code_number(1, 2);
+
+code_number(1, 2);
+
+ //writeAttrLength(file);
+
+code_number(2048, 2);
+
+
+//writeLocalVarTableSize(file);
+//writeByteCodeLength(file);
+//writeByteCode(file);
+
+code_number(0, 2);
+
+code_number(0, 2);
+
+
+/*
 	for (int i = 0; i < parent_class->methods->size(); i++)
 	{
 		unsigned long int number;
@@ -146,7 +173,7 @@ void code_method_table()
 		//1000 ���. ����������
 		code_method_class(code_of_methods[i], 1000);
 	}
-	*/
+*/
 }
 
 void code_method_class(std::vector<char> & byte_code, int index)
@@ -352,30 +379,31 @@ void write_code_to_class_file(unsigned long int number, int size)
 	if (size == 1)
 	{
 		char temp = (char)number;
-		fwrite(&temp , sizeof(char), sizeof(temp), file_of_class);
-		//file_of_class.write(&temp, 4);
+		//fwrite(&temp , sizeof(char), sizeof(temp), file_of_class);
+		file_of_class.write(&temp, 4);
 	}
 	else if (size == 2)
 	{
 		union u2 temp = make_reversed_u2(number);
-		fwrite(&temp.bytes[0] , sizeof(union u2), sizeof(&temp.bytes[0]), file_of_class);
-		//file_of_class.write(&temp.bytes[0], 2);
+		//fwrite(&temp.bytes[0] , sizeof(union u2), sizeof(&temp.bytes[0]), file_of_class);
+		file_of_class.write(&temp.bytes[0], 2);
 	}
 	else if (size == 4)
 	{
 		union u4 temp = make_reversed_u4(number);
-		fwrite(&temp.bytes[0] , sizeof(union u4), sizeof(&temp.bytes[0]), file_of_class);
-	//	file_of_class.write(&temp.bytes[0], 4);
+	//	fwrite(&temp.bytes[0] , sizeof(union u4), sizeof(&temp.bytes[0]), file_of_class);
+		file_of_class.write(&temp.bytes[0], 4);
 	}
 
 }
 
-void generate_expr_assign(NExpr *expr)
+void generate_expr_assign(NStmt *expr)
 {
 			std::vector<NExpr> *vars;
 			NExpr * el;
 
-				generate_expr_code(expr->right);
+				generate_expr_code(expr->expr);
+/*
 				if (expr->left->idlist->first->vartype->type ==INTTy || expr->left->idlist->first->vartype->type == BOOLTy  || expr->left->idlist->first->vartype->type == CHARACTERTy)
 				{
 					code_number(ISTORE, 1);
@@ -390,11 +418,13 @@ void generate_expr_assign(NExpr *expr)
 				}
 				el = is_in_local_vars(expr->left->idlist->first->name);
 				code_number(el->id, 1);
+*/
 }
 void generate_expr_code(NExpr *expr)
 {
  bool arrInitializing = false;
 
+printf("%d",expr->type);
 	switch (expr->type)
 	{
 	case EXPR_ID_LIST:
@@ -524,9 +554,9 @@ void generate_expr_code(NExpr *expr)
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->vartype->type == INTTy)
+			if(expr->type == INTTy)
 				code_number(IADD, 1);
-			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
+			if (expr->type == DOUBLETy || expr->type == FLOATTy)
 				code_number(FADD, 1);
 			break;
 		}
@@ -1018,7 +1048,10 @@ void generate_stmt_code(NStmt*stmt)
 		}
 		*/
 	case STMT_ASSIGN:
- 	generate_expr_assign(stmt->expr);
+
+	generate_expr_assign(stmt);
+
+
 		break;
 	case STMT_EXPR:
 		{
@@ -1306,27 +1339,28 @@ void generate_class_file()
 	all_code.clear();
 	char file_name [20];
 	unsigned long int number;
-	strcpy(file_name,"Main_Class");
+	strcpy(file_name,"Main");
 	strcat(file_name, ".class");
 
-	file_of_class = fopen("Main_Class.class","wb");
-
+	//file_of_class = fopen("Main.class","wb");
 	//����������� ��������� �����
 	number = 0xCAFEBABE;
 	code_number(number, 4);
-	number = 0;
+	number = 0x0000;
 	code_number(number, 2);
-	number = 52;
+	number = 0x0030;
 	code_number(number, 2);
-	number = table.size() + 1;
+	number = table.size();
 	code_number(number, 2);
+
 	code_const_table();
-	number = 0x01;
-	code_number(number, 2);
-	number = 2; //parent_class->classname->id;
+
+	number = 0x0001;
+	code_number(0x0001 | 0x0002, 2);
+	number = 3; //parent_class->classname->id;
 	code_number(number, 2);
 	//�������� Object
-	number = 4; // parent_class->parentname->id;
+	number = 8; // parent_class->parentname->id;
 	code_number(number, 2);
 	//����������
 	number = 0;
@@ -1335,14 +1369,16 @@ void generate_class_file()
 	number = 0;
 	code_number(number, 2);
 	//������ ������
-	number = 0;  // parent_class->methods->size();
+	number = 1;  // parent_class->methods->size();
 	code_number(number, 2);
+
 	code_method_table();
+
 	// �������� � ����
 	number = 0;
 	code_number(number, 2);
 	write_byte_code(all_code);
-	fclose(file_of_class);
+	file_of_class.close();
 }
 
 void write_byte_code(std::vector<char> & code)
@@ -1350,7 +1386,9 @@ void write_byte_code(std::vector<char> & code)
 
 	if (code.size() != 0)
 	{
-		fwrite(&code[0] , sizeof(char), sizeof(code), file_of_class);
+		file_of_class.write(&code[0], code.size());
+		//fwrite(&code[0] , sizeof(vector<char>::value_type), sizeof(code.size()), file_of_class);
+
 	}
 
 }

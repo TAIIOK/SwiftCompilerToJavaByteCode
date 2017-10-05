@@ -121,7 +121,213 @@ list<NExpr> Main_varubles;
 NStmtList *globalroot;
 NStmtList *rootwithoutfunc;
 
+void buildBaseTable()
+{
+    STConst null;
+    null.type = CONST_NULL;
+    table.push_back(null);
 
+    STConst code;
+    code.type = CONST_UTF8;
+    code.value.utf8  = "Code";
+    table.push_back(code);
+
+    STConst main;
+    main.type = CONST_UTF8;
+    main.value.utf8  = "Main";
+    table.push_back(main);
+
+    STConst classs;
+    classs.type = CONST_CLASS;
+    classs.value.val_int  = 2;
+    table.push_back(classs);
+
+    STConst mainmethod;
+    mainmethod.type = CONST_UTF8;
+    mainmethod.value.utf8 = "main";
+    table.push_back(mainmethod);
+
+    STConst maindecl;
+    maindecl.type = CONST_UTF8;
+    maindecl.value.utf8 = "([Ljava/lang/String;)V";
+    table.push_back(maindecl);
+
+    STConst kostyl;
+    kostyl.type = CONST_UTF8;
+    kostyl.value.utf8 = "Ljava/lang/String;";
+    table.push_back(kostyl);
+
+    STConst superclassname;
+    superclassname.type = CONST_UTF8;
+    superclassname.value.utf8 = "Ljava/lang/Object;";
+    table.push_back(superclassname);
+
+    STConst superclass;
+    superclass.type = CONST_CLASS;
+    superclass.value.val_int  = 7;
+    table.push_back(superclass);
+
+    //Class Print 9
+
+
+    STConst RTLPrint;
+    RTLPrint.type = CONST_CLASS;
+    RTLPrint.value.val_int  = 34;
+    table.push_back(RTLPrint);
+
+
+
+    //Print int block 10 11 12 13
+    STConst printIntName;
+    printIntName.type = CONST_UTF8;
+    printIntName.value.utf8 = "printInt";
+    table.push_back(printIntName);
+
+    STConst printIntDesc;
+    printIntDesc.type = CONST_UTF8;
+    printIntDesc.value.utf8 = "(I)V";
+    table.push_back(printIntDesc);
+
+    STConst printIntNT;
+    printIntNT.type = CONST_NAMETYPE;
+    printIntNT.value.args.arg1 = 10;
+    printIntNT.value.args.arg2 = 11;
+    table.push_back(printIntNT);
+
+    STConst printIntMethod;
+    printIntMethod.type = CONST_METHODREF;
+    printIntMethod.value.args.arg1 = 9;
+    printIntMethod.value.args.arg2 = 12;
+    table.push_back(printIntMethod);
+
+
+    //Print float block 14 15 16 17
+    STConst printFloatName;
+    printFloatName.type = CONST_UTF8;
+    printFloatName.value.utf8 = "printFloat";
+    table.push_back(printFloatName);
+
+    STConst printFloatDesc;
+    printFloatDesc.type = CONST_UTF8;
+    printFloatDesc.value.utf8 = "(F)V";
+    table.push_back(printFloatDesc);
+
+    STConst printFloatNT;
+    printFloatNT.type = CONST_NAMETYPE;
+    printFloatNT.value.args.arg1 = 14;
+    printFloatNT.value.args.arg2 = 15;
+    table.push_back(printFloatNT);
+
+    STConst printFloatMethod;
+    printFloatMethod.type = CONST_METHODREF;
+    printFloatMethod.value.args.arg1 = 9;
+    printFloatMethod.value.args.arg2 = 16;
+    table.push_back(printFloatMethod);
+
+
+    //Print char block 18 19 20 21
+    STConst printCharName;
+    printCharName.type = CONST_UTF8;
+    printCharName.value.utf8 = "printChar";
+    table.push_back(printCharName);
+
+    STConst printCharDesc;
+    printCharDesc.type = CONST_UTF8;
+    printCharDesc.value.utf8 = "(C)V";
+    table.push_back(printCharDesc);
+
+    STConst printCharNT;
+    printCharNT.type = CONST_NAMETYPE;
+    printCharNT.value.args.arg1 = 18;
+    printCharNT.value.args.arg2 = 19;
+    table.push_back(printCharNT);
+
+    STConst printCharMethod;
+    printCharMethod.type = CONST_METHODREF;
+    printCharMethod.value.args.arg1 = 9;
+    printCharMethod.value.args.arg2 = 20;
+    table.push_back(printCharMethod);
+
+
+    //Print bool block 22 23 24 25
+    STConst printBoolName;
+    printBoolName.type = CONST_UTF8;
+    printBoolName.value.utf8 = "printBool";
+    table.push_back(printBoolName);
+
+    STConst printBoolDesc;
+    printBoolDesc.type = CONST_UTF8;
+    printBoolDesc.value.utf8 = "(B)V";
+    table.push_back(printBoolDesc);
+
+    STConst printBoolNT;
+    printBoolNT.type = CONST_NAMETYPE;
+    printBoolNT.value.args.arg1 = 22;
+    printBoolNT.value.args.arg2 = 23;
+    table.push_back(printBoolNT);
+
+    STConst printBoolMethod;
+    printBoolMethod.type = CONST_METHODREF;
+    printBoolMethod.value.args.arg1 = 9;
+    printBoolMethod.value.args.arg2 = 24;
+    table.push_back(printBoolMethod);
+
+    //Print string block 26 27 28 29
+    STConst printStringName;
+    printStringName.type = CONST_UTF8;
+    printStringName.value.utf8 = "printString";
+    table.push_back(printStringName);
+
+    STConst printStringDesc;
+    printStringDesc.type = CONST_UTF8;
+    printStringDesc.value.utf8 = "(Ljava/lang/String;)V";
+    table.push_back(printStringDesc);
+
+    STConst printStringNT;
+    printStringNT.type = CONST_NAMETYPE;
+    printStringNT.value.args.arg1 = 26;
+    printStringNT.value.args.arg2 = 27;
+    table.push_back(printStringNT);
+
+    STConst printStringMethod;
+    printStringMethod.type = CONST_METHODREF;
+    printStringMethod.value.args.arg1 = 9;
+    printStringMethod.value.args.arg2 = 28;
+    table.push_back(printStringMethod);
+
+
+    //Print object block 30 31 32 33
+    STConst printObjectName;
+    printObjectName.type = CONST_UTF8;
+    printObjectName.value.utf8 = "printObject";
+    table.push_back(printObjectName);
+
+    STConst printObjectDesc;
+    printObjectDesc.type = CONST_UTF8;
+    printObjectDesc.value.utf8 = "(Ljava/lang/Object;)V";
+    table.push_back(printObjectDesc);
+
+    STConst printObjectNT;
+    printObjectNT.type = CONST_NAMETYPE;
+    printObjectNT.value.args.arg1 = 30;
+    printObjectNT.value.args.arg2 = 31;
+    table.push_back(printObjectNT);
+
+    STConst printObjectMethod;
+    printObjectMethod.type = CONST_METHODREF;
+    printObjectMethod.value.args.arg1 = 9;
+    printObjectMethod.value.args.arg2 = 32;
+    table.push_back(printObjectMethod);
+
+
+    STConst printClass;
+    printClass.type = CONST_UTF8;
+    printClass.value.utf8 = "Print";
+    table.push_back(printClass);
+
+
+
+}
 
 
 list<NExpr *> create_stack_operation(NExpr *var){
@@ -465,8 +671,25 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                         exist = true;
 
                                         char * str = (char*)malloc(sizeof(char)*33);
-                                        strcat(str,return_varuble_type(current->var));
 
+                                        if(strcmp(return_varuble_type(current->var),"V ") == 0)
+                                        {
+                                          printf("SYKKKAAA %s ",update_varuble(globalroot,current->expr));
+
+                                          switch (update_varuble(globalroot,current->expr)[0]) {
+                                          case 'I':    var->vartype->type = INTTy;    break;
+                                          case 'F':     var->vartype->type = FLOATTy;    break;
+                                          case 'D':    var->vartype->type = DOUBLETy;    break;
+                                          case 'B':     var->vartype->type = BOOLTy;    break;
+                                          case 'S':    var->vartype->type = STRINGTy;   break;
+                                          case 'A':     var->vartype->type = ARRAYTy;     break;
+                                          default:          printf("==WTF?== "); break;
+                                          }
+
+                                        //  var->vartype = current->expr->vartype;
+                                        //  current->var->vartype = current->expr->vartype;
+                                        }
+                                        strcat(str,return_varuble_type(current->var));
                                         if (st_constant_index(CONST_UTF8, (void *)(current->var->idlist->first->name)) == -1) {
                                                 STConst name;
                                                 name.next = NULL;
@@ -951,67 +1174,7 @@ void collect_functions(struct NStmtList * node){
         }
 }
 void create_header(NStmtList *root){
-        STConst null;
-        null.next = NULL;
-        null.type = CONST_NULL;
-        table.push_back(null);
-
-        STConst code;
-        code.next = NULL;
-        code.type = CONST_UTF8;
-        code.value.utf8  = "Code";
-        table.push_back(code);
-
-        STConst main;
-        main.next = NULL;
-        main.type = CONST_UTF8;
-        main.value.utf8  = "Main";
-        table.push_back(main);
-
-        STConst classs;
-        classs.next = NULL;
-        classs.type = CONST_CLASS;
-        classs.value.val_int  = 2;
-        table.push_back(classs);
-
-
-        STConst paramO;
-        paramO.next = NULL;
-        paramO.type = CONST_UTF8;
-        paramO.value.utf8  = "java/lang/Object";
-        table.push_back(paramO);
-
-        STConst classss;
-        classss.next = NULL;
-        classss.type = CONST_CLASS;
-        classss.value.val_int  = 4;
-        table.push_back(classss);
-
-        STConst minit;
-        minit.next = NULL;
-        minit.type = CONST_UTF8;
-        minit.value.utf8  = "Main";
-        table.push_back(minit);
-
-        STConst param;
-        param.next = NULL;
-        param.type = CONST_UTF8;
-        param.value.utf8  = "()V";
-        table.push_back(param);
-
-        STConst name_type;
-        name_type.next = NULL;
-        name_type.type = CONST_NAMETYPE;
-        name_type.value.args.arg1 = table.size() - 2;
-        name_type.value.args.arg2 = table.size() - 1;
-        table.push_back(name_type);
-
-        STConst method_ref;
-        method_ref.next = NULL;
-        method_ref.type = CONST_METHODREF;
-        method_ref.value.args.arg1 = 3;
-        method_ref.value.args.arg2 = table.size() - 1;
-        table.push_back(method_ref);
+  buildBaseTable();
 
 
 }

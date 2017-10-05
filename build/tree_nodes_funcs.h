@@ -789,7 +789,7 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
 
         if(varType->type == VOIDTy)
         {
-          if(expr->type !=  EXPR_TABLE)
+          if(expr->type !=  EXPR_TABLE && expr->type !=  EXPR_ID_LIST)
           {
             list<NExpr * > temp = create_stack(expr);
               if(temp.size() > 0)
