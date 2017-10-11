@@ -655,7 +655,7 @@ struct NVarType*  get_array_type(struct NTable* value)
     resultType->type = ARRAYTy;
   return resultType;
   }
-////////////////
+
   resultType->type = get_var_type(Element->value) ;
   return resultType;
 

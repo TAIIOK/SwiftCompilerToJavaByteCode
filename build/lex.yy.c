@@ -2532,7 +2532,7 @@ int main(int argc,char* argv[])
         st_print_const_file(output);
         printLocalVars_file(output);
         fclose(output);
-    //  generate_byte_code();
+      generate_byte_code();
     }
     return 0;
 }

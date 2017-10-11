@@ -142,17 +142,16 @@ code_number(1, 2);
 
  //writeAttrLength(file);
 
-code_number(2048, 2);
+code_number(0, 4); // длинна аттрибута
 
+code_number(2048, 2); // стек
 
-//writeLocalVarTableSize(file);
-//writeByteCodeLength(file);
-//writeByteCode(file);
+code_number(0, 2); // количество локальных
+code_number(0, 2); // длинна байт кода
 
-code_number(0, 2);
-
-code_number(0, 2);
-
+//writeLocalVarTableSize(file); // количество локальных переменных
+//writeByteCodeLength(file);  // длинна байт кода
+//writeByteCode(file); // байт код
 
 /*
 	for (int i = 0; i < parent_class->methods->size(); i++)
@@ -248,11 +247,14 @@ void code_integer(int number)
 
 void code_utf8(char* bytes)
 {
-	int number = strlen(bytes);
+	int number;
+	char* inbytes = (char*)malloc(strlen(bytes));
+	number = strlen(bytes);
 	code_number(number, 2);
-	for (int i = 0; i < number; i++)
+	strcpy(inbytes, bytes);
+	for (int i = 0; i < strlen(inbytes); i++)
 	{
-		number = bytes[i];
+		number = inbytes[i];
 		code_number(number, 1);
 	}
 
@@ -564,9 +566,9 @@ printf("%d",expr->type);
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->vartype->type == INTTy)
+			if(expr->type == INTTy)
 				code_number(IMUL, 1);
-			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
+			if (expr->type == DOUBLETy || expr->type == FLOATTy)
 				code_number(FMUL, 1);
 			break;
 		}
@@ -574,9 +576,9 @@ printf("%d",expr->type);
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->vartype->type == INTTy)
+			if(expr->type == INTTy)
 				code_number(IDIV, 1);
-			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
+			if (expr->type == DOUBLETy || expr->type == FLOATTy)
 				code_number(FDIV, 1);
 			break;
 		}
@@ -584,9 +586,9 @@ printf("%d",expr->type);
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->left->vartype->type == INTTy)
+			if(expr->type == INTTy)
 				code_number(ISUB, 1);
-			if (expr->left->vartype->type == DOUBLETy || expr->left->vartype->type == FLOATTy)
+			if (expr->type == DOUBLETy || expr->type == FLOATTy)
 				code_number(FSUB, 1);
 			break;
 		}
@@ -705,7 +707,7 @@ printf("%d",expr->type);
 
 	case EXPR_UMIN:
 		{
-			if (expr->left->vartype->type == INTTy || expr->left->vartype->type == EXPR_INT)
+			if (expr->type == INTTy || expr->type == EXPR_INT)
 			{
 				code_number(BIPUSH, 1);
 				code_number(0, 1);
@@ -1330,7 +1332,7 @@ void generate_byte_code()
 //	table_of_const = constT;
 //	table_of_classes = classT;
 //	file_name = "Main.class";
-	generate_stmt_list_code(root);
+generate_stmt_list_code(root);
 	generate_class_file();
 }
 
@@ -1372,21 +1374,29 @@ void generate_class_file()
 	number = 1;  // parent_class->methods->size();
 	code_number(number, 2);
 
+
 	code_method_table();
 
+
+	write_byte_code(all_code);
 	// �������� � ����
 	number = 0;
 	code_number(number, 2);
-	write_byte_code(all_code);
+	// �������� � ����
+	number = 0;
+	code_number(number, 2);
+	// �������� � ����
+	number = 0;
+	code_number(number, 2);
 	file_of_class.close();
 }
 
 void write_byte_code(std::vector<char> & code)
 {
-
 	if (code.size() != 0)
 	{
-		file_of_class.write(&code[0], code.size());
+
+		file_of_class.write(code.begin().base(), code.size());
 		//fwrite(&code[0] , sizeof(vector<char>::value_type), sizeof(code.size()), file_of_class);
 
 	}

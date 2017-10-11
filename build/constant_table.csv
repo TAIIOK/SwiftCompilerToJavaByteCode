@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 43;
+;Constant table size = 34;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -34,13 +34,4 @@
    32; NAMETYPE;  30 31
    33;METHODREF;  9 32
    34;     UTF8;  'Print'
-   35;     UTF8;  's'
-   36;     UTF8;  'I '
-   37; NAMETYPE;  35 36
-   38; FIELDREF;  3 37
-   39;      INT;  2
-   40;     UTF8;  'a'
-   41;     UTF8;  'I '
-   42; NAMETYPE;  40 41
-   43; FIELDREF;  3 42
 Method list size = 0
