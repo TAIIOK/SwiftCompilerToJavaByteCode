@@ -142,13 +142,20 @@ code_number(1, 2);
 
  //writeAttrLength(file);
 
-code_number(0, 4); // длинна аттрибута
+code_number(13, 4); // длинна аттрибута
 
 code_number(2048, 2); // стек
 
-code_number(0, 2); // количество локальных
-code_number(0, 2); // длинна байт кода
+code_number(1, 2); // количество локальных
+code_number(1, 4); // длинна байт кода
+all_code.insert(all_code.end(),0xb1);
 
+// �������� � ����
+int number = 0;
+code_number(number, 2);
+// �������� � ����
+number = 0;
+code_number(number, 2);
 //writeLocalVarTableSize(file); // количество локальных переменных
 //writeByteCodeLength(file);  // длинна байт кода
 //writeByteCode(file); // байт код
@@ -1324,7 +1331,7 @@ void generate_return_code(NVarEnumType type)
 void generate_enum_code(NExpr * var)
 {
 	generate_var_code(var);
-	//generate_name_list_code(var->idlist);
+	generate_name_list_code(var->idlist);
 }
 
 void generate_byte_code()
@@ -1377,17 +1384,12 @@ void generate_class_file()
 
 	code_method_table();
 
+	number = 0;
+	code_number(number, 2);
 
 	write_byte_code(all_code);
-	// �������� � ����
-	number = 0;
-	code_number(number, 2);
-	// �������� � ����
-	number = 0;
-	code_number(number, 2);
-	// �������� � ����
-	number = 0;
-	code_number(number, 2);
+
+
 	file_of_class.close();
 }
 
