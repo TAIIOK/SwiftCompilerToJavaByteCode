@@ -1172,15 +1172,11 @@ void collect_functions(struct NStmtList * node){
                 current = current->next;
         }
 }
-void create_header(NStmtList *root){
-  buildBaseTable();
 
-
-}
 void create_table(NStmtList *root){
 
         table.clear();
-        create_header(root);
+        buildBaseTable();
 
         globalroot = root;
 
@@ -1361,7 +1357,7 @@ void st_stmt_func(struct NStmt * node) {
 
         print_function_param(node->func->name->last->name,node);
 
-        st_stmt_list(node->func->body);
+      //  st_stmt_list(node->func->body);
 }
 void st_stmt_if(struct NIf * node) {
         update_varuble(globalroot,node->condition->left);

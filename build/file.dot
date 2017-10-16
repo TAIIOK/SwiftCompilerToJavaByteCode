@@ -58,4 +58,14 @@ expr8[label = "sa"];
 expr7--expr8;
 expr9[label = "4"];
 assign2--expr9;
+assign3[label = "="];
+func0body--assign3;
+expr10[label = "id"];
+assign3--expr10;
+expr11[label = "sa"];
+expr10--expr11;
+expr12[label = "id"];
+assign3--expr12;
+expr13[label = "d"];
+expr12--expr13;
 }
