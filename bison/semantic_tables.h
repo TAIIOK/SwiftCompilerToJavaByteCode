@@ -470,13 +470,13 @@ void mult_declaration(NStmtList *root,NExpr *var){
 char * return_varuble_type(NExpr *var){
         char * str = (char*)malloc(sizeof(char)*33);
         switch (var->vartype->type) {
-        case INTTy:       strcat(str,"I ");    break;
-        case FLOATTy:     strcat(str,"F ");    break;
-        case DOUBLETy:    strcat(str,"D ");    break;
-        case BOOLTy:      strcat(str,"B ");    break;
-        case STRINGTy:    strcat(str,"S ");    break;
-        case VOIDTy:      strcat(str,"V ");     break;
-        case ARRAYTy:      strcat(str,"A ");     break;
+        case INTTy:       strcpy(str,"I ");    break;
+        case FLOATTy:     strcpy(str,"F ");    break;
+        case DOUBLETy:    strcpy(str,"D ");    break;
+        case BOOLTy:      strcpy(str,"B ");    break;
+        case STRINGTy:    strcpy(str,"S ");    break;
+        case VOIDTy:      strcpy(str,"V ");     break;
+        case ARRAYTy:     strcpy(str,"A ");     break;
         default:          printf("==WTF?== "); break;
         }
         return str;
@@ -566,7 +566,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                         exist = true;
                                                         char * str = (char*)malloc(sizeof(char)*33);;
 
-                                                        strcat(str,return_varuble_type(currentf->var));
+                                                        strcpy(str,return_varuble_type(currentf->var));
 
                                                         STConst type_var;
                                                         type_var.next = NULL;
@@ -688,7 +688,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                           default:          printf("==WTF?== "); break;
                                           }
                                         }
-                                        strcat(str,return_varuble_type(current->var));
+                                        strcpy(str,return_varuble_type(current->var));
                                         if (st_constant_index(CONST_UTF8, (void *)(current->var->idlist->first->name)) == -1) {
                                                 STConst name;
                                                 name.next = NULL;
@@ -912,12 +912,12 @@ char * get_function_type(struct NFunc * f){
         char * str = (char*)malloc(sizeof(char)*33);;
 
         switch (f->vartype->type) {
-        case INTTy:       strcat(str,"I ");    break;
-        case FLOATTy:     strcat(str,"F ");    break;
-        case DOUBLETy:    strcat(str,"D ");    break;
-        case BOOLTy:      strcat(str,"B ");    break;
-        case STRINGTy:    strcat(str,"S ");    break;
-        case VOIDTy:      strcat(str,"V ");     break;
+        case INTTy:       strcpy(str,"I ");    break;
+        case FLOATTy:     strcpy(str,"F ");    break;
+        case DOUBLETy:    strcpy(str,"D ");    break;
+        case BOOLTy:      strcpy(str,"B ");    break;
+        case STRINGTy:    strcpy(str,"S ");    break;
+        case VOIDTy:      strcpy(str,"V ");     break;
         default:          printf("==WTF?== "); break;
         }
         return str;

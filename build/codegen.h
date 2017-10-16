@@ -130,56 +130,33 @@ void code_const_table()
 void code_method_table()
 {
 
-code_number(0x0001 | 0x0008, 2);
+code_number(0x0001 | 0x0008, 2);//  флаги доступа метода
 
-code_number(4, 2);
+code_number(4, 2);//имя метода
 
-code_number(5, 2);
+code_number(5, 2);//дескриптор метода
 
-code_number(1, 2);
+code_number(1, 2);//количество атрибутов метода
 
-code_number(1, 2);
+code_number(1, 2);//имя атрибута
 
- //writeAttrLength(file);
+code_number(13, 4);//длинна атрибута
 
-code_number(13, 4); // длинна аттрибута
+code_number(2048, 2);//стек
 
-code_number(2048, 2); // стек
+code_number(1, 2);//количество локальных переменных
 
-code_number(1, 2); // количество локальных
-code_number(1, 4); // длинна байт кода
-all_code.insert(all_code.end(),0xb1);
+code_number(1, 4);//длинна байт кода
 
-// �������� � ����
+all_code.insert(all_code.end(),0xb1);// return 0 (выход из void  функции)
+
+
 int number = 0;
 code_number(number, 2);
-// �������� � ����
+
 number = 0;
 code_number(number, 2);
-//writeLocalVarTableSize(file); // количество локальных переменных
-//writeByteCodeLength(file);  // длинна байт кода
-//writeByteCode(file); // байт код
 
-/*
-	for (int i = 0; i < parent_class->methods->size(); i++)
-	{
-		unsigned long int number;
-		if (parent_class->methods->size() != code_of_methods.size())
-		{
-			code_of_methods.insert(code_of_methods.end(), std::vector<char>());
-		}
-
-		code_number(0x0001, 2);
-		number = parent_class->methods->at(i).name->id;
-		code_number(number, 2);
-		number = parent_class->methods->at(i).desc->id;
-		code_number(number, 2);
-		number = 1;
-		code_number(number, 2);
-		//1000 ���. ����������
-		code_method_class(code_of_methods[i], 1000);
-	}
-*/
 }
 
 void code_method_class(std::vector<char> & byte_code, int index)
