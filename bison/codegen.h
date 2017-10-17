@@ -647,8 +647,8 @@ default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
 		}
 	case EXPR_GT:
 		{
-			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
+			generate_expr_code(expr->right);
 			code_number(IF_ICMPGT, 1);
 			code_number(7, 2);
 			code_number(ICONST_0, 1);
@@ -671,8 +671,8 @@ default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
 		}
 	case EXPR_LT:
 		{
-			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
+			generate_expr_code(expr->right);
 			code_number(IF_ICMPLT, 1);
 			code_number(7, 2);
 			code_number(ICONST_0, 1);
