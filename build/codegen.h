@@ -625,12 +625,18 @@ printf("generate_expr_code %d\n",expr->type);
 		}
 	case EXPR_MINUS:
 		{
+
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->type == INTTy)
-				code_number(ISUB, 1);
-			if (expr->type == DOUBLETy || expr->type == FLOATTy)
-				code_number(FSUB, 1);
+
+
+switch (check_stack_operation(create_stack_operation(expr))[0]) {
+case 'I':    code_number(ISUB, 1);     break;
+case 'F':    code_number(FSUB, 1);   break;
+case 'D':    code_number(FSUB, 1);  break;
+default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+}
+
 			break;
 		}
 	case EXPR_GT:
