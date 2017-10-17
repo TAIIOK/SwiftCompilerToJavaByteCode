@@ -394,7 +394,19 @@ void generate_expr_assign(NStmt *expr)
 
 				generate_expr_code(expr->expr);
 
-				if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
+				printf("HEEERRRRREEEEE 1 %d\n",expr->var->type);
+				if( expr->var->type == EXPR_ID_LIST)
+				{
+					switch (update_varuble(globalroot,expr->var)[0]) {
+					case 'I':    code_number(ISTORE, 1);     break;
+					case 'F':    code_number(FSTORE, 1);   break;
+					case 'D':    code_number(FSTORE, 1);  break;
+					case 'S':    code_number(ASTORE, 1);  break;
+					case 'A':    code_number(ASTORE, 1);  break;
+					default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+					}
+				}
+				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
 						code_number(ISTORE, 1);
 					}
@@ -406,7 +418,9 @@ void generate_expr_assign(NStmt *expr)
 					{
 						code_number(ASTORE, 1);
 					}
+					printf("HEEERRRRREEEEE 2\n");
 					el = is_in_local_vars(expr->var->idlist->first->name);
+					printf("HEEERRRRREEEEE 3\n");
 					code_number(el->id, 1);
 }
 
@@ -538,58 +552,6 @@ printf("generate_expr_code %d\n",expr->type);
 
 
 		}
-		/*
-			//���� �� ������ �������� �������
-			if (!isArray(current_method->name->str.c_str(),expr->call->func))
-			{
-				if (((stricmp(expr->call->func, "Float") == 0) || (stricmp(expr->call->func, "Integer") == 0)
-					|| (stricmp(expr->call->func, "printInt") == 0) || (stricmp(expr->call->func, "printFloat") == 0) || (stricmp(expr->call->func, "printBoolean") == 0)
-					|| (stricmp(expr->call->func, "printChar") == 0) || (stricmp(expr->call->func, "printString") == 0) || (stricmp(expr->call->func, "printLnInt") == 0)
-					|| (stricmp(expr->call->func, "printLnFloat") == 0) || (stricmp(expr->call->func, "printLnBoolean") == 0) || (stricmp(expr->call->func, "printLnChar") == 0)
-					|| (stricmp(expr->call->func, "printLnString") == 0) || (stricmp(expr->call->func, "scanInt") == 0) || (stricmp(expr->call->func, "scanBoolean") == 0)
-					|| (stricmp(expr->call->func, "scanFloat") == 0) || (stricmp(expr->call->func, "scanChar") == 0) || (stricmp(expr->call->func, "scanString") == 0)
-					|| (stricmp(expr->call->func, "LENGTH") == 0) || (stricmp(expr->call->func, "FIRST") == 0) || (stricmp(expr->call->func, "LAST") == 0)))
-				{
-					//�������� �������
-					generate_expr_list_code(expr->call->arguments);
-					code_number(INVOKESTATIC, 1);
-				}
-				//������ ���������
-				else if(expr->call->type != a_call)
-				{
-					code_number(ALOAD, 1);
-					code_number(0, 1);
-					generate_expr_list_code(expr->call->arguments);
-					code_number(INVOKEVIRTUAL, 1);
-				}
-				code_number(findMethodRef(expr->call->func), 2);
-			}
-			else
-			{
-				//��� ��� ������ �������� �������
-				std::vector<struct LocalElement> *vars;
-				int i;
-				for (i = 0; i < table_of_classes[1].methods->size(); i++)
-				{
-					if (strcmp(table_of_classes[1].methods->at(i).name->str.c_str(), current_method->name->str.c_str()) == 0)
-						vars = table_of_classes[1].methods->at(i).localvars;
-				}
-				for (i = 0; i < vars->size(); i++)
-				{
-					if (stricmp(expr->call->func, vars->at(i).name.c_str()) == 0 && NVarType::Array)
-						break;
-				}
-				code_number(ALOAD, 1);
-				code_number(vars->at(i).id, 1);
-				generate_expr_list_code(expr->call->arguments);
-				if (vars->at(i).elem_type == Integer)
-					code_number(IALOAD, 1);
-				else if (vars->at(i).elem_type == Float)
-					code_number(FALOAD, 1);
-				else if (vars->at(i).elem_type == Boolean)
-					code_number(IALOAD, 1);
-			}
-			*/
 			break;
 		}
 
