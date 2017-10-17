@@ -577,7 +577,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                           var->id = Main_varubles.size();
                                                           currentf->var->id = Main_varubles.size();
                                                         }
-                                              
+
 
                                                         return str;
                                                         break;
@@ -899,9 +899,13 @@ void check_function_args(struct NExpr * cur){
                 if(cur->right->idlist->first != NULL) {
                         if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
                         {
-                                check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
+                            printf("DDDDDDDDDDDDDD\n" );
+                          //  create_stack_operation(cur->right->idlist->first);
+                            check_stack_operation(create_stack_operation(cur->right->idlist->first));
+                            printf("LLLLLLLLLLLLLL\n" );
+                            //    check_equal(update_varuble(globalroot,cur->right->idlist->first->right), update_varuble(globalroot,cur->right->idlist->first->left));
                         }
-                        update_varuble(globalroot,cur->right->idlist->first);
+                      //  update_varuble(globalroot,cur->right->idlist->first);
                 }
                 return;
         }
@@ -1345,7 +1349,7 @@ void st_stmt_if(struct NIf * node) {
         st_stmt_list(node->elsebody);
 }
 void st_stmt_expr(struct NExpr * node) {
-        printf("%d st_stmt_expr node->type\n",node->type);
+      //  printf("%d st_stmt_expr node->type\n",node->type);
         switch (node->type) {
         case EXPR_INT: {
                 if (st_constant_index(CONST_INT, (void *)&(node->Int)) == -1) {
@@ -1420,8 +1424,8 @@ void st_stmt_expr(struct NExpr * node) {
                 function_call.push_back(*node);
                 check_function_args(node);
 
-                printf("%s",node->left->idlist->first->name );
-                printf("%d\n\n\n",node->left->idlist->first->type);
+              //  printf("%s",node->left->idlist->first->name );
+              //  printf("%d\n\n\n",node->left->idlist->first->type);
                 //check_equal("",update_varuble(globalroot,node->left->idlist->first));
 
 

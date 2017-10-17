@@ -597,30 +597,36 @@ printf("generate_expr_code %d\n",expr->type);
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->type == INTTy)
-				code_number(IADD, 1);
-			if (expr->type == DOUBLETy || expr->type == FLOATTy)
-				code_number(FADD, 1);
+			switch (check_stack_operation(create_stack_operation(expr))[0]) {
+			case 'I':    code_number(IADD, 1);     break;
+			case 'F':    code_number(FADD, 1);   break;
+			case 'D':    code_number(FADD, 1);  break;
+			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			}
 			break;
 		}
 	case EXPR_MUL:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->type == INTTy)
-				code_number(IMUL, 1);
-			if (expr->type == DOUBLETy || expr->type == FLOATTy)
-				code_number(FMUL, 1);
+			switch (check_stack_operation(create_stack_operation(expr))[0]) {
+			case 'I':    code_number(IMUL, 1);     break;
+			case 'F':    code_number(FMUL, 1);   break;
+			case 'D':    code_number(FMUL, 1);  break;
+			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			}
 			break;
 		}
 	case EXPR_DIV:
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
-			if(expr->type == INTTy)
-				code_number(IDIV, 1);
-			if (expr->type == DOUBLETy || expr->type == FLOATTy)
-				code_number(FDIV, 1);
+			switch (check_stack_operation(create_stack_operation(expr))[0]) {
+			case 'I':    code_number(IDIV, 1);     break;
+			case 'F':    code_number(FDIV, 1);   break;
+			case 'D':    code_number(FDIV, 1);  break;
+			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			}
 			break;
 		}
 	case EXPR_MINUS:
