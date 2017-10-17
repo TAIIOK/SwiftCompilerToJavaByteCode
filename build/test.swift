@@ -8,5 +8,5 @@ var i = 5
 
 var a = ""
 
-//print(i)
+print(i)
 

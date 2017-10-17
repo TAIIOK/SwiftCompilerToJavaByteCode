@@ -60,4 +60,16 @@ expr9[label = "a"];
 expr8--expr9;
 expr10[label = ""];
 assign2--expr10;
+expr11[label = "fcall"];
+root--expr11;
+expr11name[label = "name"];
+expr12[label = "print"];
+expr11name--expr12;
+expr11--expr11name;
+expr11args[label = " args "];
+expr11 -- expr11args;
+expr13[label = "id"];
+expr11args--expr13;
+expr14[label = "i"];
+expr13--expr14;
 }

@@ -571,9 +571,13 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                         strcpy(str,return_varuble_type(currentf->var));
 
                                                         /* тут вставить сбор в контейнер expr */
-                                                        Main_varubles.push_back(var);
-                                                        var->id = Main_varubles.size();
-                                                        currentf->var->id = Main_varubles.size();
+                                                        if(!(std::find(Main_varubles.begin(), Main_varubles.end(), currentf->var) != Main_varubles.end()))
+                                                        {
+                                                          Main_varubles.push_back(var);
+                                                          var->id = Main_varubles.size();
+                                                          currentf->var->id = Main_varubles.size();
+                                                        }
+
                                                         return str;
                                                         break;
                                                 }
@@ -674,10 +678,12 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                         }
                                         strcpy(str,return_varuble_type(current->var));
 
-                                        Main_varubles.push_back(var);
-                                        var->id = Main_varubles.size();
-                                        current->var->id = Main_varubles.size();
-
+                                        if(!(std::find(Main_varubles.begin(), Main_varubles.end(), current->var) != Main_varubles.end()))
+                                        {
+                                          Main_varubles.push_back(var);
+                                          var->id = Main_varubles.size();
+                                          current->var->id = Main_varubles.size();
+                                        }
                                         if(strcmp(str,"") == 0)
                                         {
                                                 printf("Varuble doest exist\n");
