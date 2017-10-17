@@ -408,25 +408,29 @@ void generate_expr_assign(NStmt *expr)
 					}
 					el = is_in_local_vars(expr->var->idlist->first->name);
 					code_number(el->id, 1);
-					//code_number(35, 1);
+}
 
-				//generate_expr_code(expr->var);
-/*
-				if (expr->left->idlist->first->vartype->type ==INTTy || expr->left->idlist->first->vartype->type == BOOLTy  || expr->left->idlist->first->vartype->type == CHARACTERTy)
-				{
-					code_number(ISTORE, 1);
-				}
-				else if (expr->left->idlist->first->vartype->type == DOUBLETy || expr->left->idlist->first->vartype->type == FLOATTy)
-				{
-					code_number(FSTORE, 1);
-				}
-				else
-				{
-					code_number(ASTORE, 1);
-				}
-				el = is_in_local_vars(expr->left->idlist->first->name);
-				code_number(el->id, 1);
-*/
+ int findMethodRef(enum NVarEnumType type)
+{
+	switch(type)
+{
+case INTTy:
+		return 13;
+		break;
+case FLOATTy:
+		return  17;
+		break;
+case BOOLTy:
+		return  25;
+		break;
+case STRINGTy:
+		return  29;
+		break;
+default:
+		return  33;
+		break;
+}
+	return 33;
 }
 void generate_expr_code(NExpr *expr)
 {
@@ -503,8 +507,38 @@ printf("generate_expr_code %d\n",expr->type);
 
 			break;
 		}
-	case func:
+		*/
+	case EXPR_MET:
 	{
+		printf("GENERATION BYTE CODE FUNCTION CALL\n");
+		if(strcmp(expr->left->idlist->first->name,"print") ||  strcmp(expr->left->idlist->first->name,"readLine"))
+		{
+			generate_expr_list_code(expr->right->idlist);
+			code_number(INVOKESTATIC, 1);
+
+  	char * str = (char*)malloc(sizeof(char)*33);
+
+			if(expr->right->idlist->first->type == EXPR_ID_LIST) {
+							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
+							printf("tyta\n");
+			}
+			else{
+							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
+							printf("zdyta\n");
+			}
+			switch (str[0]) {
+			case 'I':    code_number(findMethodRef(INTTy), 2);     break;
+			case 'F':    code_number(findMethodRef(FLOATTy), 2);   break;
+			case 'D':    code_number(findMethodRef(DOUBLETy), 2);  break;
+			case 'B':    code_number(findMethodRef(BOOLTy), 2);    break;
+			case 'S':    code_number(findMethodRef(STRINGTy), 2);  break;
+			case 'A':    code_number(findMethodRef(ARRAYTy), 2);   break;
+			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			}
+
+
+		}
+		/*
 			//���� �� ������ �������� �������
 			if (!isArray(current_method->name->str.c_str(),expr->call->func))
 			{
@@ -555,9 +589,10 @@ printf("generate_expr_code %d\n",expr->type);
 				else if (vars->at(i).elem_type == Boolean)
 					code_number(IALOAD, 1);
 			}
+			*/
 			break;
 		}
-		*/
+
 	case EXPR_PLUS:
 		{
 			generate_expr_code(expr->left);
@@ -819,7 +854,6 @@ struct NExpr* is_in_local_vars(char*name)
 
 void generate_name_code(NExpr*name)
 {
-		printf("name type -> %d ",name->type);
 	if(name!=NULL)
 	{
 		int i;
@@ -871,7 +905,7 @@ void generate_name_code(NExpr*name)
 
 void generate_name_list_code(NExprList*list)
 {
-
+	printf("generate_name_list_code\n");
 	if(list!=NULL)
 	{
 		generate_name_code(list->first);
@@ -1063,7 +1097,8 @@ void generate_stmt_code(NStmt*stmt)
 		break;
 	case STMT_EXPR:
 		{
-			generate_expr_list_code(stmt->expr->idlist);
+			generate_expr_code(stmt->expr);
+			//generate_expr_list_code(stmt->expr->idlist);
 			break;
 		}
 

@@ -577,6 +577,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                           var->id = Main_varubles.size();
                                                           currentf->var->id = Main_varubles.size();
                                                         }
+                                              
 
                                                         return str;
                                                         break;
@@ -684,6 +685,8 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                           var->id = Main_varubles.size();
                                           current->var->id = Main_varubles.size();
                                         }
+
+
                                         if(strcmp(str,"") == 0)
                                         {
                                                 printf("Varuble doest exist\n");
@@ -1352,6 +1355,9 @@ void st_stmt_expr(struct NExpr * node) {
                         cint.value.val_int = node->Int;
                         table.push_back(cint);
                         node->id = st_constant_index(CONST_INT, (void *)&(node->Int));
+                }
+                else{
+                  node->id = st_constant_index(CONST_INT, (void *)&(node->Int));
                 }
         }
                        break;

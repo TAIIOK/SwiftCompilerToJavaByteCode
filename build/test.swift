@@ -1,12 +1,3 @@
+print(2  + 6 + 1)
 
-
-var s:Int
-
-var d = 4
-
-var i = 5
-
-var a = ""
-
-print(i)
 
