@@ -1,6 +1,11 @@
 
 var i = 10
 
-i = 20
+var j = 0
 
-print(i)
+
+for j in 0  ... 10 {
+    
+    print(j)
+    
+}

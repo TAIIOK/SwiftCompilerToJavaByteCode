@@ -1322,7 +1322,7 @@ void st_stmt_while(struct NWhile * node) {
 }
 void st_stmt_for(struct NFor * node) {
         //  update_varuble(globalroot,node->name);
-        st_stmt_expr(node->name);
+        //st_stmt_expr(node->name);
         st_stmt_expr(node->start);
         st_stmt_expr(node->step);
         st_stmt_list(node->body);

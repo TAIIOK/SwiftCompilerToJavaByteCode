@@ -43,7 +43,7 @@ std::vector<char> byte_code;
 char* loopVarName;
 std::vector<char*> loopVarNames;
 std::vector<char> empty_code;
-int loopCounter = -1;
+int loopCounter = 0;
 //FILE* file_of_class;
 
 std::ofstream file_of_class ("Main.class", std::ios::out | std::ios::binary);
@@ -147,7 +147,7 @@ code_number(byte_code.size() + 13, 4);//длинна атрибута
 
 code_number(2048, 2);//стек
 
-code_number(Main_varubles.size() + 1, 2);//количество локальных переменных
+code_number(Main_varubles.size() + 1 + loopCounter, 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 
@@ -838,8 +838,9 @@ void generate_name_code(NExpr*name)
 		}
 		if (loopVarName!=NULL && i<loopVarNames.size() && strcmp(name->name, loopVarNames[i]) == 0)
 		{
+			printf("NNNNNYYYYY PPPPPPRRRRIIIIIVVVEEETTT\n" );
 			code_number(ILOAD, 1);
-			code_number(200 + i, 1);
+			code_number(Main_varubles.size() + i + loopCounter , 1);
 		}
 		else
 		{
@@ -1221,7 +1222,7 @@ void generate_for_code(NFor *For)
 		//������ � ���������� ����� ����� �������
 		generate_expr_code(For->start->left );
 		code_number(ISTORE, 1);
-		code_number(200 + loopCounter, 1);
+		code_number(Main_varubles.size() + loopCounter, 1);
 		// ������������� ��� ��� �������� ������������ �������� � ��������� �� ����� ��� ���������� ����� �������� � ����������;
 		code_number(GO_TO, 1);
 		code_number(0, 2);
@@ -1230,20 +1231,20 @@ void generate_for_code(NFor *For)
 		//������������� ��� ���� �����, ��������� GenerateCodeForBlock;
 		generate_stmt_list_code(For->body );
 		code_number(ILOAD, 1);
-		code_number(200 + loopCounter, 1);
+		code_number(Main_varubles.size() + loopCounter, 1);
 		code_number(ICONST_1, 1);
 		code_number(IADD, 1);
 		code_number(ISTORE, 1);
-		code_number(200 + loopCounter, 1);
+		code_number(Main_varubles.size() + loopCounter, 1);
 
 		size2 = all_code.size();
 
 		//3. ������������� ��� ���������� ��������� ���������
 
 		code_number(ILOAD, 1);
-		code_number(200 + loopCounter, 1);
+		code_number(Main_varubles.size() + loopCounter, 1);
 		generate_expr_code(For->start->right);
-		code_number(IF_ICMPLE, 1);
+		code_number(IF_ICMPLT, 1);
 		code_number(7, 2);
 		code_number(ICONST_0, 1);
 		code_number(GO_TO, 1);
@@ -1271,7 +1272,6 @@ void generate_for_code(NFor *For)
 		strcpy(loopVarName, loopVarNames.at(loopVarNames.size() - 1));
 	}
 	loopVarNames.erase(loopVarNames.begin()+loopVarNames.size()-1);
-	loopCounter--;
 
 }
 
