@@ -39,6 +39,7 @@ void generate_expr_assign(NStmt *expr);
 void generate_elsif_code(NIf*elsif);
 
 std::vector<char> all_code;
+std::vector<char> byte_code;
 char* loopVarName;
 std::vector<char*> loopVarNames;
 std::vector<char> empty_code;
@@ -140,16 +141,19 @@ code_number(1, 2);//количество атрибутов метода
 
 code_number(1, 2);//имя атрибута
 
-code_number(13, 4);//длинна атрибута
+printf("Current byte_code size %d\n",byte_code.size());
+
+code_number(byte_code.size() + 13, 4);//длинна атрибута
 
 code_number(2048, 2);//стек
 
-code_number(1, 2);//количество локальных переменных
+code_number(Main_varubles.size() + 1, 2);//количество локальных переменных
 
-code_number(1, 4);//длинна байт кода
+code_number(byte_code.size() + 1, 4);//длинна байт кода
 
-all_code.insert(all_code.end(),0xb1);// return 0 (выход из void  функции)
+all_code.insert(all_code.end(), byte_code.begin(), byte_code.end()); // байт код
 
+all_code.insert(all_code.end(),0xb1);
 
 int number = 0;
 code_number(number, 2);
@@ -389,6 +393,24 @@ void generate_expr_assign(NStmt *expr)
 			NExpr * el;
 
 				generate_expr_code(expr->expr);
+
+				if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
+					{
+						code_number(ISTORE, 1);
+					}
+					else if (expr->var->vartype->type == FLOATTy)
+					{
+						code_number(FSTORE, 1);
+					}
+					else
+					{
+						code_number(ASTORE, 1);
+					}
+					el = is_in_local_vars(expr->var->idlist->first->name);
+					code_number(el->id, 1);
+					//code_number(35, 1);
+
+				//generate_expr_code(expr->var);
 /*
 				if (expr->left->idlist->first->vartype->type ==INTTy || expr->left->idlist->first->vartype->type == BOOLTy  || expr->left->idlist->first->vartype->type == CHARACTERTy)
 				{
@@ -410,7 +432,7 @@ void generate_expr_code(NExpr *expr)
 {
  bool arrInitializing = false;
 
-printf("%d",expr->type);
+printf("generate_expr_code %d\n",expr->type);
 	switch (expr->type)
 	{
 	case EXPR_ID_LIST:
@@ -784,21 +806,20 @@ void generate_var_code(NExpr*var)
 
 struct NExpr* is_in_local_vars(char*name)
 {
-	/*
-	std::vector<struct LocalElement> *vars = current_method->localvars;
-	int i;
-	for (i = 0; i < vars->size(); i++)
-	{
-		if(stricmp(name,vars->at(i).name.c_str())==0)
-			return &(vars->at(i));
+	int i=0;
+	for (auto c: Main_varubles){
+		if(strcmp(name,c->idlist->first->name)==0){
+			return c;
+		}
+		i++;
 	}
-	*/
 	return NULL;
 }
 
 
 void generate_name_code(NExpr*name)
 {
+		printf("name type -> %d ",name->type);
 	if(name!=NULL)
 	{
 		int i;
@@ -814,6 +835,7 @@ void generate_name_code(NExpr*name)
 		}
 		else
 		{
+
 			NExpr *elem = is_in_local_vars(name->name);
 			if (elem->vartype->type == INTTy )
 			{
@@ -949,7 +971,7 @@ void generate_stmt_list_code(NStmtList *list)
 
 void generate_stmt_code(NStmt*stmt)
 {
-
+	printf("IN GENERATE STMT CODE TYPE %d\n",stmt->type);
 	switch (stmt->type)
 	{
 		/*
@@ -1316,7 +1338,15 @@ void generate_byte_code()
 //	table_of_const = constT;
 //	table_of_classes = classT;
 //	file_name = "Main.class";
+
+printf("count of Main_varubles: %d\n", Main_varubles.size());
+for (auto c : Main_varubles) {
+	printf("name -> %s , id -> %d\n",c->idlist->first->name, c->id);
+}
+
+
 generate_stmt_list_code(root);
+byte_code = all_code;
 	generate_class_file();
 }
 

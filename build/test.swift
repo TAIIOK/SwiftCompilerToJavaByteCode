@@ -1,8 +1,12 @@
 
-var sb = 1
 
-func s() {
-    var s = 2
-    var sa:Int = 4
+var s:Int
 
-}
+var d = 4
+
+var i = 5
+
+var a = ""
+
+//print(i)
+

@@ -117,7 +117,9 @@ list<NFunc> functions_list;
 list<NExpr> function_call;
 list<NFunc> main_functions_list;
 list<st_const> Main_table;
-list<NExpr> Main_varubles;
+
+list<NExpr *> Main_varubles;
+
 NStmtList *globalroot;
 NStmtList *rootwithoutfunc;
 
@@ -568,28 +570,10 @@ char * update_varuble(NStmtList *root,NExpr *var){
 
                                                         strcpy(str,return_varuble_type(currentf->var));
 
-                                                        STConst type_var;
-                                                        type_var.next = NULL;
-                                                        type_var.type = CONST_UTF8;
-                                                        type_var.value.utf8  = str;
-                                                        table.push_back(type_var);
-
-                                                        STConst name_type;
-                                                        name_type.next = NULL;
-                                                        name_type.type = CONST_NAMETYPE;
-                                                        name_type.value.args.arg1 = table.size() - 2;
-                                                        name_type.value.args.arg2 = table.size() - 1;
-                                                        table.push_back(name_type);
-
-                                                        STConst method_ref;
-                                                        method_ref.next = NULL;
-                                                        method_ref.type = CONST_METHODREF;
-                                                        method_ref.value.args.arg1 = 3;
-                                                        method_ref.value.args.arg2 = table.size() - 1;
-                                                        table.push_back(method_ref);
-
-
-
+                                                        /* тут вставить сбор в контейнер expr */
+                                                        Main_varubles.push_back(var);
+                                                        var->id = Main_varubles.size();
+                                                        currentf->var->id = Main_varubles.size();
                                                         return str;
                                                         break;
                                                 }
@@ -601,11 +585,11 @@ char * update_varuble(NStmtList *root,NExpr *var){
                         }
                 }
 
-                if(current->type == STMT_BLOCK)
+                if(current->type == STMT_WHILE )
                 {
                         struct NStmtList* result = (NStmtList*)malloc(sizeof(NStmtList));
-                        result->first = current;
-                        if  ( strstr(update_varuble(result,var), "") == 0 )
+                        result = current->while_loop->body;
+                        if  ( strstr(update_varuble(result,var), "") != 0 )
                         {
                                 return update_varuble(result,var);
                         }
@@ -680,42 +664,19 @@ char * update_varuble(NStmtList *root,NExpr *var){
 
                                                 switch (update_varuble(globalroot,current->expr)[0]) {
                                                 case 'I':    var->vartype->type = INTTy;     break;
-                                                case 'F':     var->vartype->type = FLOATTy;    break;
-                                                case 'D':    var->vartype->type = DOUBLETy;    break;
-                                                case 'B':     var->vartype->type = BOOLTy;    break;
-                                                case 'S':    var->vartype->type = STRINGTy;   break;
-                                                case 'A':     var->vartype->type = ARRAYTy;     break;
-                                                default:          printf("==WTF?== "); break;
+                                                case 'F':    var->vartype->type = FLOATTy;   break;
+                                                case 'D':    var->vartype->type = DOUBLETy;  break;
+                                                case 'B':    var->vartype->type = BOOLTy;    break;
+                                                case 'S':    var->vartype->type = STRINGTy;  break;
+                                                case 'A':    var->vartype->type = ARRAYTy;   break;
+                                                default:          printf("==WTF?== ");       break;
                                                 }
                                         }
                                         strcpy(str,return_varuble_type(current->var));
-                                        if (st_constant_index(CONST_UTF8, (void *)(current->var->idlist->first->name)) == -1) {
-                                                STConst name;
-                                                name.next = NULL;
-                                                name.type = CONST_UTF8;
-                                                name.value.utf8  = current->var->idlist->first->name;
-                                                table.push_back(name);
 
-                                                STConst type_var;
-                                                type_var.next = NULL;
-                                                type_var.type = CONST_UTF8;
-                                                type_var.value.utf8  = str;
-                                                table.push_back(type_var);
-
-                                                STConst name_type;
-                                                name_type.next = NULL;
-                                                name_type.type = CONST_NAMETYPE;
-                                                name_type.value.args.arg1 = table.size() - 2;
-                                                name_type.value.args.arg2 = table.size() - 1;
-                                                table.push_back(name_type);
-
-                                                STConst method_ref;
-                                                method_ref.next = NULL;
-                                                method_ref.type = CONST_FIELDREF;
-                                                method_ref.value.args.arg1 = 3;
-                                                method_ref.value.args.arg2 = table.size() - 1;
-                                                table.push_back(method_ref);
-                                        }
+                                        Main_varubles.push_back(var);
+                                        var->id = Main_varubles.size();
+                                        current->var->id = Main_varubles.size();
 
                                         if(strcmp(str,"") == 0)
                                         {
@@ -1384,6 +1345,7 @@ void st_stmt_expr(struct NExpr * node) {
                         cint.type = CONST_INT;
                         cint.value.val_int = node->Int;
                         table.push_back(cint);
+                        node->id = st_constant_index(CONST_INT, (void *)&(node->Int));
                 }
         }
                        break;
@@ -1397,6 +1359,7 @@ void st_stmt_expr(struct NExpr * node) {
                         cfloat.value.val_float = node->Float;
 
                         table.push_back(cfloat);
+                        node->id = st_constant_index(CONST_FLOAT, (void *)&(node->Float));
 
                 }
         }
@@ -1408,7 +1371,7 @@ void st_stmt_expr(struct NExpr * node) {
 
                         cfloat.type = CONST_DOUBLE;
                         cfloat.value.val_double = node->Double;
-
+                        node->id = st_constant_index(CONST_DOUBLE, (void *)&(node->Double));
                         table.push_back(cfloat);
 
 
@@ -1436,7 +1399,7 @@ void st_stmt_expr(struct NExpr * node) {
 
                         table.push_back(cstr);
 
-
+                        node->id = st_constant_index( CONST_UTF8, (void*)(node->name)) + 1;
                 }
         }
                        break;
@@ -1462,36 +1425,11 @@ void st_stmt_expr(struct NExpr * node) {
                 if(node->vartype != NULL) {
                         if(node->idlist->first->name != NULL)
                         {
-                                if (st_constant_index( CONST_UTF8, (void*)(node->idlist->first->name)) == -1) {
-                                        char * str = (char*)malloc(sizeof(char)*33);
-                                        STConst var;
-                                        var.next = NULL;
-                                        var.type = CONST_UTF8;
-                                        var.value.utf8  = node->idlist->first->name;
-                                        table.push_back(var);
-
-                                        strcat(str,return_varuble_type(node));
-
-                                        STConst type_var;
-                                        type_var.next = NULL;
-                                        type_var.type = CONST_UTF8;
-                                        type_var.value.utf8  = str;
-                                        table.push_back(type_var);
-
-                                        STConst name_type;
-                                        name_type.next = NULL;
-                                        name_type.type = CONST_NAMETYPE;
-                                        name_type.value.args.arg1 = table.size() - 2;
-                                        name_type.value.args.arg2 = table.size() - 1;
-                                        table.push_back(name_type);
-
-                                        STConst field_ref;
-                                        field_ref.next = NULL;
-                                        field_ref.type = CONST_FIELDREF;
-                                        field_ref.value.args.arg1 = 3;
-                                        field_ref.value.args.arg2 = table.size() - 1;
-                                        table.push_back(field_ref);
-                                }
+                          if(!(std::find(Main_varubles.begin(), Main_varubles.end(), node) != Main_varubles.end()))
+                          {
+                          Main_varubles.push_back(node);
+                          node->id = Main_varubles.size();
+                          }
                         }
                 }
         }
