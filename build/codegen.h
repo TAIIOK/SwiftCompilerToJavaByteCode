@@ -419,6 +419,7 @@ void generate_expr_assign(NStmt *expr)
 					code_number(el->id, 1);
 					generate_expr_code(expr->var->right);
 					generate_expr_code(expr->expr);
+
 					code_number(IASTORE, 1);
 					return;
 
@@ -473,6 +474,21 @@ void generate_expr_code(NExpr *expr)
 printf("generate_expr_code %d\n",expr->type);
 	switch (expr->type)
 	{
+	case EXPR_MAS:
+	{
+		NExpr * el;
+		el =  is_in_local_vars(expr->left->idlist->first->name);
+		//generate_expr_code(el);
+		code_number(ALOAD, 1);
+		code_number(el->id, 1);
+
+
+		generate_expr_code(expr->right);
+
+		//code_number(el->id, 1);
+		code_number(IALOAD, 1);
+		break;
+	}
 	case EXPR_ID_LIST:
 		{
 			generate_name_list_code(expr->idlist);
@@ -496,8 +512,6 @@ printf("generate_expr_code %d\n",expr->type);
 			}
 			else if (expr->vartype->type == DOUBLETy || expr->vartype->type == FLOATTy)
 				code_number(6, 1);
-
-
 
 			    struct NTblElem * currentElem = expr->table->first;
 
@@ -539,6 +553,8 @@ printf("EXPR_TABLE %d\n",expr->vartype->type);
 
   	char * str = (char*)malloc(sizeof(char)*33);
 
+		printf("expr->right->idlist->first->type %d",expr->right->idlist->first->type );
+		//exit(EXIT_FAILURE);
 			if(expr->right->idlist->first->type == EXPR_ID_LIST) {
 							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
 							printf("tyta\n");
