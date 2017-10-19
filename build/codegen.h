@@ -392,6 +392,7 @@ void generate_expr_assign(NStmt *expr)
 			std::vector<NExpr> *vars;
 			NExpr * el;
 
+				if(expr->var->type != EXPR_MAS)
 				generate_expr_code(expr->expr);
 
 				printf("HEEERRRRREEEEE 1 %d\n",expr->var->type);
@@ -408,6 +409,18 @@ void generate_expr_assign(NStmt *expr)
 				}else{
 					code_number(ASTORE, 1);
 				}
+
+				}
+				else if (expr->var->type == EXPR_MAS)
+				{
+					printf("EXPR_MAS name %s %d",expr->var->left->idlist->first->name ,expr->var->right->type);
+					code_number(ALOAD, 1);
+					el =  is_in_local_vars(expr->var->left->idlist->first->name);
+					code_number(el->id, 1);
+					generate_expr_code(expr->var->right);
+					generate_expr_code(expr->expr);
+					code_number(IASTORE, 1);
+					return;
 
 				}
 				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
