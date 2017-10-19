@@ -1251,6 +1251,9 @@ void st_stmt(struct NStmt * node) {
                 if (node->expr->type == EXPR_ID_LIST)
                 {
                         check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+
+
+
                 }
 
                 else if (node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD)
@@ -1281,7 +1284,22 @@ void st_stmt(struct NStmt * node) {
                 }
 
                 else{
+
                         check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+                        if(node->expr->type == EXPR_TABLE && node->expr->array_id == 0)
+                        {
+                          node->expr->vartype = node->var->vartype;
+                          node->expr->array_id = node->var->id;
+
+                          struct NTblElem * currentElem = node->expr->table->first;
+                          while(currentElem != NULL)
+                          {
+                            st_stmt_expr(currentElem->value);
+                            update_varuble(globalroot,currentElem->value);
+                            currentElem = currentElem->next;
+                          }
+                        }
+
                 }
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);

@@ -121,6 +121,7 @@ struct NRange
 struct NExpr
 {
     int id;
+    int array_id;
     bool isArray;
     char * name;
     struct NExpr * left;

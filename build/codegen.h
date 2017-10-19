@@ -69,7 +69,7 @@ union s4
 
 union s2
 {
-	signed long int number;
+	signed short number;
 	float flnumber;
 	char bytes[2];
 };
@@ -398,29 +398,32 @@ void generate_expr_assign(NStmt *expr)
 				if( expr->var->type == EXPR_ID_LIST)
 				{
 					switch (update_varuble(globalroot,expr->var)[0]) {
-					case 'I':    code_number(ISTORE, 1);     break;
-					case 'F':    code_number(FSTORE, 1);   break;
-					case 'D':    code_number(FSTORE, 1);  break;
-					case 'S':    code_number(ASTORE, 1);  break;
-					case 'A':    code_number(ASTORE, 1);  break;
+					case 'I':    printf("Integer ASTORE\n");code_number(ASTORE, 1);     break;
+					case 'F':    printf("Float ASTORE\n");code_number(FSTORE, 1);   break;
+					case 'D':    printf("Double ASTORE\n");code_number(FSTORE, 1);  break;
+					case 'S':    printf("STRING ASTORE\n");code_number(ASTORE, 1);  break;
+					case 'A':    printf("ARRAY ASTORE\n");code_number(ASTORE, 1);  break;
 					default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
 					}
 				}
 				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
+						printf("ISTORE\n");
 						code_number(ISTORE, 1);
 					}
 					else if (expr->var->vartype->type == FLOATTy)
 					{
+						printf("FSTORE\n");
 						code_number(FSTORE, 1);
 					}
 					else
 					{
+						printf("ASTORE\n");
 						code_number(ASTORE, 1);
 					}
 					printf("HEEERRRRREEEEE 2\n");
 					el = is_in_local_vars(expr->var->idlist->first->name);
-					printf("HEEERRRRREEEEE 3\n");
+					printf("HEEERRRRREEEEE 3 el->id %d\n",el->id);
 					code_number(el->id, 1);
 }
 
@@ -458,70 +461,57 @@ printf("generate_expr_code %d\n",expr->type);
 			generate_name_list_code(expr->idlist);
 			break;
 		}
-		/*
-	case assign:
-		{
-			if (loopVarName!=NULL && expr->left->type!=func && strcmp(loopVarName, expr->left->list->first->name) == 0)
-			{
-				throw ("You can't assign to loop variable");
-			}
-			else
-			{
-				std::vector<struct LocalElement> *vars;
-				LocalElement * el;
-				//��� ��������
-				if (expr->left->type == func)
-				{
-					int i;
-					for (i = 0; i < table_of_classes[1].methods->size(); i++)
-					{
-						if (strcmp(table_of_classes[1].methods->at(i).name->str.c_str(), current_method->name->str.c_str()) == 0)
-							vars = table_of_classes[1].methods->at(i).localvars;
-					}
-					for (i = 0; i < vars->size(); i++)
-					{
-						if (stricmp(expr->left->call->func, vars->at(i).name.c_str()) == 0 && NVarType::Array)
-							break;
-					}
-					code_number(ALOAD, 1);
-					code_number(vars->at(i).id, 1);
-					generate_expr_list_code(expr->left->call->arguments);
-					generate_expr_code(expr->right);
-					if (vars->at(i).elem_type == Integer)
-						code_number(IASTORE, 1);
-					else if (vars->at(i).elem_type == Float)
-						code_number(FASTORE, 1);
-					else if (vars->at(i).elem_type == Boolean)
-						code_number(IASTORE, 1);
-				}
-				//��� ���������
-				else
-				{
-					generate_expr_code(expr->right);
-					if (expr->left->list->first->type == Integer || expr->left->list->first->type == Boolean || expr->left->list->first->type == ENum || expr->left->list->first->type == Character)
-					{
-						code_number(ISTORE, 1);
-					}
-					else if (expr->left->list->first->type == Real || expr->left->list->first->type == Float)
-					{
-						code_number(FSTORE, 1);
-					}
-					else
-					{
-						code_number(ASTORE, 1);
-					}
-					el = is_in_local_vars(expr->left->list->first->name);
-					code_number(el->id, 1);
-				}
-				break;
-			}
-		}
-	case array_call:
+
+	case EXPR_TABLE:
+	{
+
+		printf("EXPR_TABLE %d\n",expr->vartype->type);
+
+		if (expr->vartype->type != STRINGTy )
 		{
 
-			break;
+			code_number(SIPUSH, 1);
+			code_number(1,2);
+			code_number(NEWARRAY, 1);
+			if (expr->vartype->type == INTTy || expr->vartype->type == BOOLTy){
+				code_number(10, 1);
+				printf("EXPR_TABLE %d\n",expr->vartype->type);
+			}
+			else if (expr->vartype->type == DOUBLETy || expr->vartype->type == FLOATTy)
+				code_number(6, 1);
+
+
+
+			    struct NTblElem * currentElem = expr->table->first;
+
+			if (currentElem != NULL)
+			{
+				for (int i = 0; i < 1; i++)
+				{
+
+					code_number(DUP, 1);
+					code_number(SIPUSH, 1);
+					code_number(i, 2);
+					generate_expr_code(currentElem->value);
+					if (expr->vartype->type == INTTy)
+					code_number(IASTORE, 1);
+					else if (expr->vartype->type == DOUBLETy || expr->vartype->type  == FLOATTy)
+						code_number(FASTORE, 1);
+					else if (expr->vartype->type == BOOLTy)
+						code_number(IASTORE, 1);
+					//!!!��������
+printf("EXPR_TABLE %d\n",expr->vartype->type);
+					currentElem = currentElem->next;
+				}
+			}
+
+
 		}
-		*/
+
+
+		break;
+	}
+
 	case EXPR_MET:
 	{
 		printf("GENERATION BYTE CODE FUNCTION CALL\n");
@@ -846,6 +836,12 @@ void generate_name_code(NExpr*name)
 		{
 
 			NExpr *elem = is_in_local_vars(name->name);
+
+			printf("elem->type %d %d\n",elem->type,elem->isArray);
+			if(elem == NULL){
+				printf("NULL ELEM\n");
+			}
+
 			if (elem->vartype->type == INTTy )
 			{
 				code_number(ILOAD, 1);
@@ -866,8 +862,9 @@ void generate_name_code(NExpr*name)
 				code_number(ALOAD, 1);
 				code_number(elem->id, 1);
 			}
-			else if (elem->vartype->type == ARRAYTy)
+			else if (elem->vartype->type == ARRAYTy || elem->isArray)
 			{
+				printf("ITS ARRAY\n");
 				code_number(ALOAD, 1);
 				code_number(elem->id, 1);
 			}
@@ -927,23 +924,6 @@ void generate_if_code(NIf * If)
 			all_code.at(size2 + i) = temp.bytes[i];
 	}
 
-	//�������� elseif � else
-	/*if(If->elsifList!=NULL)
-	{
-		size = all_code.size();
-		generate_elsif_list_code(If->elsifList);
-		union s2 changer = make_reversed_s2(all_code.size() - size);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size + i) = changer.bytes[i];
-	}
-	if(If->elseStmt!=NULL)
-	{
-		size = all_code.size();
-		generate_stmt_list_code(If->elseStmt);
-		union s2 changer = make_reversed_s2(all_code.size() - size);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size + i) = changer.bytes[i];
-			*/
 }
 
 void generate_elsif_list_code(NIfList *list)
@@ -986,21 +966,7 @@ void generate_stmt_code(NStmt*stmt)
 		/*
 	case array_var:
 		{
-			std::vector<struct LocalElement> *vars;
-			int arrId;
-			NExpr *arrExpr;
-			if (stmt->arr_var->expression != NULL)
-				arrExpr = stmt->arr_var->expression->first;
-			for (arrId = 0; arrId < table_of_classes[1].methods->size(); arrId++)
-			{
-				if (strcmp(table_of_classes[1].methods->at(arrId).name->str.c_str(), current_method->name->str.c_str()) == 0)
-					vars = table_of_classes[1].methods->at(arrId).localvars;
-			}
-			for (arrId = 0; arrId < vars->size(); arrId++)
-			{
-				if (stricmp(stmt->arr_var->arr_name, vars->at(arrId).name.c_str()) == 0 && NVarType::Array)
-					break;
-			}
+
 			if (stmt->arr_var->elem_type != String)
 			{
 				code_number(BIPUSH, 1);
@@ -1051,23 +1017,10 @@ void generate_stmt_code(NStmt*stmt)
 			//}
 			break;
 		}
-	case array_assign:
-		{
-			int x = 1;
-			break;
-		}
-		*/
-		/*
-	case var_list_assign:
-		{
-			generate_varlist_assign_code(stmt->list);
-			break;
-		}
-		*/
+*/
 	case STMT_ASSIGN:
 
 	generate_expr_assign(stmt);
-
 
 		break;
 	case STMT_EXPR:
@@ -1344,9 +1297,6 @@ void generate_enum_code(NExpr * var)
 
 void generate_byte_code()
 {
-//	table_of_const = constT;
-//	table_of_classes = classT;
-//	file_name = "Main.class";
 
 printf("count of Main_varubles: %d\n", Main_varubles.size());
 for (auto c : Main_varubles) {

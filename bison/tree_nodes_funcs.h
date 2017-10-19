@@ -522,6 +522,7 @@ void set_parent_func(struct NStmt* child, struct NFunc* parent)
 
 void set_null_field_expr(struct NExpr* expr)
 {
+    expr->array_id = 0;
     expr->isArray = false;
     expr->Int = 0;
     expr->Double = 0;
