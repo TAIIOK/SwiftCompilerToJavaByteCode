@@ -396,15 +396,19 @@ void generate_expr_assign(NStmt *expr)
 
 				printf("HEEERRRRREEEEE 1 %d\n",expr->var->type);
 				if( expr->var->type == EXPR_ID_LIST)
-				{
+				{	if(!expr->var->isArray){
 					switch (update_varuble(globalroot,expr->var)[0]) {
-					case 'I':    printf("Integer ASTORE\n");code_number(ASTORE, 1);     break;
+					case 'I':    printf("Integer ASTORE\n");code_number(ISTORE, 1);     break;
 					case 'F':    printf("Float ASTORE\n");code_number(FSTORE, 1);   break;
 					case 'D':    printf("Double ASTORE\n");code_number(FSTORE, 1);  break;
 					case 'S':    printf("STRING ASTORE\n");code_number(ASTORE, 1);  break;
 					case 'A':    printf("ARRAY ASTORE\n");code_number(ASTORE, 1);  break;
 					default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
 					}
+				}else{
+					code_number(ASTORE, 1);
+				}
+
 				}
 				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
@@ -471,7 +475,7 @@ printf("generate_expr_code %d\n",expr->type);
 		{
 
 			code_number(SIPUSH, 1);
-			code_number(1,2);
+			code_number(1,2);   // размер массива
 			code_number(NEWARRAY, 1);
 			if (expr->vartype->type == INTTy || expr->vartype->type == BOOLTy){
 				code_number(10, 1);
