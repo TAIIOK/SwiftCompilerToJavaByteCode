@@ -528,9 +528,16 @@ printf("generate_expr_code %d\n",expr->type);
 
 		if (expr->vartype->type != STRINGTy )
 		{
-
+			int size = 0;
 			code_number(SIPUSH, 1);
-			code_number(10,2);   // размер массива
+			 struct NTblElem * currentElem = expr->table->first;
+			 if (currentElem != NULL)
+			 {
+				 size = size + 1;
+				 currentElem = currentElem->next;
+			 }
+			  currentElem = expr->table->first;
+			code_number(size,2);   // размер массива
 			code_number(NEWARRAY, 1);
 			if (expr->vartype->type == INTTy || expr->vartype->type == BOOLTy){
 				code_number(10, 1);
@@ -538,11 +545,11 @@ printf("generate_expr_code %d\n",expr->type);
 			else if (expr->vartype->type == DOUBLETy || expr->vartype->type == FLOATTy)
 				code_number(6, 1);
 
-			    struct NTblElem * currentElem = expr->table->first;
+
 
 			if (currentElem != NULL)
 			{
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < size; i++)
 				{
 
 					code_number(DUP, 1);
