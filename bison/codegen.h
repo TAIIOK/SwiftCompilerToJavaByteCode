@@ -453,23 +453,36 @@ void generate_expr_assign(NStmt *expr)
 					code_number(el->id, 1);
 }
 
- int findMethodRef(enum NVarEnumType type)
+ int findMethodRef(enum NVarEnumType type , bool Print)
 {
 	switch(type)
 {
 case INTTy:
+		if(Print)
 		return 13;
+
+		return 39;
 		break;
 case FLOATTy:
+		if(Print)
 		return  17;
+
+		return  43;
 		break;
 case BOOLTy:
+		if(Print)
 		return  25;
+
+		return  51;
 		break;
 case STRINGTy:
+		if(Print)
 		return  29;
+
+		return  55;
 		break;
 default:
+		if(Print)
 		return  33;
 		break;
 }
@@ -574,7 +587,12 @@ printf("generate_expr_code %d\n",expr->type);
 				return;
 			}
 		}
-		else if(strcmp(expr->left->idlist->first->name,"print") ||  strcmp(expr->left->idlist->first->name,"readLine"))
+		else if(strcmp(expr->left->idlist->first->name,"readLine") == 0)
+		{
+			code_number(INVOKESTATIC, 1);
+			code_number(findMethodRef(STRINGTy,false), 2);
+		}
+		else if(strcmp(expr->left->idlist->first->name,"print") == 0)
 		{
 			generate_expr_list_code(expr->right->idlist);
 			code_number(INVOKESTATIC, 1);
@@ -591,13 +609,13 @@ printf("generate_expr_code %d\n",expr->type);
 			}
 			printf("%s\n\n",str);
 			switch (str[0]) {
-			case 'I':    code_number(findMethodRef(INTTy), 2);     break;
-			case 'F':    code_number(findMethodRef(FLOATTy), 2);   break;
-			case 'D':    code_number(findMethodRef(DOUBLETy), 2);  break;
-			case 'B':    code_number(findMethodRef(BOOLTy), 2);    break;
-			case 'S':    code_number(findMethodRef(STRINGTy), 2);  break;
-			case 'A':    code_number(findMethodRef(ARRAYTy), 2);   break;
-			default:          printf("==WTF?== IN FUNCTION CALL\n");   code_number(findMethodRef(INTTy), 2);    break;
+			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
+			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;
+			case 'D':    code_number(findMethodRef(DOUBLETy,true), 2);  break;
+			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
+			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
+			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
+			default:          printf("==WTF?== IN FUNCTION CALL\n");   code_number(findMethodRef(INTTy,true), 2);    break;
 			}
 
 
