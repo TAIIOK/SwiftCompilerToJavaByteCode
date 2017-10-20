@@ -1,7 +1,9 @@
 
-var s:[Int] = [1]
+var s:[Int] = [1,2,3,4,5,6,7,8,9,10]
 
-s[0] = 1
 
-print(s[0])
+var b = 0
 
+b = s.count()
+
+print(b)

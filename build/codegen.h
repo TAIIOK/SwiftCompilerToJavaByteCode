@@ -44,7 +44,7 @@ char* loopVarName;
 std::vector<char*> loopVarNames;
 std::vector<char> empty_code;
 int loopCounter = 0;
-//FILE* file_of_class;
+
 
 std::ofstream file_of_class ("Main.class", std::ios::out | std::ios::binary);
 
@@ -369,19 +369,19 @@ void write_code_to_class_file(unsigned long int number, int size)
 	if (size == 1)
 	{
 		char temp = (char)number;
-		//fwrite(&temp , sizeof(char), sizeof(temp), file_of_class);
+
 		file_of_class.write(&temp, 4);
 	}
 	else if (size == 2)
 	{
 		union u2 temp = make_reversed_u2(number);
-		//fwrite(&temp.bytes[0] , sizeof(union u2), sizeof(&temp.bytes[0]), file_of_class);
+
 		file_of_class.write(&temp.bytes[0], 2);
 	}
 	else if (size == 4)
 	{
 		union u4 temp = make_reversed_u4(number);
-	//	fwrite(&temp.bytes[0] , sizeof(union u4), sizeof(&temp.bytes[0]), file_of_class);
+
 		file_of_class.write(&temp.bytes[0], 4);
 	}
 
@@ -399,12 +399,12 @@ void generate_expr_assign(NStmt *expr)
 				if( expr->var->type == EXPR_ID_LIST)
 				{	if(!expr->var->isArray){
 					switch (update_varuble(globalroot,expr->var)[0]) {
-					case 'I':    printf("Integer ASTORE\n");code_number(ISTORE, 1);     break;
-					case 'F':    printf("Float ASTORE\n");code_number(FSTORE, 1);   break;
-					case 'D':    printf("Double ASTORE\n");code_number(FSTORE, 1);  break;
-					case 'S':    printf("STRING ASTORE\n");code_number(ASTORE, 1);  break;
-					case 'A':    printf("ARRAY ASTORE\n");code_number(ASTORE, 1);  break;
-					default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+					case 'I':    code_number(ISTORE, 1);     break;
+					case 'F':    code_number(FSTORE, 1);   break;
+					case 'D':    code_number(FSTORE, 1);  break;
+					case 'S':    code_number(ASTORE, 1);  break;
+					case 'A':    code_number(ASTORE, 1);  break;
+					default:          printf("==WTF?== IN FUNCTION CALL\n");  code_number(ISTORE, 1);     break;
 					}
 				}else{
 					code_number(ASTORE, 1);
@@ -420,8 +420,16 @@ void generate_expr_assign(NStmt *expr)
 					generate_expr_code(expr->var->right);
 					generate_expr_code(expr->expr);
 
-					code_number(IASTORE, 1);
-					return;
+						switch (update_varuble(globalroot,el)[0]) {
+						case 'I':    code_number(IASTORE, 1);     break;
+						case 'F':    code_number(FASTORE, 1);   break;
+						case 'D':    code_number(FASTORE, 1);  break;
+						case 'S':    code_number(AASTORE, 1);  break;
+						case 'A':    code_number(AASTORE, 1);  break;
+						default:          printf("==WTF?== IN FUNCTION CALL\n");        break;
+						}
+
+						return;
 
 				}
 				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
@@ -478,15 +486,22 @@ printf("generate_expr_code %d\n",expr->type);
 	{
 		NExpr * el;
 		el =  is_in_local_vars(expr->left->idlist->first->name);
-		//generate_expr_code(el);
+
 		code_number(ALOAD, 1);
 		code_number(el->id, 1);
 
 
 		generate_expr_code(expr->right);
 
-		//code_number(el->id, 1);
-		code_number(IALOAD, 1);
+
+		switch (update_varuble(globalroot,el)[0]) {
+		case 'I':    code_number(IALOAD, 1);     break;
+		case 'F':    code_number(FALOAD, 1);   break;
+		case 'D':    code_number(FALOAD, 1);  break;
+		case 'S':    code_number(AALOAD, 1);  break;
+		case 'A':    code_number(AALOAD, 1);  break;
+		default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+		}
 		break;
 	}
 	case EXPR_ID_LIST:
@@ -498,17 +513,14 @@ printf("generate_expr_code %d\n",expr->type);
 	case EXPR_TABLE:
 	{
 
-		printf("EXPR_TABLE %d\n",expr->vartype->type);
-
 		if (expr->vartype->type != STRINGTy )
 		{
 
 			code_number(SIPUSH, 1);
-			code_number(1,2);   // размер массива
+			code_number(10,2);   // размер массива
 			code_number(NEWARRAY, 1);
 			if (expr->vartype->type == INTTy || expr->vartype->type == BOOLTy){
 				code_number(10, 1);
-				printf("EXPR_TABLE %d\n",expr->vartype->type);
 			}
 			else if (expr->vartype->type == DOUBLETy || expr->vartype->type == FLOATTy)
 				code_number(6, 1);
@@ -517,7 +529,7 @@ printf("generate_expr_code %d\n",expr->type);
 
 			if (currentElem != NULL)
 			{
-				for (int i = 0; i < 1; i++)
+				for (int i = 0; i < 10; i++)
 				{
 
 					code_number(DUP, 1);
@@ -530,8 +542,7 @@ printf("generate_expr_code %d\n",expr->type);
 						code_number(FASTORE, 1);
 					else if (expr->vartype->type == BOOLTy)
 						code_number(IASTORE, 1);
-					//!!!��������
-printf("EXPR_TABLE %d\n",expr->vartype->type);
+
 					currentElem = currentElem->next;
 				}
 			}
@@ -545,16 +556,31 @@ printf("EXPR_TABLE %d\n",expr->vartype->type);
 
 	case EXPR_MET:
 	{
-		printf("GENERATION BYTE CODE FUNCTION CALL\n");
-		if(strcmp(expr->left->idlist->first->name,"print") ||  strcmp(expr->left->idlist->first->name,"readLine"))
+		printf("GENERATION BYTE CODE FUNCTION CALL 1 \n ");
+
+		if(expr->left->idlist->first->next != NULL)
+		{
+			if(strcmp(expr->left->idlist->first->next->name,"count") == 0)
+			{
+				printf("%d",expr->left->idlist->first->type);
+				//exit(EXIT_FAILURE);
+				NExpr * el;
+				el =  is_in_local_vars(expr->left->idlist->first->name);
+				//generate_expr_code(el);
+				code_number(ALOAD, 1);
+				code_number(el->id, 1);
+
+				code_number(ARRAYLENGTH,1);
+				return;
+			}
+		}
+		else if(strcmp(expr->left->idlist->first->name,"print") ||  strcmp(expr->left->idlist->first->name,"readLine"))
 		{
 			generate_expr_list_code(expr->right->idlist);
 			code_number(INVOKESTATIC, 1);
 
   	char * str = (char*)malloc(sizeof(char)*33);
 
-		printf("expr->right->idlist->first->type %d",expr->right->idlist->first->type );
-		//exit(EXIT_FAILURE);
 			if(expr->right->idlist->first->type == EXPR_ID_LIST) {
 							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
 							printf("tyta\n");
@@ -923,21 +949,21 @@ void generate_if_code(NIf * If)
 
 	int size2;
 	union s2 temp;
-	//1. ������� GenerateCodeForExpression ��� ���������� ��������� ��������� � ��������� ��� ���������� �� ���� (0 � ����);
+
 	generate_expr_code(If->condition);
-	//2. ������������� ������� ifeq ��� �������� � ������ ������� �������, ��������� ����� ���� ������� ��� ��������� ����� �������� �����;
+
 	code_number(IFEQ, 1);
 	int size = all_code.size();
 	code_number(0, 2);
-	//3. ������������� ���, ������������� ��� ������ �������, ��������� ������� GenerateCodeForBlock;
+
 	generate_stmt_list_code(If->body);
 	if (If->elsebody != NULL)
 	{
-		//4. ���� ������������ ����� "�����", �� ������������� �������� ������������ �������� � ��������� ��� ����� ��� ����������� ��������� �����;
+
 		code_number(GO_TO, 1);
 		size2 = all_code.size();
 	}
-	//5. ��������� ����� ������� �� ������ 2 �� ���������� ���;
+
 	if (If->elsebody == NULL)
 	{
 		temp = make_reversed_s2(all_code.size() + 1 - size);
@@ -950,7 +976,7 @@ void generate_if_code(NIf * If)
 		temp = make_reversed_s2(all_code.size() + 1 - size);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size + i) = temp.bytes[i];
-		//6. ���� ������������ ����� "�����", �� ������������� ��� ��� ��� ��������� GenerateCodeForBlock � ��������� ����� �������� �� ������ 4 �� ���������� ���.
+
 		generate_stmt_list_code(If->elsebody);
 		temp = make_reversed_s2(all_code.size() + 1 - size2);
 		for (int i = 0; i < 2; i++)
@@ -996,61 +1022,7 @@ void generate_stmt_code(NStmt*stmt)
 	printf("IN GENERATE STMT CODE TYPE %d\n",stmt->type);
 	switch (stmt->type)
 	{
-		/*
-	case array_var:
-		{
 
-			if (stmt->arr_var->elem_type != String)
-			{
-				code_number(BIPUSH, 1);
-				code_number(stmt->arr_var->size, 1);
-				code_number(NEWARRAY, 1);
-				if (stmt->arr_var->elem_type == Integer || stmt->arr_var->elem_type == Root_Integer || stmt->arr_var->elem_type == Boolean)
-					code_number(10, 1);
-				else if (stmt->arr_var->elem_type == Real || stmt->arr_var->elem_type == Float)
-					code_number(6, 1);
-				else if (stmt->arr_var->elem_type == Character)
-					code_number(5, 1);
-				code_number(ASTORE, 1);
-				code_number(vars->at(arrId).id, 1);
-				//���� ������� ������������� ��������
-				if (stmt->arr_var->expression != NULL)
-				{
-					arrInitializing = true;
-					for (int i = 0; i < stmt->arr_var->size; i++)
-					{
-						if (arrExpr == NULL)
-							throw ("array size is bigger than initializing pool!");
-						code_number(ALOAD, 1);
-						code_number(vars->at(arrId).id, 1);
-						code_number(BIPUSH, 1);
-						code_number(i, 1);
-						generate_expr_code(arrExpr);
-						if (stmt->arr_var->elem_type == Integer || stmt->arr_var->elem_type == Root_Integer)
-						code_number(IASTORE, 1);
-						else if (stmt->arr_var->elem_type == Real || stmt->arr_var->elem_type == Float)
-							code_number(FASTORE, 1);
-						else if (stmt->arr_var->elem_type == Boolean)
-							code_number(IASTORE, 1);
-						//!!!��������
-						else if (stmt->arr_var->elem_type == Character)
-						{
-						}
-						if (arrExpr->next != NULL && i == stmt->arr_var->size-1)
-							throw ("array size is lower than initializing pool!");
-						arrExpr = arrExpr->next;
-					}
-					arrInitializing = false;
-				}
-			}
-			//else if (stmt->arr_var->elem_type == String)
-			//{
-			//	SemanticalConst str = CONST_String;
-			//	code_number(findType(str), 1);
-			//}
-			break;
-		}
-*/
 	case STMT_ASSIGN:
 
 	generate_expr_assign(stmt);
@@ -1059,7 +1031,7 @@ void generate_stmt_code(NStmt*stmt)
 	case STMT_EXPR:
 		{
 			generate_expr_code(stmt->expr);
-			//generate_expr_list_code(stmt->expr->idlist);
+
 			break;
 		}
 
@@ -1082,23 +1054,7 @@ void generate_stmt_code(NStmt*stmt)
 			generate_while_code(stmt->while_loop);
 			break;
 		}
-		/*
-	case func_pr:
-		{
-			for (char el : all_code)
-				code_of_methods[methodCounter].push_back(el);
-			all_code.clear();
-			generate_func_proc_code(stmt->func_proc);
-			break;
-		}
-		*/
-		/*
-	case en:
-		{
 
-			break;
-		}
-		*/
 	}
 	if (stmt->next != NULL)
 	{
@@ -1107,76 +1063,35 @@ void generate_stmt_code(NStmt*stmt)
 
 }
 
-void generate_varlist_assign_code(NExprList * assign)
-{
-	/*
-	NVariable*var = assign->variables->first;
-	while(var!=NULL)
-	{
-		LocalElement *el;
-		if(var->type == Integer && var->value!=NULL)
-		{
-			generate_expr_code(var->value);
-			code_number(ISTORE,1);
-			el = is_in_local_vars(var->var_name);
-			code_number(el->id,1);
-		}
-		else if((var->type == Real || var->type == Float) && var->value!=NULL)
-		{
-			generate_expr_code(var->value);
-			code_number(FSTORE,1);
-			code_number(is_in_local_vars(var->var_name)->id,1);
-		}
-		else if(var->type == Boolean&& var->value!=NULL)
-		{
-			generate_expr_code(var->value);
-			code_number(ISTORE, 1);
-			el = is_in_local_vars(var->var_name);
-			code_number(el->id, 1);
-		}
-		else if(var->type == Character&& var->value!=NULL)
-		{
-		}
-		else if(var->type == String&& var->value!=NULL)
-		{
-		}
-		else if(var->type == Array&& var->value!=NULL)
-		{
-		}
-		var=var->next;
-	}
-	*/
-}
-
 void generate_while_code(NWhile * While)
 {
 
-	int size;	//����� ������������ ��������
+	int size;
 	int size2;
 	int startCondition;
 	union s2 temp;
-	//1. ������������� ��� ��� �������� ������������ �������� � ��������� �� ����� ��� ���������� ����� �������� � ����������;
+
 	if (!While->doWhile)
 	{
 		code_number(GO_TO, 1);
 		code_number(0, 2);
 	}
 	size = all_code.size();
-	//2. ������������� ��� ���� �����, ��������� GenerateCodeForBlock;
+
 	generate_stmt_list_code(While->body);
 	size2 = all_code.size();
 
-	//3. ������������� ��� ���������� ��������� ���������, ��������� GenerateCodeForExpression,
+
 	generate_expr_code(While->condition);
 
-	//-----��������� ������� � ������ ���, ����� �� �������� �� ������ ���������� ���������;
+
 	if (!While->doWhile)
 	{
 		temp = make_reversed_s2(size2 - size + 3);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size - 2 + i) = temp.bytes[i];
 	}
-	//4. ������������� ��� �������� ifne ��� �������� � ������ ���� �����.
+
 	if (!While->doWhile)
 	{
 		code_number(IFNE, 1);
@@ -1200,21 +1115,21 @@ void generate_for_code(NFor *For)
 	loopVarName = For->name->name;
 	loopVarNames.push_back(loopVarName);
 	loopCounter++;
-	int size;	//����� ������������ ��������
+	int size;
 	int size2;
 	int startCondition;
 	union s2 temp;
 
-		//������ � ���������� ����� ����� �������
+
 		generate_expr_code(For->start->left );
 		code_number(ISTORE, 1);
 		code_number(Main_varubles.size() + loopCounter, 1);
-		// ������������� ��� ��� �������� ������������ �������� � ��������� �� ����� ��� ���������� ����� �������� � ����������;
+
 		code_number(GO_TO, 1);
 		code_number(0, 2);
 		size = all_code.size();
 
-		//������������� ��� ���� �����, ��������� GenerateCodeForBlock;
+
 		generate_stmt_list_code(For->body );
 		code_number(ILOAD, 1);
 		code_number(Main_varubles.size() + loopCounter, 1);
@@ -1225,7 +1140,7 @@ void generate_for_code(NFor *For)
 
 		size2 = all_code.size();
 
-		//3. ������������� ��� ���������� ��������� ���������
+
 
 		code_number(ILOAD, 1);
 		code_number(Main_varubles.size() + loopCounter, 1);
@@ -1237,14 +1152,13 @@ void generate_for_code(NFor *For)
 		code_number(4, 2);
 		code_number(ICONST_1, 1);
 
-		//-----��������� ������� � ������ ���, ����� �� �������� �� ������ ���������� ���������;
+
 		temp = make_reversed_s2(size2 - size + 3);
 		for (int i = 0; i < 2; i++)
 			all_code.at(size - 2 + i) = temp.bytes[i];
 
 
 
-		//4. ������������� ��� �������� ifne ��� �������� � ������ ���� �����.
 		code_number(IFNE, 1);
 		temp = make_reversed_s2(size + 1 - all_code.size());
 		for (int i = 0; i < 2; i++)
@@ -1278,34 +1192,6 @@ void generate_arr_var_code(NExpr * var)
 
 }
 
-void generate_func_proc_code(NFunc *func)
-{
-	/*
-	code_of_methods.insert(code_of_methods.end(), empty_code);
-	if (methodCounter >= 0)
-	{
-		for (char el : all_code)
-			code_of_methods[methodCounter].push_back(el);
-		all_code.clear();
-	}
-	methodCounter++;
-	method1 = current_method;
-	current_method = is_in_methods(func->name);
-
-	generate_stmt_list_code(func->localVars);
-	if (func->name == "main")
-		methodCounter = 0;
-	generate_stmt_list_code(func->body);
-	if(func->isFunc)
-		generate_return_code(func->type);
-	else code_number(_RETURN, 1);
-	for (char el : all_code)
-		code_of_methods[methodCounter].push_back(el);
-	all_code.clear();
-	current_method = method1;
-	*/
-}
-
 void generate_return_code(NVarEnumType type)
 {
 	if (type == STRINGTy || type == ARRAYTy)
@@ -1322,12 +1208,6 @@ void generate_return_code(NVarEnumType type)
 	}
 }
 
-void generate_enum_code(NExpr * var)
-{
-	generate_var_code(var);
-	generate_name_list_code(var->idlist);
-}
-
 void generate_byte_code()
 {
 
@@ -1335,7 +1215,6 @@ printf("count of Main_varubles: %d\n", Main_varubles.size());
 for (auto c : Main_varubles) {
 	printf("name -> %s , id -> %d\n",c->idlist->first->name, c->id);
 }
-
 
 generate_stmt_list_code(root);
 byte_code = all_code;
@@ -1350,8 +1229,6 @@ void generate_class_file()
 	strcpy(file_name,"Main");
 	strcat(file_name, ".class");
 
-	//file_of_class = fopen("Main.class","wb");
-	//����������� ��������� �����
 	number = 0xCAFEBABE;
 	code_number(number, 4);
 	number = 0x0000;
@@ -1367,16 +1244,16 @@ void generate_class_file()
 	code_number(0x0001 | 0x0002, 2);
 	number = 3; //parent_class->classname->id;
 	code_number(number, 2);
-	//�������� Object
+
 	number = 8; // parent_class->parentname->id;
 	code_number(number, 2);
-	//����������
+
 	number = 0;
 	code_number(number, 2);
-	//����������� ���� ������
+
 	number = 0;
 	code_number(number, 2);
-	//������ ������
+
 	number = 1;  // parent_class->methods->size();
 	code_number(number, 2);
 
@@ -1398,7 +1275,7 @@ void write_byte_code(std::vector<char> & code)
 	{
 
 		file_of_class.write(code.begin().base(), code.size());
-		//fwrite(&code[0] , sizeof(vector<char>::value_type), sizeof(code.size()), file_of_class);
+
 
 	}
 

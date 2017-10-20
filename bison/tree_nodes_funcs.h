@@ -642,7 +642,6 @@ struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varu
     result->vartype = varubltype;
     result->isArray = isArray;
     result->type = EXPR_ID_LIST;
-    printf("Pointer %d  \n", isArray);
     return result;
 }
 struct NVarType*  get_array_type(struct NTable* value)
@@ -674,6 +673,7 @@ struct NExpr* create_expr_table(struct NTable* value, struct NVarType* varubltyp
     else{
     result->vartype = varubltype;
     }
+
     result->type = EXPR_TABLE;
     return result;
 }
@@ -775,9 +775,6 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
     struct NStmt* result = (NStmt*)malloc(sizeof(NStmt));
     result->var = var;
     result->expr = expr;
-
-    printf("VAR %d\n",var->type);
-    printf("EXPR %d\n",expr->type);
 
     struct NVarType* varType = (NVarType*)malloc(sizeof(NVarType));
 
