@@ -394,8 +394,6 @@ void generate_expr_assign(NStmt *expr)
 
 				if(expr->var->type != EXPR_MAS)
 				generate_expr_code(expr->expr);
-
-				printf("HEEERRRRREEEEE 1 %d\n",expr->var->type);
 				if( expr->var->type == EXPR_ID_LIST)
 				{	if(!expr->var->isArray){
 					switch (update_varuble(globalroot,expr->var)[0]) {
@@ -404,7 +402,7 @@ void generate_expr_assign(NStmt *expr)
 					case 'D':    code_number(FSTORE, 1);  break;
 					case 'S':    code_number(ASTORE, 1);  break;
 					case 'A':    code_number(ASTORE, 1);  break;
-					default:          printf("==WTF?== IN FUNCTION CALL1\n");  code_number(ISTORE, 1);     break;
+					default:          printf("==WTF?== IN generate_expr_assign\n");  code_number(ISTORE, 1);     break;
 					}
 				}else{
 					code_number(ASTORE, 1);
@@ -413,7 +411,6 @@ void generate_expr_assign(NStmt *expr)
 				}
 				else if (expr->var->type == EXPR_MAS)
 				{
-					printf("EXPR_MAS name %s %d",expr->var->left->idlist->first->name ,expr->var->right->type);
 					code_number(ALOAD, 1);
 					el =  is_in_local_vars(expr->var->left->idlist->first->name);
 					code_number(el->id, 1);
@@ -426,7 +423,7 @@ void generate_expr_assign(NStmt *expr)
 						case 'D':    code_number(FASTORE, 1);  break;
 						case 'S':    code_number(AASTORE, 1);  break;
 						case 'A':    code_number(AASTORE, 1);  break;
-						default:          printf("==WTF?== IN FUNCTION CALL\n"); code_number(IASTORE, 1);       break;
+						default:          printf("==WTF?== generate_expr_assign MASS\n"); code_number(IASTORE, 1);       break;
 						}
 
 						return;
@@ -434,22 +431,17 @@ void generate_expr_assign(NStmt *expr)
 				}
 				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
-						printf("ISTORE\n");
 						code_number(ISTORE, 1);
 					}
 					else if (expr->var->vartype->type == FLOATTy)
 					{
-						printf("FSTORE\n");
 						code_number(FSTORE, 1);
 					}
 					else
 					{
-						printf("ASTORE\n");
 						code_number(ASTORE, 1);
 					}
-					printf("HEEERRRRREEEEE 2\n");
 					el = is_in_local_vars(expr->var->idlist->first->name);
-					printf("HEEERRRRREEEEE 3 el->id %d\n",el->id);
 					code_number(el->id, 1);
 }
 
@@ -492,7 +484,6 @@ void generate_expr_code(NExpr *expr)
 {
  bool arrInitializing = false;
 
-printf("generate_expr_code %d\n",expr->type);
 	switch (expr->type)
 	{
 	case EXPR_MAS:
@@ -576,17 +567,14 @@ printf("generate_expr_code %d\n",expr->type);
 
 	case EXPR_MET:
 	{
-		printf("GENERATION BYTE CODE FUNCTION CALL 1 \n ");
-
 		if(expr->left->idlist->first->next != NULL)
 		{
 			if(strcmp(expr->left->idlist->first->next->name,"count") == 0)
 			{
-				printf("%d",expr->left->idlist->first->type);
-				//exit(EXIT_FAILURE);
+
 				NExpr * el;
 				el =  is_in_local_vars(expr->left->idlist->first->name);
-				//generate_expr_code(el);
+
 				code_number(ALOAD, 1);
 				code_number(el->id, 1);
 
@@ -608,13 +596,10 @@ printf("generate_expr_code %d\n",expr->type);
 
 			if(expr->right->idlist->first->type == EXPR_ID_LIST) {
 							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
-							printf("tyta\n");
 			}
 			else{
 							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
-							printf("zdyta\n");
 			}
-			printf("%s\n\n",str);
 			switch (str[0]) {
 			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;
@@ -638,7 +623,7 @@ printf("generate_expr_code %d\n",expr->type);
 			case 'I':    code_number(IADD, 1);     break;
 			case 'F':    code_number(FADD, 1);   break;
 			case 'D':    code_number(FADD, 1);  break;
-			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			default:          printf("==WTF?== IN EXPR_PLUS\n");       break;
 			}
 			break;
 		}
@@ -650,7 +635,7 @@ printf("generate_expr_code %d\n",expr->type);
 			case 'I':    code_number(IMUL, 1);     break;
 			case 'F':    code_number(FMUL, 1);   break;
 			case 'D':    code_number(FMUL, 1);  break;
-			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			default:          printf("==WTF?== IN EXPR_MUL\n");       break;
 			}
 			break;
 		}
@@ -662,7 +647,7 @@ printf("generate_expr_code %d\n",expr->type);
 			case 'I':    code_number(IDIV, 1);     break;
 			case 'F':    code_number(FDIV, 1);   break;
 			case 'D':    code_number(FDIV, 1);  break;
-			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			default:          printf("==WTF?== EXPR_DIV\n");       break;
 			}
 			break;
 		}
@@ -677,7 +662,7 @@ switch (check_stack_operation(create_stack_operation(expr))[0]) {
 case 'I':    code_number(ISUB, 1);     break;
 case 'F':    code_number(FSUB, 1);   break;
 case 'D':    code_number(FSUB, 1);  break;
-default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+default:          printf("==WTF?== IN EXPR_MINUS\n");       break;
 }
 
 			break;
@@ -913,7 +898,6 @@ void generate_name_code(NExpr*name)
 		}
 		if (loopVarName!=NULL && i<loopVarNames.size() && strcmp(name->name, loopVarNames[i]) == 0)
 		{
-			printf("NNNNNYYYYY PPPPPPRRRRIIIIIVVVEEETTT\n" );
 			code_number(ILOAD, 1);
 			code_number(Main_varubles.size() + i + loopCounter , 1);
 		}
@@ -921,11 +905,6 @@ void generate_name_code(NExpr*name)
 		{
 
 			NExpr *elem = is_in_local_vars(name->name);
-
-			printf("elem->type %d %d\n",elem->type,elem->isArray);
-			if(elem == NULL){
-				printf("NULL ELEM\n");
-			}
 
 			if (elem->vartype->type == INTTy )
 			{
@@ -949,7 +928,6 @@ void generate_name_code(NExpr*name)
 			}
 			else if (elem->vartype->type == ARRAYTy || elem->isArray)
 			{
-				printf("ITS ARRAY\n");
 				code_number(ALOAD, 1);
 				code_number(elem->id, 1);
 			}
@@ -962,7 +940,6 @@ void generate_name_code(NExpr*name)
 
 void generate_name_list_code(NExprList*list)
 {
-	printf("generate_name_list_code\n");
 	if(list!=NULL)
 	{
 		generate_name_code(list->first);
@@ -1045,7 +1022,6 @@ void generate_stmt_list_code(NStmtList *list)
 
 void generate_stmt_code(NStmt*stmt)
 {
-	printf("IN GENERATE STMT CODE TYPE %d\n",stmt->type);
 	switch (stmt->type)
 	{
 
