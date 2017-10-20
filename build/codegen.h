@@ -76,7 +76,6 @@ union s2
 
 void code_const_table()
 {
-	printf("ALL CODE SIZE %d\n",all_code.size());
 	int i;
 	for (auto c : table) {
 					if(c.type != CONST_NULL) {
@@ -125,7 +124,6 @@ void code_const_table()
 					default:   break;
 					}
 	}
-	printf("%d\n",all_code.size());
 }
 
 void code_method_table()
@@ -140,8 +138,6 @@ code_number(5, 2);//дескриптор метода
 code_number(1, 2);//количество атрибутов метода
 
 code_number(1, 2);//имя атрибута
-
-printf("Current byte_code size %d\n",byte_code.size());
 
 code_number(byte_code.size() + 13, 4);//длинна атрибута
 
@@ -581,6 +577,18 @@ void generate_expr_code(NExpr *expr)
 				code_number(ARRAYLENGTH,1);
 				return;
 			}
+		}
+		else if(strcmp(expr->left->idlist->first->name,"toInt") == 0)
+		{
+			generate_expr_list_code(expr->right->idlist);
+			code_number(INVOKESTATIC, 1);
+			code_number(findMethodRef(INTTy,false), 2);
+		}
+		else if(strcmp(expr->left->idlist->first->name,"toFloat") == 0)
+		{
+			generate_expr_list_code(expr->right->idlist);
+			code_number(INVOKESTATIC, 1);
+			code_number(findMethodRef(FLOATTy,false), 2);
 		}
 		else if(strcmp(expr->left->idlist->first->name,"readLine") == 0)
 		{

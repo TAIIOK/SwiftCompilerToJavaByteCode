@@ -35,12 +35,12 @@
    33;METHODREF;  9 32
    34;     UTF8;  'Print'
    35;    CLASS;  56
-   36;     UTF8;  'readInt'
-   37;     UTF8;  '()I'
+   36;     UTF8;  'Int'
+   37;     UTF8;  '(Ljava/lang/String;)I'
    38; NAMETYPE;  36 37
    39;METHODREF;  35 38
-   40;     UTF8;  'readFloat'
-   41;     UTF8;  '()F'
+   40;     UTF8;  'Float'
+   41;     UTF8;  '(Ljava/lang/String;)F'
    42; NAMETYPE;  40 41
    43;METHODREF;  35 42
    44;     UTF8;  'readChar'

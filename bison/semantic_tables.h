@@ -337,12 +337,12 @@ void buildBaseTable()
     //Print int block 36 37 38 39
     STConst readIntName;
     readIntName.type = CONST_UTF8;
-    readIntName.value.utf8 = "readInt";
+    readIntName.value.utf8 = "Int";
     table.push_back(readIntName);
 
     STConst readIntDesc;
     readIntDesc.type = CONST_UTF8;
-    readIntDesc.value.utf8 = "()I";
+    readIntDesc.value.utf8 = "(Ljava/lang/String;)I";
     table.push_back(readIntDesc);
 
     STConst readIntNT;
@@ -361,12 +361,12 @@ void buildBaseTable()
     //Read float block 40 41 42 43
     STConst readFloatName;
     readFloatName.type = CONST_UTF8;
-    readFloatName.value.utf8 = "readFloat";
+    readFloatName.value.utf8 = "Float";
     table.push_back(readFloatName);
 
     STConst readFloatDesc;
     readFloatDesc.type = CONST_UTF8;
-    readFloatDesc.value.utf8 = "()F";
+    readFloatDesc.value.utf8 = "(Ljava/lang/String;)F";
     table.push_back(readFloatDesc);
 
     STConst readFloatNT;
@@ -541,7 +541,7 @@ void check_equal(char *left,char *right){
 
         if(strcmp(left,right) != 0)
         {
-                printf("Wrong equal TYPE\n");
+                printf("Wrong equal TYPE %s %s \n",right,left);
                 exit (EXIT_FAILURE);
         }
         return;
@@ -979,6 +979,14 @@ void check_function_call(NStmtList *root,NExpr *var){
 
 }
 char * get_function_type(struct NFunc * f){
+  if(strcmp("toFloat",f->name->last->name) == 0)
+  {
+    return "F ";
+  }
+        if(strcmp("toInt",f->name->last->name) == 0)
+        {
+          return "I ";
+        }
         if(strcmp("readLine",f->name->last->name) == 0)
         {
                 return "S ";
@@ -1002,7 +1010,7 @@ char * get_function_type(struct NFunc * f){
 }
 void check_function_args(struct NExpr * cur){
 
-        if (strcmp(cur->left->idlist->first->name, "print") == 0 )
+        if (strcmp(cur->left->idlist->first->name, "print") == 0 || strcmp(cur->left->idlist->first->name, "toInt") == 0  ||  strcmp(cur->left->idlist->first->name, "toFloat") == 0)
         {
                 if(cur->right->idlist->first != NULL) {
                         if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
@@ -1014,6 +1022,7 @@ void check_function_args(struct NExpr * cur){
                 }
                 return;
         }
+
 
         if(strcmp(cur->left->idlist->first->name, "readLine") == 0 )
         {
@@ -1368,6 +1377,25 @@ void st_stmt(struct NStmt * node) {
                                         break;
                                 }
                         }
+
+                        if(strcmp(node->expr->left->idlist->first->name,"toInt" )==0)
+                        {
+                          if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
+                            node->var->vartype->type = INTTy;
+                          }
+                                check_equal(update_varuble(globalroot,node->var),"I ");
+
+                        }
+
+                        if(strcmp(node->expr->left->idlist->first->name,"toFloat" )==0)
+                        {
+                          if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
+                            node->var->vartype->type = FLOATTy;
+                          }
+                                check_equal(update_varuble(globalroot,node->var),"F ");
+
+                        }
+
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
                           if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
