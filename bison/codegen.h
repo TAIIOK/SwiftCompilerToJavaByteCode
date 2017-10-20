@@ -404,7 +404,7 @@ void generate_expr_assign(NStmt *expr)
 					case 'D':    code_number(FSTORE, 1);  break;
 					case 'S':    code_number(ASTORE, 1);  break;
 					case 'A':    code_number(ASTORE, 1);  break;
-					default:          printf("==WTF?== IN FUNCTION CALL\n");  code_number(ISTORE, 1);     break;
+					default:          printf("==WTF?== IN FUNCTION CALL1\n");  code_number(ISTORE, 1);     break;
 					}
 				}else{
 					code_number(ASTORE, 1);
@@ -426,7 +426,7 @@ void generate_expr_assign(NStmt *expr)
 						case 'D':    code_number(FASTORE, 1);  break;
 						case 'S':    code_number(AASTORE, 1);  break;
 						case 'A':    code_number(AASTORE, 1);  break;
-						default:          printf("==WTF?== IN FUNCTION CALL\n");        break;
+						default:          printf("==WTF?== IN FUNCTION CALL\n"); code_number(IASTORE, 1);       break;
 						}
 
 						return;
@@ -589,6 +589,7 @@ printf("generate_expr_code %d\n",expr->type);
 							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
 							printf("zdyta\n");
 			}
+			printf("%s\n\n",str);
 			switch (str[0]) {
 			case 'I':    code_number(findMethodRef(INTTy), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy), 2);   break;
@@ -596,7 +597,7 @@ printf("generate_expr_code %d\n",expr->type);
 			case 'B':    code_number(findMethodRef(BOOLTy), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy), 2);   break;
-			default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+			default:          printf("==WTF?== IN FUNCTION CALL\n");   code_number(findMethodRef(INTTy), 2);    break;
 			}
 
 

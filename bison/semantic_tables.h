@@ -1273,13 +1273,19 @@ void st_stmt(struct NStmt * node) {
                         }
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
+                          if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
+                            node->var->vartype->type = STRINGTy;
+                          }
                                 check_equal(update_varuble(globalroot,node->var),"S ");
 
                         }
-                        if(strcmp(node->expr->left->idlist->first->name,"count" )==0)
+                        if(node->expr->left->idlist->first->next != NULL)
+                        if(strcmp(node->expr->left->idlist->first->next->name,"count" )==0)
                         {
+                          if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
+                            node->var->vartype->type = INTTy;
+                          }
                                 check_equal(update_varuble(globalroot,node->var),"I ");
-
                         }
                 }
 
