@@ -328,6 +328,136 @@ void buildBaseTable()
         table.push_back(printClass);
 
 
+        STConst RTLRead;
+    RTLRead.type = CONST_CLASS;
+    RTLRead.value.val_int  = 56;
+    table.push_back(RTLRead);
+
+
+    //Print int block 36 37 38 39
+    STConst readIntName;
+    readIntName.type = CONST_UTF8;
+    readIntName.value.utf8 = "readInt";
+    table.push_back(readIntName);
+
+    STConst readIntDesc;
+    readIntDesc.type = CONST_UTF8;
+    readIntDesc.value.utf8 = "()I";
+    table.push_back(readIntDesc);
+
+    STConst readIntNT;
+    readIntNT.type = CONST_NAMETYPE;
+    readIntNT.value.args.arg1 = 36;
+    readIntNT.value.args.arg2 = 37;
+    table.push_back(readIntNT);
+
+    STConst readIntMethod;
+    readIntMethod.type = CONST_METHODREF;
+    readIntMethod.value.args.arg1 = 35;
+    readIntMethod.value.args.arg2 = 38;
+    table.push_back(readIntMethod);
+
+
+    //Read float block 40 41 42 43
+    STConst readFloatName;
+    readFloatName.type = CONST_UTF8;
+    readFloatName.value.utf8 = "readFloat";
+    table.push_back(readFloatName);
+
+    STConst readFloatDesc;
+    readFloatDesc.type = CONST_UTF8;
+    readFloatDesc.value.utf8 = "()F";
+    table.push_back(readFloatDesc);
+
+    STConst readFloatNT;
+    readFloatNT.type = CONST_NAMETYPE;
+    readFloatNT.value.args.arg1 = 40;
+    readFloatNT.value.args.arg2 = 41;
+    table.push_back(readFloatNT);
+
+    STConst readFloaMethod;
+    readFloaMethod.type = CONST_METHODREF;
+    readFloaMethod.value.args.arg1 = 35;
+    readFloaMethod.value.args.arg2 = 42;
+    table.push_back(readFloaMethod);
+
+
+    //Read char block 44 45 46 47
+    STConst readCharName;
+    readCharName.type = CONST_UTF8;
+    readCharName.value.utf8 = "readChar";
+    table.push_back(readCharName);
+
+    STConst readCharDesc;
+    readCharDesc.type = CONST_UTF8;
+    readCharDesc.value.utf8 = "()C";
+    table.push_back(readCharDesc);
+
+    STConst readCharNT;
+    readCharNT.type = CONST_NAMETYPE;
+    readCharNT.value.args.arg1 = 44;
+    readCharNT.value.args.arg2 = 45;
+    table.push_back(readCharNT);
+
+    STConst readCharMethod;
+    readCharMethod.type = CONST_METHODREF;
+    readCharMethod.value.args.arg1 = 35;
+    readCharMethod.value.args.arg2 = 46;
+    table.push_back(readCharMethod);
+
+
+    //Read bool block 48 49 50 51
+    STConst readBoolName;
+    readBoolName.type = CONST_UTF8;
+    readBoolName.value.utf8 = "readBool";
+    table.push_back(readBoolName);
+
+    STConst readBoolDesc;
+    readBoolDesc.type = CONST_UTF8;
+    readBoolDesc.value.utf8 = "()B";
+    table.push_back(readBoolDesc);
+
+    STConst readBoolNT;
+    readBoolNT.type = CONST_NAMETYPE;
+    readBoolNT.value.args.arg1 = 48;
+    readBoolNT.value.args.arg2 = 49;
+    table.push_back(readBoolNT);
+
+    STConst readBoolMethod;
+    readBoolMethod.type = CONST_METHODREF;
+    readBoolMethod.value.args.arg1 = 35;
+    readBoolMethod.value.args.arg2 = 50;
+    table.push_back(readBoolMethod);
+
+    //Read string block 52 53 54 55
+    STConst readStringName;
+    readStringName.type = CONST_UTF8;
+    readStringName.value.utf8 = "readString";
+    table.push_back(readStringName);
+
+    STConst readStringDesc;
+    readStringDesc.type = CONST_UTF8;
+    readStringDesc.value.utf8 = "()Ljava/lang/String;";
+    table.push_back(readStringDesc);
+
+    STConst readStringNT;
+    readStringNT.type = CONST_NAMETYPE;
+    readStringNT.value.args.arg1 = 52;
+    readStringNT.value.args.arg2 = 53;
+    table.push_back(readStringNT);
+
+    STConst readStringMethod;
+    readStringMethod.type = CONST_METHODREF;
+    readStringMethod.value.args.arg1 = 35;
+    readStringMethod.value.args.arg2 = 54;
+    table.push_back(readStringMethod);
+
+    STConst readClass;
+    readClass.type = CONST_UTF8;
+    readClass.value.utf8 = "Read";
+    table.push_back(readClass);
+
+
 
 }
 
@@ -1273,6 +1403,9 @@ void st_stmt(struct NStmt * node) {
                         }
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
+                          if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
+                            node->var->vartype->type = STRINGTy;
+                          }
                                 check_equal(update_varuble(globalroot,node->var),"S ");
 
                         }
