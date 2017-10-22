@@ -143,7 +143,8 @@ code_number(byte_code.size() + 13, 4);//длинна атрибута
 
 code_number(2048, 2);//стек
 
-code_number(Main_varubles.size() + 1 + loopCounter, 2);//количество локальных переменных
+
+code_number(Main_varubles.size() + 1 + loopCounter , 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 
@@ -915,7 +916,7 @@ void generate_name_code(NExpr*name)
 		if (loopVarName!=NULL && i<loopVarNames.size() && strcmp(name->name, loopVarNames[i]) == 0)
 		{
 			code_number(ILOAD, 1);
-			code_number(Main_varubles.size() + i + loopCounter , 1);
+			code_number(Main_varubles.size() + i + 1 , 1);
 		}
 		else
 		{
@@ -1133,6 +1134,7 @@ void generate_for_code(NFor *For)
 	loopVarName = For->name->name;
 	loopVarNames.push_back(loopVarName);
 	loopCounter++;
+	int currentFor = loopCounter;
 	int size;
 	int size2;
 	int startCondition;
@@ -1141,7 +1143,7 @@ void generate_for_code(NFor *For)
 
 		generate_expr_code(For->start->left );
 		code_number(ISTORE, 1);
-		code_number(Main_varubles.size() + loopCounter, 1);
+		code_number(Main_varubles.size() + currentFor, 1);
 
 		code_number(GO_TO, 1);
 		code_number(0, 2);
@@ -1150,18 +1152,18 @@ void generate_for_code(NFor *For)
 
 		generate_stmt_list_code(For->body );
 		code_number(ILOAD, 1);
-		code_number(Main_varubles.size() + loopCounter, 1);
+		code_number(Main_varubles.size() + currentFor, 1);
 		code_number(ICONST_1, 1);
 		code_number(IADD, 1);
 		code_number(ISTORE, 1);
-		code_number(Main_varubles.size() + loopCounter, 1);
+		code_number(Main_varubles.size() + currentFor, 1);
 
 		size2 = all_code.size();
 
 
 
 		code_number(ILOAD, 1);
-		code_number(Main_varubles.size() + loopCounter, 1);
+		code_number(Main_varubles.size() + currentFor, 1);
 		generate_expr_code(For->start->right);
 		code_number(IF_ICMPLT, 1);
 		code_number(7, 2);
@@ -1184,6 +1186,8 @@ void generate_for_code(NFor *For)
 
 
 	loopVarName = NULL;
+
+
 	if (loopVarNames.size()>0)
 	{
 		loopVarName = (char*)malloc(sizeof(char)* strlen(loopVarNames.at(loopVarNames.size()-1) + 1));

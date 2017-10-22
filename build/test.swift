@@ -20,6 +20,20 @@ print(Example + Example2)
 //var b:Int = toInt(first)
 
 
+var temp = 0; // временная переменная для обмена элементов местами
+
+var size = a.count()
+
+var i = 0
+
+var j = 0
+
+for i in 0 ... size - 1 {
+
+print(i)
+
+
+}
 
 
 

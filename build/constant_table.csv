@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 76;
+;Constant table size = 77;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -76,4 +76,5 @@
    74;   STRING;  73
    75;     UTF8;  'kak dela'
    76;   STRING;  75
+   77;      INT;  0
 Method list size = 0
