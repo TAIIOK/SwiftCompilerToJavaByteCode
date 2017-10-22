@@ -518,7 +518,7 @@ void generate_expr_code(NExpr *expr)
 			int size = 0;
 			code_number(SIPUSH, 1);
 			 struct NTblElem * currentElem = expr->table->first;
-			 if (currentElem != NULL)
+			  	while (currentElem != NULL)
 			 {
 				 size = size + 1;
 				 currentElem = currentElem->next;
@@ -813,10 +813,16 @@ default:          printf("==WTF?== IN EXPR_MINUS\n");       break;
 		}
 	case EXPR_DOUBLE:
 		{
-			code_number(LDC_W, 1);
+			code_number(LDC2_W, 1);
 			code_number(expr->id, 2);
 			break;
 		}
+		case EXPR_FLOAT:
+			{
+				code_number(LDC_W, 1);
+				code_number(expr->id, 2);
+				break;
+			}
 	case EXPR_STR:
 		{
 			code_number(LDC, 1);

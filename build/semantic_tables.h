@@ -1523,6 +1523,9 @@ void st_stmt_expr(struct NExpr * node) {
                         node->id = st_constant_index(CONST_FLOAT, (void *)&(node->Float));
 
                 }
+                else{
+                  node->id = st_constant_index(CONST_FLOAT, (void *)&(node->Float));
+                }
         }
 
         case EXPR_DOUBLE: {
@@ -1534,8 +1537,9 @@ void st_stmt_expr(struct NExpr * node) {
                         cfloat.value.val_double = node->Double;
                         node->id = st_constant_index(CONST_DOUBLE, (void *)&(node->Double));
                         table.push_back(cfloat);
-
-
+                }
+                else{
+                  node->id = st_constant_index(CONST_DOUBLE, (void *)&(node->Double));
                 }
         }
                           break;
@@ -1561,6 +1565,9 @@ void st_stmt_expr(struct NExpr * node) {
                         table.push_back(cstr);
 
                         node->id = st_constant_index( CONST_UTF8, (void*)(node->name)) + 1;
+                }
+                else{
+                  node->id = st_constant_index(CONST_UTF8, (void *)(node->name)) + 1;
                 }
         }
                        break;
