@@ -8,6 +8,15 @@ var flo:Float = toFloat(first)
 
 print(flo)
 
+
+var Example:String = "Privet"
+
+var Example2:String = "kak dela"
+
+
+print(Example + Example2)
+
+
 //var b:Int = toInt(first)
 
 

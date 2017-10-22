@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 66;
+;Constant table size = 76;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -56,14 +56,24 @@
    54; NAMETYPE;  52 53
    55;METHODREF;  35 54
    56;     UTF8;  'Read'
-   57;      INT;  1
-   58;      INT;  2
-   59;      INT;  3
-   60;      INT;  4
-   61;      INT;  5
-   62;      INT;  6
-   63;      INT;  7
-   64;      INT;  8
-   65;      INT;  9
-   66;      INT;  10
+   57;    CLASS;  62
+   58;     UTF8;  'ConcString'
+   59;     UTF8;  '(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;'
+   60; NAMETYPE;  58 59
+   61;METHODREF;  57 60
+   62;     UTF8;  'StringOperations'
+   63;      INT;  1
+   64;      INT;  2
+   65;      INT;  3
+   66;      INT;  4
+   67;      INT;  5
+   68;      INT;  6
+   69;      INT;  7
+   70;      INT;  8
+   71;      INT;  9
+   72;      INT;  10
+   73;     UTF8;  'Privet'
+   74;   STRING;  73
+   75;     UTF8;  'kak dela'
+   76;   STRING;  75
 Method list size = 0

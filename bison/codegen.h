@@ -631,6 +631,8 @@ void generate_expr_code(NExpr *expr)
 			case 'I':    code_number(IADD, 1);     break;
 			case 'F':    code_number(FADD, 1);   break;
 			case 'D':    code_number(FADD, 1);  break;
+			case 'S':			code_number(INVOKESTATIC, 1);
+										code_number(61,2);break;
 			default:          printf("==WTF?== IN EXPR_PLUS\n");       break;
 			}
 			break;

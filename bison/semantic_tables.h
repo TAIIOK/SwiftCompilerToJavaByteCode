@@ -457,6 +457,39 @@ void buildBaseTable()
     readClass.value.utf8 = "Read";
     table.push_back(readClass);
 
+    STConst RTLStringOperations;
+RTLStringOperations.type = CONST_CLASS;
+RTLStringOperations.value.val_int  = 62;
+table.push_back(RTLStringOperations);
+
+//Print int block 36 37 38 39
+STConst concString;
+concString.type = CONST_UTF8;
+concString.value.utf8 = "ConcString";
+table.push_back(concString);
+
+STConst concStringDesc;
+concStringDesc.type = CONST_UTF8;
+concStringDesc.value.utf8 = "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;";
+table.push_back(concStringDesc);
+
+STConst concStringNT;
+concStringNT.type = CONST_NAMETYPE;
+concStringNT.value.args.arg1 = 58;
+concStringNT.value.args.arg2 = 59;
+table.push_back(concStringNT);
+
+STConst concStringMethod;
+concStringMethod.type = CONST_METHODREF;
+concStringMethod.value.args.arg1 = 57;
+concStringMethod.value.args.arg2 = 60;
+table.push_back(concStringMethod);
+
+STConst stringClass;
+stringClass.type = CONST_UTF8;
+stringClass.value.utf8 = "StringOperations";
+table.push_back(stringClass);
+
 
 
 }
@@ -634,6 +667,26 @@ char * return_Expr_Init_Type(NExpr *var){
         return "";
 }
 char * update_varuble(NStmtList *root,NExpr *var){
+
+  for(auto c : Main_varubles)
+  {
+    if(c->name != NULL  && var->name != NULL)
+    if(strcmp(c->name,var->name)==0)
+    {
+      printf("%s %s", c->name , var->name);
+      exit(EXIT_FAILURE);
+      if(c->type != EXPR_ID_LIST && c->type != EXPR_ID && c->type != EXPR_MAS)
+      {
+              return return_Expr_Init_Type(c);
+      }
+      else{
+
+        char * str = (char*)malloc(sizeof(char)*33);
+        strcat(str,return_varuble_type(c));
+        return str;
+      }
+    }
+  }
 
         if(var->type == EXPR_TABLE)
         {
@@ -1398,8 +1451,11 @@ void st_stmt(struct NStmt * node) {
 
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
+                            printf("%s",update_varuble(globalroot,node->var));
                           if(strcmp(update_varuble(globalroot,node->var),"V ") ==0){
+
                             node->var->vartype->type = STRINGTy;
+
                           }
                                 check_equal(update_varuble(globalroot,node->var),"S ");
 
