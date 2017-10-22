@@ -688,6 +688,27 @@ char * update_varuble(NStmtList *root,NExpr *var){
     }
   }
 
+  if(var->varconstant != NULL) {
+          if(var->vartype != NULL)
+          {
+
+          char * str = (char*)malloc(sizeof(char)*33);;
+
+          strcpy(str,return_varuble_type(var));
+
+          /* тут вставить сбор в контейнер expr */
+          if(!(std::find(Main_varubles.begin(), Main_varubles.end(), var) != Main_varubles.end()))
+          {
+            Main_varubles.push_back(var);
+            var->id = Main_varubles.size();
+          }
+          return str;
+
+  }
+}
+
+
+
         if(var->type == EXPR_TABLE)
         {
                 char * str = (char*)malloc(sizeof(char)*33);
@@ -761,15 +782,6 @@ char * update_varuble(NStmtList *root,NExpr *var){
                         }
                 }
 
-                if(current->type == STMT_WHILE )
-                {
-                        struct NStmtList* result = (NStmtList*)malloc(sizeof(NStmtList));
-                        result = current->while_loop->body;
-                        if  ( strstr(update_varuble(result,var), "") != 0 )
-                        {
-                                return update_varuble(result,var);
-                        }
-                }
 
                 if((var->type == EXPR_MAS || var->type == EXPR_ID ) && current->type == STMT_ASSIGN)
                 {

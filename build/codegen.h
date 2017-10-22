@@ -606,9 +606,13 @@ void generate_expr_code(NExpr *expr)
 			if(expr->right->idlist->first->type == EXPR_ID_LIST) {
 							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
 			}
-			else{
+				else if (expr->right->idlist->first->type==EXPR_MINUS ||expr->right->idlist->first->type==EXPR_PLUS || expr->right->idlist->first->type==EXPR_MUL || expr->right->idlist->first->type==EXPR_DIV || expr->right->idlist->first->type==EXPR_MOD){
 							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
-			}
+						}
+						else{
+							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
+						}
+
 			switch (str[0]) {
 			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;
