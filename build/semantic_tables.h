@@ -15,6 +15,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -120,8 +121,15 @@ list<st_const> Main_table;
 
 list<NExpr *> Main_varubles;
 
+list<list<NExpr *> > function_varubles;
+
+vector<int> discriptor_of_methods;
+vector<int> name_of_methods;
+
 NStmtList *globalroot;
 NStmtList *rootwithoutfunc;
+
+int countofvar = 0 ;
 
 void buildBaseTable()
 {
@@ -699,8 +707,9 @@ char * update_varuble(NStmtList *root,NExpr *var){
           /* тут вставить сбор в контейнер expr */
           if(!(std::find(Main_varubles.begin(), Main_varubles.end(), var) != Main_varubles.end()))
           {
+            countofvar = countofvar  + 1;
+            var->id = countofvar;
             Main_varubles.push_back(var);
-            var->id = Main_varubles.size();
           }
           return str;
 
@@ -765,9 +774,10 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                         /* тут вставить сбор в контейнер expr */
                                                         if(!(std::find(Main_varubles.begin(), Main_varubles.end(), currentf->var) != Main_varubles.end()))
                                                         {
+                                                          countofvar  = countofvar  + 1;
+                                                          var->id = countofvar;
+                                                          currentf->var->id = countofvar;
                                                           Main_varubles.push_back(var);
-                                                          var->id = Main_varubles.size();
-                                                          currentf->var->id = Main_varubles.size();
                                                         }
 
 
@@ -852,17 +862,16 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                 default:                break;
                                                 }
                                         }
-                                        else if(current->var->varconstant->constant == LETT)
-                                        {
-                                          exit(EXIT_FAILURE);
-                                        }
+
                                         strcpy(str,return_varuble_type(current->var));
 
                                         if(!(std::find(Main_varubles.begin(), Main_varubles.end(), current->var) != Main_varubles.end()))
                                         {
+                                          countofvar  = countofvar  + 1;
+                                          var->id = countofvar ;
+                                          current->var->id = countofvar ;
                                           Main_varubles.push_back(var);
-                                          var->id = Main_varubles.size();
-                                          current->var->id = Main_varubles.size();
+
                                         }
 
 
@@ -932,9 +941,9 @@ bool check_return_function(NStmtList *root,char * type){
                                 }
 
 
-                                if(strcmp("D ",type) == 0 || strcmp("F ",type) == 0)
+                                if(strcmp("D",type) == 0 || strcmp("F",type) == 0)
                                 {
-                                        if(strcmp("F ",str) == 0 || strcmp("D ",str) == 0 || strcmp("I ",str) == 0)
+                                        if(strcmp("F",str) == 0 || strcmp("D",str) == 0 || strcmp("I",str) == 0)
                                         {
                                                 result = true;;
                                         }
@@ -948,15 +957,21 @@ bool check_return_function(NStmtList *root,char * type){
                                         result = true;
                                 }
                                 else{
-                                        printf("Return doesnot exist or wrong return value");
+                                      if(str[0] == type[0])
+                                      {
+                                        result = true;
+                                        return true;
+                                      } else {
+                                        printf("Return doesnot exist or wrong return value %s %s ", str , type);
                                         exit(EXIT_FAILURE);
                                         result = false;
+                                      }
                                 }
 
 
 
                         }
-                        else if(strcmp(type, "V ") == 0)
+                        else if(strcmp(type, "V") == 0)
                         {
                                 result = true;
                         }
@@ -983,6 +998,8 @@ bool check_return_function(NStmtList *root,char * type){
         }
 
 
+
+
         struct NStmt * currentbody = root->first;
 
         while (currentbody != NULL && !inbodyresult )
@@ -1001,9 +1018,9 @@ bool check_return_function(NStmtList *root,char * type){
                                         strcat(strbody,update_varuble(globalroot,currentbody->expr));
                                 }
 
-                                if(strcmp("D ",type) == 0 || strcmp("F ",type) == 0)
+                                if(strcmp("D",type) == 0 || strcmp("F",type) == 0)
                                 {
-                                        if(strcmp("F ",strbody) == 0 || strcmp("D ",strbody) == 0 || strcmp("I ",strbody) == 0)
+                                        if(strcmp("F",strbody) == 0 || strcmp("D",strbody) == 0 || strcmp("I",strbody) == 0)
                                         {
                                                 inbodyresult = true;;
                                         }
@@ -1025,7 +1042,7 @@ bool check_return_function(NStmtList *root,char * type){
                 currentbody = currentbody->next;
         }
 
-        if(strcmp(type, "V ") == 0)
+        if(strcmp(type, "V") == 0)
         {
                 return true;
         }
@@ -1041,6 +1058,7 @@ bool check_return_function(NStmtList *root,char * type){
 
 
 
+
         return result;
 }
 
@@ -1050,29 +1068,29 @@ void check_function_call(NStmtList *root,NExpr *var){
 char * get_function_type(struct NFunc * f){
   if(strcmp("toFloat",f->name->last->name) == 0)
   {
-    return "F ";
+    return "F";
   }
         if(strcmp("toInt",f->name->last->name) == 0)
         {
-          return "I ";
+          return "I";
         }
         if(strcmp("readLine",f->name->last->name) == 0)
         {
-                return "S ";
+                return "S";
         }
         if(strcmp("count",f->name->last->name) == 0)
         {
-                return "I ";
+                return "I";
         }
         char * str = (char*)malloc(sizeof(char)*33);;
 
         switch (f->vartype->type) {
-        case INTTy:       strcpy(str,"I ");    break;
-        case FLOATTy:     strcpy(str,"F ");    break;
-        case DOUBLETy:    strcpy(str,"D ");    break;
-        case BOOLTy:      strcpy(str,"B ");    break;
-        case STRINGTy:    strcpy(str,"S ");    break;
-        case VOIDTy:      strcpy(str,"V ");     break;
+        case INTTy:       strcpy(str,"I");    break;
+        case FLOATTy:     strcpy(str,"F");    break;
+        case DOUBLETy:    strcpy(str,"D");    break;
+        case BOOLTy:      strcpy(str,"B");    break;
+        case STRINGTy:    strcpy(str,"S");    break;
+        case VOIDTy:      strcpy(str,"V");     break;
         default:           break;
         }
         return str;
@@ -1234,7 +1252,7 @@ void print_function_param(char * function,struct NStmt * current){
                         }
                         if(current->func->vartype == NULL)
                         {
-                                strcat(str,"V ");
+                                strcat(str,"V");
                         }else{
                                 strcat(str,get_function_type(current->func));
                         }
@@ -1245,11 +1263,13 @@ void print_function_param(char * function,struct NStmt * current){
                                 code.value.utf8  = str;
                                 table.push_back(code);
                         }
+                        name_of_methods.insert(name_of_methods.end(),func_num - 1);
+                        discriptor_of_methods.insert(discriptor_of_methods.end(),func_num);
 
                         STConst name_type;
                         name_type.next = NULL;
                         name_type.type = CONST_NAMETYPE;
-                        name_type.value.args.arg1  = func_num;
+                        name_type.value.args.arg1  = func_num - 1;
                         name_type.value.args.arg2  = (st_constant_index( CONST_UTF8, (void*)(str)));
                         table.push_back(name_type);
                         STConst method_ref;
@@ -1340,6 +1360,7 @@ void create_table(NStmtList *root){
 
         printTable();
         printLocalVars();
+
 }
 void create_main_table(NStmtList *root){
         struct NStmt * current = root->first;
@@ -1662,8 +1683,10 @@ void st_stmt_expr(struct NExpr * node) {
                         {
                           if(!(std::find(Main_varubles.begin(), Main_varubles.end(), node) != Main_varubles.end()))
                           {
+                          countofvar  = countofvar  + 1;
+                          node->id = countofvar ;
                           Main_varubles.push_back(node);
-                          node->id = Main_varubles.size();
+
                           }
                         }
                 }
@@ -1792,14 +1815,22 @@ char * st_type_name(enum st_const_types type, char name[10]) {
 void printLocalVars(){
         NStmtList * tempGlobal = globalroot;
 
+
         list<st_const> tempTable;
+
         tempTable = table;
+list<NExpr*> tempMain = Main_varubles;
+
+
         int index = 1;
+
 
 
         printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
         for (auto t : main_functions_list) {
-                table.clear();
+              //  table.clear();
+              countofvar = -1;
+               Main_varubles.clear();
                 globalroot = t.body;
                 st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
@@ -1809,12 +1840,15 @@ void printLocalVars(){
                         case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
                         }
                 }
+                function_varubles.push_back(Main_varubles);
                 printf("\n");
                 index = 1;
         }
 
         for (auto t : functions_list) {
-                table.clear();
+              //  table.clear();
+                Main_varubles.clear();
+                              countofvar = 0;
                 globalroot = t.body;
                 st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
@@ -1824,11 +1858,14 @@ void printLocalVars(){
                         case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
                         }
                 }
+                function_varubles.push_back(Main_varubles);
                 printf("\n");
                 index = 1;
         }
+      Main_varubles = tempMain;
+
         globalroot = tempGlobal;
-        table = tempTable;
+        //table = tempTable;
 }
 void printLocalVars_file(FILE *output){
         list<st_const> tempTable;

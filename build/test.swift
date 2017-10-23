@@ -1,4 +1,6 @@
 
+var iop = 1
+
 var a:[Int] = [2,1,3,7,5,8,4,6,9,10]
 
 
@@ -49,11 +51,20 @@ var temp = 0; // временная переменная для обмена э�
 
 var size = a.count()
 
-let op = 2
 
-print(op)
 
 var i =0
+
+func lol() -> Int {
+    var op = 90
+    print(op)
+
+    return 1
+
+}
+
+i = lol()
+
 
 
 var j = 0

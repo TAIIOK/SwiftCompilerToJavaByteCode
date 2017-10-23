@@ -37,6 +37,8 @@ void code_float_number(float number, int size);
 struct NExpr* is_in_local_vars(char*name);
 void generate_expr_assign(NStmt *expr);
 void generate_elsif_code(NIf*elsif);
+void generate_func_proc_code(NFunc *func);
+void code_method_class();
 
 std::vector<char> all_code;
 std::vector<char> byte_code;
@@ -44,8 +46,12 @@ char* loopVarName;
 std::vector<char*> loopVarNames;
 std::vector<char> empty_code;
 int loopCounter = 0;
+std::vector<std::vector<char> > code_of_methods;
 
+std::vector<int> loops_of_methods;
 
+int methodCounter = 0;
+bool funcReturn = false;
 std::ofstream file_of_class ("Main.class", std::ios::out | std::ios::binary);
 
 union u4
@@ -131,20 +137,21 @@ void code_method_table()
 
 code_number(0x0001 | 0x0008, 2);//  флаги доступа метода
 
-code_number(4, 2);//имя метода
+code_number(4, 2);//имя метода   ->
 
-code_number(5, 2);//дескриптор метода
+code_number(5, 2);//дескриптор метода ->
 
-code_number(1, 2);//количество атрибутов метода
+code_number(1, 2);//количество атрибутов метода ->
 
 code_number(1, 2);//имя атрибута
+
 
 code_number(byte_code.size() + 13, 4);//длинна атрибута
 
 code_number(2048, 2);//стек
 
 
-code_number(Main_varubles.size() + 1 + loopCounter , 2);//количество локальных переменных
+code_number(Main_varubles.size()  + loopCounter + name_of_methods.size() , 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 
@@ -158,29 +165,47 @@ code_number(number, 2);
 number = 0;
 code_number(number, 2);
 
+code_method_class();
+
 }
 
-void code_method_class(std::vector<char> & byte_code, int index)
+void code_method_class()
 {
 
-	unsigned long int number;
-	number = table.size()-1;
+for(int i = 0;i <name_of_methods.size() ;i++ ){
+	code_number(0x0001 | 0x0008, 2);//  флаги доступа метода
+
+
+	code_number(name_of_methods[i], 2);//имя метода   ->
+
+	code_number(discriptor_of_methods[i], 2);//дескриптор метода ->
+
+	code_number(1, 2);//количество атрибутов метода ->
+
+	code_number(1, 2);//имя атрибута
+
+
+	code_number(code_of_methods[i + 1].size() + 12, 4);//длинна атрибута
+
+	code_number(2048, 2);//стек
+
+
+	auto l_front = function_varubles.begin();
+
+	advance(l_front, i);
+
+	code_number(l_front->size()  + loops_of_methods.at(i) + 1 , 2);//количество локальных переменных
+
+	code_number(code_of_methods[i + 1].size() , 4);//длинна байт кода
+
+	all_code.insert(all_code.end(), code_of_methods[i + 1].begin(), code_of_methods[i + 1].end()); // байт код
+
+	int number = 0;
 	code_number(number, 2);
-	number = 12 + byte_code.size();
-	code_number(number, 4);
-	number = 1000;
-	code_number(number, 2);
-	number = index;
-	code_number(number, 2);
-	number = byte_code.size();
-	code_number(number, 4);
-	for(int i=0;i<byte_code.size();i++)
-	{
-		all_code.insert(all_code.end(), byte_code[i]);
-	}
+
 	number = 0;
 	code_number(number, 2);
-	code_number(number, 2);
+}
 
 }
 
@@ -625,6 +650,15 @@ void generate_expr_code(NExpr *expr)
 
 
 		}
+		else {
+
+				//generate_expr_list_code(expr->right->idlist);
+
+					code_number(INVOKESTATIC, 1);
+					code_number(discriptor_of_methods[0] + 2 , 2);
+
+			}
+
 			break;
 		}
 
@@ -1060,6 +1094,15 @@ void generate_stmt_code(NStmt*stmt)
 
 	case STMT_FUNC:
 		{
+
+code_of_methods.insert(code_of_methods.end(), std::vector<char>());
+
+	for (auto el : all_code)
+			code_of_methods[0].push_back(el);
+
+		all_code.clear();
+		generate_func_proc_code(stmt->func);
+
 			break;
 		}
 	case STMT_IF:
@@ -1077,6 +1120,20 @@ void generate_stmt_code(NStmt*stmt)
 			generate_while_code(stmt->while_loop);
 			break;
 		}
+	case STMT_RETURN:
+		{
+				generate_expr_code(stmt->expr);
+				if(stmt->expr->vartype != NULL)
+				if (stmt->expr->vartype->type == INTTy  || stmt->expr->vartype->type == BOOLTy)
+					code_number(IRETURN, 1);
+				else if(stmt->expr->vartype->type == FLOATTy)
+					code_number(FRETURN, 1);
+				else
+				code_number(ARETURN, 1);
+				funcReturn = true;
+
+			break;
+		}
 
 	}
 	if (stmt->next != NULL)
@@ -1084,6 +1141,29 @@ void generate_stmt_code(NStmt*stmt)
 		generate_stmt_code(stmt->next);
 	}
 
+}
+
+void generate_func_proc_code(NFunc *func)
+{
+code_of_methods.insert(code_of_methods.end(), std::vector<char>());
+	methodCounter++;
+
+	int temploop = loopCounter;
+	loopCounter = 0;
+
+	//generate_expr_list_code(func->args);
+
+	generate_stmt_list_code(func->body);
+
+		if(!funcReturn)
+		code_number(_RETURN, 1);
+
+	for (auto el : all_code)
+		code_of_methods[methodCounter].push_back(el);
+	all_code.clear();
+	loops_of_methods.insert(loops_of_methods.end(),loopCounter);
+	all_code = code_of_methods[0];
+	loopCounter = temploop;
 }
 
 void generate_while_code(NWhile * While)
@@ -1280,7 +1360,7 @@ void generate_class_file()
 	number = 0;
 	code_number(number, 2);
 
-	number = 1;  // parent_class->methods->size();
+	number = 2;  // parent_class->methods->size();
 	code_number(number, 2);
 
 
