@@ -194,7 +194,8 @@ for(int i = 0;i <name_of_methods.size() ;i++ ){
 
 	advance(l_front, i);
 
-	code_number(l_front->size()  + loops_of_methods.at(i) + 1 , 2);//количество локальных переменных
+
+	code_number(l_front->size()  + loops_of_methods.at(i) + 1  + 3 , 2);//количество локальных переменных
 
 	code_number(code_of_methods[i + 1].size() , 4);//длинна байт кода
 
@@ -1123,13 +1124,17 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 	case STMT_RETURN:
 		{
 				generate_expr_code(stmt->expr);
-				if(stmt->expr->vartype != NULL)
-				if (stmt->expr->vartype->type == INTTy  || stmt->expr->vartype->type == BOOLTy)
-					code_number(IRETURN, 1);
-				else if(stmt->expr->vartype->type == FLOATTy)
-					code_number(FRETURN, 1);
-				else
-				code_number(ARETURN, 1);
+
+				switch (update_varuble(globalroot,stmt->expr)[0]) {
+				case 'I':    code_number(IRETURN, 1);     break;
+				case 'B': 	 code_number(IRETURN, 1); break;
+				case 'F':    code_number(FRETURN, 1);   break;
+				case 'D':    code_number(FRETURN, 1);  break;
+				case 'S':    code_number(ARETURN, 1);  break;
+				case 'A':    code_number(ARETURN, 1);  break;
+				default:          printf("==WTF?== generate_expr_assign MASS\n"); code_number(IASTORE, 1);       break;
+				}
+
 				funcReturn = true;
 
 			break;
@@ -1152,6 +1157,8 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 	loopCounter = 0;
 
 	//generate_expr_list_code(func->args);
+
+
 
 	generate_stmt_list_code(func->body);
 
@@ -1360,7 +1367,7 @@ void generate_class_file()
 	number = 0;
 	code_number(number, 2);
 
-	number = 2;  // parent_class->methods->size();
+	number = 1 + name_of_methods.size();  // parent_class->methods->size();
 	code_number(number, 2);
 
 

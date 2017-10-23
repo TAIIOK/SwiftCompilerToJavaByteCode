@@ -111,6 +111,7 @@ void collect_functions(struct NStmtList * node);
 void printTable();
 char * return_Expr_Init_Type(NExpr *var);
 char * return_varuble_type(NExpr *var);
+char* deblank(char* input);
 //############################################################################//
 
 list<st_const> table;
@@ -1158,7 +1159,7 @@ void check_function_args(struct NExpr * cur){
 
 
 
-                        if (strcmp(str, newstr) != 0)
+                        if (strcmp(str, deblank(newstr)) != 0)
                         {
                                 printf("Function has wrong arguments\n");
                                 exit (EXIT_FAILURE);
@@ -1187,12 +1188,13 @@ void check_function_args(struct NExpr * cur){
                                         strcat(newstr,return_Expr_Init_Type(cura));
                                 }
 
+
                                 cura = cura->next;
                         }
                         strcat(newstr,")");
 
 
-                        if (strcmp(str, newstr) != 0)
+                        if (strcmp(str, deblank(newstr)) != 0)
                         {
                                 printf("Function has wrong arguments\n");
                                 exit (EXIT_FAILURE);
@@ -1208,6 +1210,21 @@ void check_function_args(struct NExpr * cur){
                 exit (EXIT_FAILURE);
         }
 }
+char* deblank(char* input)
+{
+    int i,j;
+    char *output=input;
+    for (i = 0, j = 0; i<strlen(input); i++,j++)
+    {
+        if (input[i]!=' ')
+            output[j]=input[i];
+        else
+            j--;
+    }
+    output[j]=0;
+    return output;
+}
+
 char * get_function_args(struct NFunc * f){
         char * str = (char*)malloc(sizeof(char)*33);
         strcat(str,"(");
@@ -1218,7 +1235,6 @@ char * get_function_args(struct NFunc * f){
                 while(current != NULL)
                 {
                         strcat(str,return_varuble_type(current));
-
                         current = current->next;
                 }
         }
@@ -1227,7 +1243,7 @@ char * get_function_args(struct NFunc * f){
         {
                 return "()";
         }
-        return str;
+        return deblank(str);
 }
 void print_function_param(char * function,struct NStmt * current){
         char * str = (char*)malloc(sizeof(char)*33);;

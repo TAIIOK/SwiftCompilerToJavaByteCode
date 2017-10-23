@@ -56,8 +56,8 @@ var size = a.count()
 var i =0
 
 func lol() -> Int {
-    var op = 90
-    print(op)
+
+    print("s")
 
     return 1
 
@@ -65,7 +65,7 @@ func lol() -> Int {
 
 i = lol()
 
-
+print(i)
 
 var j = 0
 
@@ -81,6 +81,13 @@ for i in 0 ... size - 1 {
         }
     }
 
+}
+
+i = 0
+
+while( i < size){
+    print(a[i])
+    i = i + 1
 }
 
 
