@@ -49,7 +49,12 @@ var temp = 0; // временная переменная для обмена э�
 
 var size = a.count()
 
-var i = 0
+let op = 2
+
+print(op)
+
+var i =0
+
 
 var j = 0
 
@@ -67,21 +72,11 @@ for i in 0 ... size - 1 {
 
 }
 
-i = 0
 
 
 
-while (i < size ) {
-    print(a[i])
-    var o = 2
-    i = i + 1
-}
 
 
-
-var io = 900
-
-print(io)
 
 
 

@@ -852,6 +852,10 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                                 default:                break;
                                                 }
                                         }
+                                        else if(current->var->varconstant->constant == LETT)
+                                        {
+                                          exit(EXIT_FAILURE);
+                                        }
                                         strcpy(str,return_varuble_type(current->var));
 
                                         if(!(std::find(Main_varubles.begin(), Main_varubles.end(), current->var) != Main_varubles.end()))
