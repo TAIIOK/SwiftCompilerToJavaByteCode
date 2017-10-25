@@ -88,7 +88,8 @@ print(Example + Example2)
 
 
 func fac(num:Int,nul:Int) -> Int {
-    if (num > 1){
+    
+    if ( num > 1 ){
         return 1
     }
     else{
@@ -98,8 +99,3 @@ func fac(num:Int,nul:Int) -> Int {
     var iads = 0
     return iads
 }
-
-
-
-
-

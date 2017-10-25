@@ -1073,7 +1073,7 @@ struct NFunc* create_func(struct NExprList* args, struct NStmtList* body, struct
     result->vartype = type;
     result->args = args;
     result->body = body;
-    result->locals_list = get_local_var_table(result);
+    //result->locals_list = get_local_var_table(result);
     return result;
 }
 

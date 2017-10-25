@@ -141,7 +141,7 @@
 %%
 
 end_expr:             ENDL  {;}
-                      | ';' opt_endl {;}
+                      | ';' {;}
 ;
 
 opt_endl:             /* empty */ {;}
@@ -160,7 +160,7 @@ stmt_block:          '{' stmt_list '}'   {printf("block found\n");$$ = $2;}
 ;
 
 stmt_list:            /* empty */ { printf("stmt list null found\n");$$ = create_stmt_list(NULL);}
-                    | stmt_list stmt opt_endl  {printf("stmt list not null\n");$$ = add_stmt_to_list($1, $2);}
+                    | stmt_list stmt   {printf("stmt list not null\n");$$ = add_stmt_to_list($1, $2);}
 ;
 
 stmt:                 stmt_block {printf("stmt_block\n");$$ = create_stmt_block($1);}
@@ -281,10 +281,10 @@ varubleType:                 INTT {printf("int type\n");$$ = create_var_type(INT
 ;
 /* == Function declaration == */
 
-func_decl_named:      FUNCTION id_chain  func_body {printf("func decl name\n");$$ = set_func_name($2, $3);}
+func_decl_named:      FUNCTION id_chain  func_body {printf("func decl name\n") ;$$ = set_func_name($2, $3);}
 ;
-func_body:            '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block {printf("function body\n");$$ = create_func($2, $6,$5);}
-                    |  '(' arg_list_decl ')'  stmt_block {printf("function body\n");$$ = create_func($2, $4,create_var_type(VOIDTy));}
+func_body:            '(' arg_list_decl ')' FUNCTIONARROW varubleType stmt_block {printf("function 1 body\n");$$ = create_func($2, $6,$5);}
+                    |  '(' arg_list_decl ')'  stmt_block {printf("function 2 body\n");$$ = create_func($2, $4,create_var_type(VOIDTy));}
 ;
 
 arg_list_decl:        /* empty */ {printf("arg list decl empty\n");$$ = create_expr_list(NULL,NULL);}
