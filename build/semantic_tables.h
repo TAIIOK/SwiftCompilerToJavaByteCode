@@ -31,24 +31,22 @@ enum SemanticalConst
         CONST_NameAndType = 12
 };
 
-struct SemanticalElement
+
+struct LocalVaruble
 {
         int id;
-        std::string str;
-        float const_float;
-        int const_int;
-        struct SemanticalElement* first;
-        struct SemanticalElement* second;
-        enum SemanticalConst type;
+        char * name;
+        char * FunctionName;
+        bool constant;
+        enum NVarEnumType varType;
 
-        SemanticalElement()
+        LocalVaruble()
         {
-                first = NULL;
-                second = NULL;
-                id = 0;
-                const_int = -1;
-                const_float = -1;
-                str.clear();
+                id = -1;
+                name = NULL;
+                FunctionName = NULL;
+                constant = -1;
+                varType = NULLTYPE;
         }
 };
 
