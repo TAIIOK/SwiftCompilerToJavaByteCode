@@ -45,45 +45,50 @@
      DOUBLE = 261,
      BOOL = 262,
      STRING = 263,
-     STRINGT = 264,
-     CHARACTERT = 265,
-     INTT = 266,
-     FLOATT = 267,
-     DOUBLET = 268,
-     BOOLT = 269,
-     TRUE = 270,
-     FALSE = 271,
-     LET = 272,
-     VAR = 273,
-     REPEAT = 274,
-     WHILE = 275,
-     FOR = 276,
-     IN = 277,
-     IF = 278,
-     ELSE = 279,
-     ELSEIF = 280,
-     SWITCH = 281,
-     CASE = 282,
-     DEFAULT = 283,
-     BREAK = 284,
-     FUNCTION = 285,
-     FUNCTIONARROW = 286,
-     DO = 287,
-     RANGE = 288,
-     RETURN = 289,
-     NIL = 290,
-     SELF = 291,
-     ERROR = 292,
-     ID = 293,
-     EQ = 294,
-     NE = 295,
-     LE = 296,
-     GE = 297,
-     NOT = 298,
-     ENDL = 299,
-     OR = 300,
-     AND = 301,
-     UMINUS = 302
+     ARRAYINTT = 264,
+     ARRAYBOOLT = 265,
+     ARRAYSTRINGT = 266,
+     ARRAYFLOATT = 267,
+     ARRAYDOUBLET = 268,
+     STRINGT = 269,
+     CHARACTERT = 270,
+     INTT = 271,
+     FLOATT = 272,
+     DOUBLET = 273,
+     BOOLT = 274,
+     TRUE = 275,
+     FALSE = 276,
+     LET = 277,
+     VAR = 278,
+     REPEAT = 279,
+     WHILE = 280,
+     FOR = 281,
+     IN = 282,
+     IF = 283,
+     ELSE = 284,
+     ELSEIF = 285,
+     SWITCH = 286,
+     CASE = 287,
+     DEFAULT = 288,
+     BREAK = 289,
+     FUNCTION = 290,
+     FUNCTIONARROW = 291,
+     DO = 292,
+     RANGE = 293,
+     RETURN = 294,
+     NIL = 295,
+     SELF = 296,
+     ERROR = 297,
+     ID = 298,
+     EQ = 299,
+     NE = 300,
+     LE = 301,
+     GE = 302,
+     NOT = 303,
+     ENDL = 304,
+     OR = 305,
+     AND = 306,
+     UMINUS = 307
    };
 #endif
 /* Tokens.  */
@@ -93,45 +98,50 @@
 #define DOUBLE 261
 #define BOOL 262
 #define STRING 263
-#define STRINGT 264
-#define CHARACTERT 265
-#define INTT 266
-#define FLOATT 267
-#define DOUBLET 268
-#define BOOLT 269
-#define TRUE 270
-#define FALSE 271
-#define LET 272
-#define VAR 273
-#define REPEAT 274
-#define WHILE 275
-#define FOR 276
-#define IN 277
-#define IF 278
-#define ELSE 279
-#define ELSEIF 280
-#define SWITCH 281
-#define CASE 282
-#define DEFAULT 283
-#define BREAK 284
-#define FUNCTION 285
-#define FUNCTIONARROW 286
-#define DO 287
-#define RANGE 288
-#define RETURN 289
-#define NIL 290
-#define SELF 291
-#define ERROR 292
-#define ID 293
-#define EQ 294
-#define NE 295
-#define LE 296
-#define GE 297
-#define NOT 298
-#define ENDL 299
-#define OR 300
-#define AND 301
-#define UMINUS 302
+#define ARRAYINTT 264
+#define ARRAYBOOLT 265
+#define ARRAYSTRINGT 266
+#define ARRAYFLOATT 267
+#define ARRAYDOUBLET 268
+#define STRINGT 269
+#define CHARACTERT 270
+#define INTT 271
+#define FLOATT 272
+#define DOUBLET 273
+#define BOOLT 274
+#define TRUE 275
+#define FALSE 276
+#define LET 277
+#define VAR 278
+#define REPEAT 279
+#define WHILE 280
+#define FOR 281
+#define IN 282
+#define IF 283
+#define ELSE 284
+#define ELSEIF 285
+#define SWITCH 286
+#define CASE 287
+#define DEFAULT 288
+#define BREAK 289
+#define FUNCTION 290
+#define FUNCTIONARROW 291
+#define DO 292
+#define RANGE 293
+#define RETURN 294
+#define NIL 295
+#define SELF 296
+#define ERROR 297
+#define ID 298
+#define EQ 299
+#define NE 300
+#define LE 301
+#define GE 302
+#define NOT 303
+#define ENDL 304
+#define OR 305
+#define AND 306
+#define UMINUS 307
 
 
 
@@ -167,7 +177,7 @@ typedef union YYSTYPE
 
 }
 /* Line 1529 of yacc.c.  */
-#line 171 "swift.tab.h"
+#line 181 "swift.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

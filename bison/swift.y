@@ -52,6 +52,14 @@
 %token <Double>DOUBLE
 %token <Bool>BOOL
 %token <String> STRING
+
+%token ARRAYINTT
+%token ARRAYBOOLT
+%token ARRAYSTRINGT
+%token ARRAYFLOATT
+%token ARRAYDOUBLET
+
+
 %token STRINGT
 %token CHARACTERT
 %token INTT
@@ -265,6 +273,11 @@ varubleType:                 INTT {printf("int type\n");$$ = create_var_type(INT
                     | DOUBLET {printf("double type\n");$$ = create_var_type(DOUBLETy);}
                     | BOOLT {printf("bool type\n");$$ = create_var_type(BOOLTy);}
                     | CHARACTERT {printf("character type\n");$$ = create_var_type(CHARACTERTy);}
+                    | ARRAYINTT {printf("character type\n");$$ = create_var_type(ARRAYINTTy);}
+                    | ARRAYSTRINGT {printf("character type\n");$$ = create_var_type(ARRAYSTRINGTy);}
+                    | ARRAYFLOATT {printf("character type\n");$$ = create_var_type(ARRAYFLOATTy);}
+                    | ARRAYDOUBLET {printf("character type\n");$$ = create_var_type(ARRAYDOUBLETy);}
+                    | ARRAYBOOLT {printf("character type\n");$$ = create_var_type(ARRAYDOUBLETy);}
 ;
 /* == Function declaration == */
 

@@ -151,7 +151,7 @@ code_number(byte_code.size() + 13, 4);//длинна атрибута
 code_number(2048, 2);//стек
 
 
-code_number(Main_varubles.size()  + loopCounter + name_of_methods.size() , 2);//количество локальных переменных
+code_number(Main_varubles.size()  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 
@@ -507,6 +507,7 @@ void generate_expr_code(NExpr *expr)
 {
  bool arrInitializing = false;
 
+
 	switch (expr->type)
 	{
 	case EXPR_MAS:
@@ -527,7 +528,7 @@ void generate_expr_code(NExpr *expr)
 		case 'D':    code_number(FALOAD, 1);  break;
 		case 'S':    code_number(AALOAD, 1);  break;
 		case 'A':    code_number(AALOAD, 1);  break;
-		default:          printf("==WTF?== IN FUNCTION CALL\n");       break;
+		default:          printf("");       break;
 		}
 		break;
 	}
@@ -536,6 +537,12 @@ void generate_expr_code(NExpr *expr)
 			generate_name_list_code(expr->idlist);
 			break;
 		}
+	case EXPR_ID:
+	{
+
+
+		break;
+	}
 
 	case EXPR_TABLE:
 	{
@@ -590,6 +597,7 @@ void generate_expr_code(NExpr *expr)
 
 	case EXPR_MET:
 	{
+
 		if(expr->left->idlist->first->next != NULL)
 		{
 			if(strcmp(expr->left->idlist->first->next->name,"count") == 0)
@@ -646,14 +654,14 @@ void generate_expr_code(NExpr *expr)
 			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
-			default:          printf("==WTF?== IN FUNCTION CALL\n");   code_number(findMethodRef(INTTy,true), 2);    break;
+			default:          printf("");   code_number(findMethodRef(INTTy,true), 2);    break;
 			}
 
 
 		}
 		else {
 
-				//generate_expr_list_code(expr->right->idlist);
+				generate_expr_list_code(expr->right->idlist);
 
 					code_number(INVOKESTATIC, 1);
 					code_number(discriptor_of_methods[0] + 2 , 2);
@@ -818,10 +826,8 @@ default:          printf("==WTF?== IN EXPR_MINUS\n");       break;
 	case EXPR_OR:
 		{
 			generate_expr_code(expr->left);
-			generate_expr_code(expr->right);
-			code_number(IADD, 1);
-			code_number(ICONST_1, 1);
-			code_number(IF_ICMPEQ, 1);
+			code_number(ICONST_0, 1);
+			code_number(IF_ICMPNE, 1);
 			code_number(7, 2);
 			code_number(ICONST_0, 1);
 			code_number(GO_TO, 1);
@@ -932,12 +938,26 @@ void generate_var_code(NExpr*var)
 struct NExpr* is_in_local_vars(char*name)
 {
 	int i=0;
+
+	auto l_front = function_varubles.begin();
+
+	advance(l_front, 0);
+
+
+	for(auto c : *l_front)
+	{
+	if(strcmp(name,c->name)==0){
+	return c;
+	}
+	}
+
 	for (auto c: Main_varubles){
 		if(strcmp(name,c->idlist->first->name)==0){
 			return c;
 		}
 		i++;
 	}
+
 	return NULL;
 }
 
@@ -1156,7 +1176,8 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 	int temploop = loopCounter;
 	loopCounter = 0;
 
-	//generate_expr_list_code(func->args);
+
+	generate_expr_list_code(func->args);
 
 
 

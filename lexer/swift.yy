@@ -101,6 +101,13 @@
 "var"						              return VAR;
 "let"						              return LET;
 
+
+"Array<Int>"                  return ARRAYINTT;
+"Array<Float>"                return ARRAYFLOATT;
+"Array<Double>"               return ARRAYDOUBLET;
+"Array<String>"               return ARRAYSTRINGT;
+"Array<Bool>"                 return ARRAYBOOLT;
+
 "Int"						              return INTT;
 "Character"				            return CHARACTERT;
 "String"					            return STRINGT;

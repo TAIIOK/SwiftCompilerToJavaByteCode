@@ -573,9 +573,9 @@ void check_equal(char *left,char *right){
                 return;
         }
 
-        if(strcmp("D ",left) == 0 || strcmp("F ",left) == 0)
+        if(strcmp("D ",left) == 0 || strcmp("F ",left )  == 0)
         {
-                if(strcmp("F ",right) == 0 || strcmp("D ",right) == 0 || strcmp("I ",right) == 0)
+                if(strcmp("F ",right) == 0 || strcmp("D ",right)  == 0)
                 {
                         return;
                 }
@@ -677,13 +677,36 @@ char * return_Expr_Init_Type(NExpr *var){
 }
 char * update_varuble(NStmtList *root,NExpr *var){
 
+  if(function_varubles.size() > 0)
+  {
+    auto l_front = function_varubles.begin();
+
+  	for(auto c : *l_front)
+
+    if(c->name != NULL  && var->name != NULL)
+    if(strcmp(c->name,var->name)==0 || (c->id == var->id))
+    {
+
+      if(c->type != EXPR_ID_LIST && c->type != EXPR_ID && c->type != EXPR_MAS)
+      {
+              return return_Expr_Init_Type(c);
+      }
+      else{
+
+        char * str = (char*)malloc(sizeof(char)*33);
+        strcat(str,return_varuble_type(c));
+        return str;
+      }
+    }
+
+  }
+
   for(auto c : Main_varubles)
   {
     if(c->name != NULL  && var->name != NULL)
     if(strcmp(c->name,var->name)==0)
     {
-      printf("%s %s", c->name , var->name);
-      exit(EXIT_FAILURE);
+
       if(c->type != EXPR_ID_LIST && c->type != EXPR_ID && c->type != EXPR_MAS)
       {
               return return_Expr_Init_Type(c);
@@ -878,8 +901,8 @@ char * update_varuble(NStmtList *root,NExpr *var){
 
                                         if(strcmp(str,"") == 0)
                                         {
-                                                printf("Varuble doest exist\n");
-                                                exit(EXIT_FAILURE);
+                                                //printf("Varuble doest exist\n");
+                                              //  exit(EXIT_FAILURE);
 
                                         }
 
@@ -907,8 +930,8 @@ char * update_varuble(NStmtList *root,NExpr *var){
                 current = current->next;
         }
         if(!exist) {
-                printf("Varuble doest exist\n");
-                exit (EXIT_FAILURE);
+              //  printf("Varuble doest exist\n");
+            //    exit (EXIT_FAILURE);
         }
 
         return "";
@@ -946,7 +969,7 @@ bool check_return_function(NStmtList *root,char * type){
                                 {
                                         if(strcmp("F",str) == 0 || strcmp("D",str) == 0 || strcmp("I",str) == 0)
                                         {
-                                                result = true;;
+                                                return true;;
                                         }
                                         else{
                                                 result = false;
@@ -955,7 +978,7 @@ bool check_return_function(NStmtList *root,char * type){
 
                                 else if(strcmp(str,type) == 0)
                                 {
-                                        result = true;
+                                        return true;
                                 }
                                 else{
                                       if(str[0] == type[0])
@@ -974,7 +997,7 @@ bool check_return_function(NStmtList *root,char * type){
                         }
                         else if(strcmp(type, "V") == 0)
                         {
-                                result = true;
+                                return true;
                         }
                         break;
                 case STMT_IF:
@@ -1436,7 +1459,7 @@ void st_stmt(struct NStmt * node) {
                 if(!check_return_function(node->func->body,get_function_type(node->func)))
                 {
                         printf("Return doesnot exist or wrong return value\n");
-                        exit(EXIT_FAILURE);
+                      //  exit(EXIT_FAILURE);
                 }
                 bool flag = false;
 
@@ -1644,8 +1667,9 @@ void st_stmt_expr(struct NExpr * node) {
 
                         cfloat.type = CONST_DOUBLE;
                         cfloat.value.val_double = node->Double;
-                        node->id = st_constant_index(CONST_DOUBLE, (void *)&(node->Double));
                         table.push_back(cfloat);
+                        node->id = st_constant_index(CONST_DOUBLE, (void *)&(node->Double));
+
                 }
                 else{
                   node->id = st_constant_index(CONST_DOUBLE, (void *)&(node->Double));
@@ -1835,49 +1859,47 @@ void printLocalVars(){
         list<st_const> tempTable;
 
         tempTable = table;
-list<NExpr*> tempMain = Main_varubles;
+        list<NExpr*> tempMain = Main_varubles;
 
 
         int index = 1;
 
-
-
         printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
         for (auto t : main_functions_list) {
               //  table.clear();
-              countofvar = -1;
+              countofvar = 0;
                Main_varubles.clear();
-                globalroot = t.body;
+               globalroot = t.body;
+               struct NExpr* list = (NExpr *)malloc(sizeof(NExpr));
+               list = t.args->first;
+               while(list != NULL){
+                 list->id = countofvar;
+
+                st_stmt_expr(list);
+                list->type = EXPR_ID_LIST;
+
+                Main_varubles.push_back(list);
+                list = list->next;
+                countofvar = countofvar + 1;
+                }
+
+
                 st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
+
                 printf("List local varubles:\n");
                 for (auto c : table) {
                         switch (c.type) {
                         case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
                         }
                 }
+
                 function_varubles.push_back(Main_varubles);
                 printf("\n");
                 index = 1;
         }
 
-        for (auto t : functions_list) {
-              //  table.clear();
-                Main_varubles.clear();
-                              countofvar = 0;
-                globalroot = t.body;
-                st_stmt_list(t.body);
-                printf("%s:\n",t.name->last->name);
-                printf("List local varubles:\n");
-                for (auto c : table) {
-                        switch (c.type) {
-                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
-                        }
-                }
-                function_varubles.push_back(Main_varubles);
-                printf("\n");
-                index = 1;
-        }
+
       Main_varubles = tempMain;
 
         globalroot = tempGlobal;

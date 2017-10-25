@@ -24,7 +24,11 @@ enum NVarEnumType{
   BOOLTy = 5,
   CHARACTERTy = 6,
   VOIDTy = 7,
-  ARRAYTy = 8
+  ARRAYINTTy = 8,
+  ARRAYSTRINGTy = 9,
+  ARRAYFLOATTy = 10,
+  ARRAYDOUBLETy = 11,
+  ARRAYTy = 12
 };
 
 enum NConstantEnum{
