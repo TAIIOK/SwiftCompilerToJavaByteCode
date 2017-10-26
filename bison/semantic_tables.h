@@ -39,13 +39,14 @@ struct LocalVaruble
         char * FunctionName;
         bool constant;
         enum NVarEnumType varType;
-
+        bool isArray;
         LocalVaruble()
         {
                 id = -1;
                 name = NULL;
                 FunctionName = NULL;
-                constant = -1;
+                constant = 0;
+                isArray = 0;
                 varType = NULLTYPE;
         }
 };
@@ -724,6 +725,9 @@ char * return_Expr_Init_Type(NExpr *var){
 }
 char * update_varuble(NStmtList *root,NExpr *var){
 
+if(generation){
+  printf("var->type %d %s\n",var->type,var->idlist->first->name);
+}
         if(function_varubles.size() > 0)
         {
                 auto l_front = function_varubles.begin();
@@ -763,6 +767,8 @@ char * update_varuble(NStmtList *root,NExpr *var){
         }
 
 
+
+
         if(var->varconstant != NULL) {
                 if(var->vartype != NULL)
                 {
@@ -780,6 +786,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
                                 countofvar = countofvar  + 1;
                                 result.varType = var->vartype->type;
                                 result.id = countofvar;
+                                result.isArray = var->isArray;
                                 List_of_varuble.push_back(result);
                         }
                         else if (FindVaruble(result) && Get_Local_Varuble_Type(result) != var->vartype->type) {
@@ -792,7 +799,11 @@ char * update_varuble(NStmtList *root,NExpr *var){
                           }
                         }
                         else{
-                          if(!generation)
+                          if(generation){
+                            result.varType = Get_Local_Varuble_Type(result);
+                            return Convert_Local_Varuble_Type(result);
+                          }
+                          else
                           printf("Double declaration %s ", var->idlist->first->name);
                         //  exit(EXIT_FAILURE);
                         }
@@ -800,7 +811,8 @@ char * update_varuble(NStmtList *root,NExpr *var){
 
                 }
         }
-        else if((var->idlist != NULL && var->idlist->first != NULL )|| var->type == EXPR_MAS ) {
+
+        else if((var->idlist != NULL && var->idlist->first != NULL )|| var->type == EXPR_MAS) {
                 LocalVaruble result;
 
                 if(var->type == EXPR_MAS){

@@ -34,7 +34,7 @@ void code_string(int number);
 void code_methodref(int first , int second);
 void code_name_and_type(int first , int second);
 void code_float_number(float number, int size);
-struct NExpr* is_in_local_vars(char*name);
+struct LocalVaruble is_in_local_vars(char*name);
 void generate_expr_assign(NStmt *expr);
 void generate_elsif_code(NIf*elsif);
 void generate_func_proc_code(NFunc *func);
@@ -413,19 +413,20 @@ void write_code_to_class_file(unsigned long int number, int size)
 void generate_expr_assign(NStmt *expr)
 {
 			std::vector<NExpr> *vars;
-			NExpr * el;
+			LocalVaruble el;
 
 				if(expr->var->type != EXPR_MAS)
 				generate_expr_code(expr->expr);
 				if( expr->var->type == EXPR_ID_LIST)
 				{	if(!expr->var->isArray){
+
 					switch (update_varuble(globalroot,expr->var)[0]) {
 					case 'I':    code_number(ISTORE, 1);     break;
 					case 'F':    code_number(FSTORE, 1);   break;
 					case 'D':    code_number(FSTORE, 1);  break;
 					case 'S':    code_number(ASTORE, 1);  break;
 					case 'A':    code_number(ASTORE, 1);  break;
-					default:          printf("==WTF?== IN generate_expr_assign\n");  code_number(ISTORE, 1);     break;
+					default:          printf("==WTF?== IN generate_expr_assign '%s' \n", update_varuble(globalroot,expr->var));  code_number(ISTORE, 1);     break;
 					}
 				}else{
 					code_number(ASTORE, 1);
@@ -436,11 +437,11 @@ void generate_expr_assign(NStmt *expr)
 				{
 					code_number(ALOAD, 1);
 					el =  is_in_local_vars(expr->var->left->idlist->first->name);
-					code_number(el->id, 1);
+					code_number(el.id, 1);
 					generate_expr_code(expr->var->right);
 					generate_expr_code(expr->expr);
 
-						switch (update_varuble(globalroot,el)[0]) {
+						switch (Convert_Local_Varuble_Type(el)[0]) {
 						case 'I':    code_number(IASTORE, 1);     break;
 						case 'F':    code_number(FASTORE, 1);   break;
 						case 'D':    code_number(FASTORE, 1);  break;
@@ -465,7 +466,7 @@ void generate_expr_assign(NStmt *expr)
 						code_number(ASTORE, 1);
 					}
 					el = is_in_local_vars(expr->var->idlist->first->name);
-					code_number(el->id, 1);
+					code_number(el.id, 1);
 }
 
  int findMethodRef(enum NVarEnumType type , bool Print)
@@ -512,17 +513,17 @@ void generate_expr_code(NExpr *expr)
 	{
 	case EXPR_MAS:
 	{
-		NExpr * el;
+		LocalVaruble el;
 		el =  is_in_local_vars(expr->left->idlist->first->name);
 
 		code_number(ALOAD, 1);
-		code_number(el->id, 1);
+		code_number(el.id, 1);
 
 
 		generate_expr_code(expr->right);
 
 
-		switch (update_varuble(globalroot,el)[0]) {
+		switch (Convert_Local_Varuble_Type(el)[0]) {
 		case 'I':    code_number(IALOAD, 1);     break;
 		case 'F':    code_number(FALOAD, 1);   break;
 		case 'D':    code_number(FALOAD, 1);  break;
@@ -560,10 +561,10 @@ void generate_expr_code(NExpr *expr)
 			  currentElem = expr->table->first;
 			code_number(size,2);   // размер массива
 			code_number(NEWARRAY, 1);
-			if (expr->vartype->type == INTTy || expr->vartype->type == BOOLTy){
+			if (expr->vartype->type == ARRAYINTTy || expr->vartype->type == BOOLTy){
 				code_number(10, 1);
 			}
-			else if (expr->vartype->type == DOUBLETy || expr->vartype->type == FLOATTy)
+			else if (expr->vartype->type == ARRAYDOUBLETy || expr->vartype->type == ARRAYFLOATTy)
 				code_number(6, 1);
 
 
@@ -577,9 +578,9 @@ void generate_expr_code(NExpr *expr)
 					code_number(SIPUSH, 1);
 					code_number(i, 2);
 					generate_expr_code(currentElem->value);
-					if (expr->vartype->type == INTTy)
+					if (expr->vartype->type == ARRAYINTTy)
 					code_number(IASTORE, 1);
-					else if (expr->vartype->type == DOUBLETy || expr->vartype->type  == FLOATTy)
+					else if (expr->vartype->type == ARRAYDOUBLETy || expr->vartype->type  == ARRAYFLOATTy)
 						code_number(FASTORE, 1);
 					else if (expr->vartype->type == BOOLTy)
 						code_number(IASTORE, 1);
@@ -603,11 +604,11 @@ void generate_expr_code(NExpr *expr)
 			if(strcmp(expr->left->idlist->first->next->name,"count") == 0)
 			{
 
-				NExpr * el;
+				LocalVaruble el;
 				el =  is_in_local_vars(expr->left->idlist->first->name);
 
 				code_number(ALOAD, 1);
-				code_number(el->id, 1);
+				code_number(el.id, 1);
 
 				code_number(ARRAYLENGTH,1);
 				return;
@@ -921,11 +922,11 @@ void generate_var_code(NExpr*var)
 	if (var != NULL)
 	{
 		generate_expr_code(var);
-		NExpr * local = is_in_local_vars(var->name);
-		if(local != NULL)
+		LocalVaruble local = is_in_local_vars(var->name);
+		if(local.name != NULL  || local.id != -1)
 		{
 			code_number(ASTORE, 1);
-			code_number(local->id, 1);
+			code_number(local.id, 1);
 		}
 	}
 	if(var->next != NULL)
@@ -935,10 +936,9 @@ void generate_var_code(NExpr*var)
 
 }
 
-struct NExpr* is_in_local_vars(char*name)
+struct LocalVaruble is_in_local_vars(char*name)
 {
-	int i=0;
-
+	/*
 	auto l_front = function_varubles.begin();
 
 	advance(l_front, 0);
@@ -950,15 +950,15 @@ struct NExpr* is_in_local_vars(char*name)
 	return c;
 	}
 	}
-
-	for (auto c: Main_varubles){
-		if(strcmp(name,c->idlist->first->name)==0){
+*/
+	LocalVaruble empty;
+	for (auto c: List_of_varuble){
+		if(strcmp(name,c.name)==0){
 			return c;
 		}
-		i++;
 	}
 
-	return NULL;
+	return empty;
 }
 
 
@@ -975,37 +975,37 @@ void generate_name_code(NExpr*name)
 		if (loopVarName!=NULL && i<loopVarNames.size() && strcmp(name->name, loopVarNames[i]) == 0)
 		{
 			code_number(ILOAD, 1);
-			code_number(Main_varubles.size() + i + 1 , 1);
+			code_number(List_of_varuble.size() + i + 1 , 1);
 		}
 		else
 		{
 
-			NExpr *elem = is_in_local_vars(name->name);
+			LocalVaruble elem = is_in_local_vars(name->name);
 
-			if (elem->vartype->type == INTTy )
+			if (elem.varType == INTTy )
 			{
 				code_number(ILOAD, 1);
-				code_number(elem->id, 1);
+				code_number(elem.id, 1);
 			}
-			else if (elem->vartype->type == BOOLTy)
+			else if (elem.varType == BOOLTy)
 			{
 				code_number(ILOAD, 1);
-				code_number(elem->id, 1);
+				code_number(elem.id, 1);
 			}
-			else if (elem->vartype->type == DOUBLETy || elem->vartype->type == FLOATTy)
+			else if (elem.varType == DOUBLETy || elem.varType == FLOATTy)
 			{
 				code_number(FLOAD, 1);
-				code_number(elem->id, 1);
+				code_number(elem.id, 1);
 			}
-			else if (elem->vartype->type == STRINGTy)
+			else if (elem.varType == STRINGTy)
 			{
 				code_number(ALOAD, 1);
-				code_number(elem->id, 1);
+				code_number(elem.id, 1);
 			}
-			else if (elem->vartype->type == ARRAYTy || elem->isArray)
+			else if (elem.varType == ARRAYTy || elem.isArray)
 			{
 				code_number(ALOAD, 1);
-				code_number(elem->id, 1);
+				code_number(elem.id, 1);
 			}
 		}
 		generate_name_code(name->next);
@@ -1255,7 +1255,7 @@ void generate_for_code(NFor *For)
 
 		generate_expr_code(For->start->left );
 		code_number(ISTORE, 1);
-		code_number(Main_varubles.size() + currentFor, 1);
+		code_number(List_of_varuble.size() + currentFor, 1);
 
 		code_number(GO_TO, 1);
 		code_number(0, 2);
@@ -1264,18 +1264,18 @@ void generate_for_code(NFor *For)
 
 		generate_stmt_list_code(For->body );
 		code_number(ILOAD, 1);
-		code_number(Main_varubles.size() + currentFor, 1);
+		code_number(List_of_varuble.size() + currentFor, 1);
 		code_number(ICONST_1, 1);
 		code_number(IADD, 1);
 		code_number(ISTORE, 1);
-		code_number(Main_varubles.size() + currentFor, 1);
+		code_number(List_of_varuble.size() + currentFor, 1);
 
 		size2 = all_code.size();
 
 
 
 		code_number(ILOAD, 1);
-		code_number(Main_varubles.size() + currentFor, 1);
+		code_number(List_of_varuble.size() + currentFor, 1);
 		generate_expr_code(For->start->right);
 		code_number(IF_ICMPLT, 1);
 		code_number(7, 2);
@@ -1316,11 +1316,11 @@ void generate_arr_var_code(NExpr * var)
 	if (var!= NULL)
 	{
 		generate_expr_list_code(var->idlist);
-		NExpr * local = is_in_local_vars(var->name);
-		if(local != NULL)
+		LocalVaruble local = is_in_local_vars(var->name);
+		if(local.name != NULL  || local.id != -1)
 		{
 			code_number(ASTORE, 1);
-			code_number(local->id, 1);
+			code_number(local.id, 1);
 		}
 	}
 
@@ -1345,7 +1345,7 @@ void generate_return_code(NVarEnumType type)
 void generate_byte_code()
 {
 
-printf("count of Main_varubles: %d\n", Main_varubles.size());
+printf("count of List_of_varuble: %d\n", List_of_varuble.size());
 for (auto c : List_of_varuble) {
 	printf("name -> %s , id -> %d\n",c.name, c.id);
 }

@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 97;
+;Constant table size = 75;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -75,26 +75,4 @@
    73;      INT;  0
    74;     UTF8;  'Input array elements'
    75;   STRING;  74
-   76;     UTF8;  'Input first float element'
-   77;   STRING;  76
-   78;     UTF8;  'Input second float element'
-   79;   STRING;  78
-   80;     UTF8;  'DIV'
-   81;   STRING;  80
-   82;     UTF8;  'MUL'
-   83;   STRING;  82
-   84;     UTF8;  'SUM'
-   85;   STRING;  84
-   86;     UTF8;  'SUB'
-   87;   STRING;  86
-   88;     UTF8;  'Privet'
-   89;   STRING;  88
-   90;     UTF8;  ' kak dela'
-   91;   STRING;  90
-   92;     UTF8;  'lol'
-   93;     UTF8;  '(III)B'
-   94; NAMETYPE;  92 93
-   95;METHODREF;  3 94
-   96;     UTF8;  'SomeText'
-   97;   STRING;  96
 Method list size = 0
