@@ -6,7 +6,7 @@ expr0[label = "id"];
 assign0--expr0;
 type0[label = "Varuble Type"];
 type0--expr0;
-type1[label = "€Ööî"];
+type1[label = "€†è"];
 type1--type0;
 consttype0[label = "Constant Type"];
 consttype0--expr0;

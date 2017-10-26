@@ -521,6 +521,7 @@ void generate_expr_code(NExpr *expr)
 		el =  is_in_local_vars(expr->left->idlist->first->name);
 
 		code_number(ALOAD, 1);
+		printf("el.id %d",el.id);
 		code_number(el.id, 1);
 
 
@@ -533,7 +534,7 @@ void generate_expr_code(NExpr *expr)
 		case 'D':    code_number(FALOAD, 1);  break;
 		case 'S':    code_number(AALOAD, 1);  break;
 		case 'A':    code_number(AALOAD, 1);  break;
-		default:          printf("");       break;
+		default:          printf("DEFAULT");       break;
 		}
 		break;
 	}
@@ -652,14 +653,18 @@ void generate_expr_code(NExpr *expr)
 							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
 						}
 
-			switch (str[0]) {
+						int i = 0;
+
+						if(strlen(str) > 2)
+								i = 1;
+			switch (str[i]) {
 			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;
 			case 'D':    code_number(findMethodRef(DOUBLETy,true), 2);  break;
 			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
-			default:          printf("%s\n",str);   code_number(findMethodRef(ARRAYTy,true), 2);    break;
+			default:          printf("DEFAULT %s\n",str);   code_number(findMethodRef(ARRAYTy,true), 2);    break;
 			}
 
 
