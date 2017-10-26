@@ -725,8 +725,11 @@ char * return_Expr_Init_Type(NExpr *var){
 }
 char * update_varuble(NStmtList *root,NExpr *var){
 
+if(var->type == EXPR_MET)
+return "";
 if(generation){
-  printf("var->type %d %s\n",var->type,var->idlist->first->name);
+  if(var->idlist != NULL){}
+    //printf("var->type %d %s\n",var->type,var->idlist->first->name);
 }
         if(function_varubles.size() > 0)
         {
@@ -1322,6 +1325,7 @@ void st_stmt_list(struct NStmtList * node) {
         }
 }
 void st_stmt(struct NStmt * node) {
+  printf("node->type ->type %d \n",node->type);
         switch (node->type) {
         case STMT_WHILE:  st_stmt_while(node->while_loop);                  break;
         case STMT_FOR:    st_stmt_for(node->for_loop);                      break;
@@ -1382,7 +1386,7 @@ void st_stmt(struct NStmt * node) {
                         break;
 
         case STMT_ASSIGN:
-
+            printf("node->expr->type %d \n", node->expr->type);
                 if (node->expr->type == EXPR_ID_LIST)
                 {
                         check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
@@ -1396,6 +1400,7 @@ void st_stmt(struct NStmt * node) {
 
                 else if(node->expr->type == EXPR_MET )
                 {
+                  char * type =  (char*)malloc(sizeof(char)*33);
                         for (auto c : functions_list) {
                                 if (strcmp(c.name->last->name, node->expr->left->idlist->first->name) == 0)
                                 {
@@ -1406,31 +1411,51 @@ void st_stmt(struct NStmt * node) {
 
                         if(strcmp(node->expr->left->idlist->first->name,"toInt" )==0)
                         {
-                                if(strcmp(update_varuble(globalroot,node->var),"V ") ==0) {
-                                        node->var->vartype->type = INTTy;
+                              strcpy(type,update_varuble(globalroot,node->var));
+                                if(strcmp(type,"V ") == 0) {
+                                  List_of_varuble.back().varType = INTTy;
+                                }
+                                else if(strcmp(type,"I ") != 0) {
+                                  printf("Wrong equal TYPE");
+                                  exit(EXIT_FAILURE);
                                 }
                         }
 
                         if(strcmp(node->expr->left->idlist->first->name,"toFloat" )==0)
                         {
-                                if(strcmp(update_varuble(globalroot,node->var),"V ") ==0) {
-                                        node->var->vartype->type = FLOATTy;
+                            strcpy(type,update_varuble(globalroot,node->var));
+                                if(strcmp(type,"V ") == 0) {
+                                    List_of_varuble.back().varType = FLOATTy;
+                                }
+                                else if(strcmp(type,"F ") != 0){
+                                  printf("Wrong equal TYPE");
+                                  exit(EXIT_FAILURE);
                                 }
                         }
 
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
-                                if(strcmp(update_varuble(globalroot,node->var),"V ") ==0) {
-
-                                        node->var->vartype->type = STRINGTy;
+                          strcpy(type,update_varuble(globalroot,node->var));
+                                if(strcmp(type,"V ") == 0) {
+                                          List_of_varuble.back().varType = STRINGTy;
 
                                 }
+                                else if(strcmp(type,"S ") != 0){
+                                  printf("Wrong equal TYPE");
+                                  exit(EXIT_FAILURE);
+                                }
+
                         }
                         if(node->expr->left->idlist->first->next != NULL)
                                 if(strcmp(node->expr->left->idlist->first->next->name,"count" )==0)
                                 {
-                                        if(strcmp(update_varuble(globalroot,node->var),"V ") ==0) {
-                                                node->var->vartype->type = INTTy;
+                                  strcpy(type,update_varuble(globalroot,node->var));
+                                        if(strcmp(type,"V ") == 0) {
+                                          List_of_varuble.back().varType = INTTy;
+                                        }
+                                        else if(strcmp(type,"I ") != 0){
+                                          printf("Wrong equal TYPE");
+                                          exit(EXIT_FAILURE);
                                         }
                                 }
                 }

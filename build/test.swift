@@ -7,7 +7,12 @@ var i = 0
 
 var size = a.count()
 
+size  = 1
 
-print("Input array elements")
+var s = 1
+
+
+
+print(s)
 
 

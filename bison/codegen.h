@@ -506,6 +506,8 @@ default:
 }
 void generate_expr_code(NExpr *expr)
 {
+
+	printf("type expr in generate_expr_code -> %d",expr->type);
  bool arrInitializing = false;
 
 
@@ -655,7 +657,7 @@ void generate_expr_code(NExpr *expr)
 			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
-			default:          printf("");   code_number(findMethodRef(INTTy,true), 2);    break;
+			default:          printf("%s\n",str);   code_number(findMethodRef(INTTy,true), 2);    break;
 			}
 
 

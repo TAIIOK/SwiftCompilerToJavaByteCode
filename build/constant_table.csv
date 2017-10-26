@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 75;
+;Constant table size = 73;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -73,6 +73,4 @@
    71;      INT;  9
    72;      INT;  10
    73;      INT;  0
-   74;     UTF8;  'Input array elements'
-   75;   STRING;  74
 Method list size = 0
