@@ -732,15 +732,33 @@ char * return_Expr_Init_Type(NExpr *var){
 }
 char * update_varuble(NStmtList *root,NExpr *var){
 
+list<list<LocalVaruble> > function_varubles;
+
+for(auto c : function_varubles )
+{
+  list<LocalVaruble> temp;
+  temp = c;
+    for(auto b: temp)
+    {
+      if(var->type == EXPR_MAS){
+        if(b.name == var->left->idlist->first->name){
+            return Convert_Local_Varuble_Type(b);
+        }
+        else{
+          if(b.name == var->idlist->first->name){
+            return Convert_Local_Varuble_Type(b);
+          }
+        }
+    }
+  }
+}
+
 if(var->type == EXPR_MET)
 return "";
 if(generation){
   if(var->idlist != NULL){}
     //printf("var->type %d %s\n",var->type,var->idlist->first->name);
 }
-
-
-
 
 
         if(var->varconstant != NULL) {
@@ -1368,7 +1386,17 @@ void st_stmt(struct NStmt * node) {
                         functions_list.push_back(*node->func);
 
                 // Fill table.
+                list<LocalVaruble> temp;
+                int tempCount = countofvar;
+                temp = List_of_varuble;
+                List_of_varuble.clear();
+                countofvar = 0;
+
                 st_stmt_func(node);
+
+                function_varubles.push_back(List_of_varuble);
+                List_of_varuble = temp;
+                countofvar = tempCount;
 
         }
                         break;
@@ -1488,8 +1516,12 @@ void st_stmt(struct NStmt * node) {
                                         currentElem = currentElem->next;
                                 }
                         }
+                        else {
+                            check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+                        }
 
                 }
+
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);
 
@@ -1534,7 +1566,20 @@ void st_stmt_for(struct NFor * node) {
 }
 void st_stmt_func(struct NStmt * node) {
 
+  struct NExpr* list = (NExpr *)malloc(sizeof(NExpr));
+  list = node->func->args->first;
+  while(list != NULL) {
+
+          st_stmt_expr(list);
+
+          list = list->next;
+          countofvar = countofvar + 1;
+  }
+  printf("countofvar %d \n", countofvar);
+  printf("function varubles count %d\n", function_varubles.size() );
+
         print_function_param(node->func->name->last->name,node);
+        st_stmt_list(node->func->body);
 
 }
 void st_stmt_if(struct NIf * node) {
@@ -1553,6 +1598,7 @@ void st_stmt_if(struct NIf * node) {
         st_stmt_list(node->elsebody);
 }
 void st_stmt_expr(struct NExpr * node) {
+  printf("st_stmt_expr node->type %d\n",node->type);
         switch (node->type) {
         case EXPR_INT: {
                 if (st_constant_index(CONST_INT, (void *)&(node->Int)) == -1) {
@@ -1650,6 +1696,29 @@ void st_stmt_expr(struct NExpr * node) {
                                 LocalVaruble result;
                                 result.varType = node->vartype->type;
                                 result.name = node->idlist->first->name;
+                                result.isArray = node->isArray;
+                                if(node->varconstant != NULL)
+                                        if(node->varconstant->constant != VART )
+                                        {
+                                                result.constant = true;
+                                        }
+                                /* тут вставить сбор в контейнер expr */
+                                if(!FindVaruble(result))
+                                {
+                                        countofvar = countofvar  + 1;
+                                        result.id = countofvar;
+                                        List_of_varuble.push_back(result);
+                                }
+                        }
+                }
+        }
+        case EXPR_ID: {
+                if(node->vartype != NULL) {
+                        if(node->name != NULL)
+                        {
+                                LocalVaruble result;
+                                result.varType = node->vartype->type;
+                                result.name = node->name;
                                 result.isArray = node->isArray;
                                 if(node->varconstant != NULL)
                                         if(node->varconstant->constant != VART )
@@ -1788,54 +1857,12 @@ char * st_type_name(enum st_const_types type, char name[10]) {
         return name;
 }
 void printLocalVars(){
-        NStmtList * tempGlobal = globalroot;
-
-
-        list<st_const> tempTable;
-
-        tempTable = table;
-        list<LocalVaruble> tempMain = List_of_varuble;
-
-
-        int index = 1;
 
         printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
         for (auto t : main_functions_list) {
-
-                //  table.clear();
-                countofvar = 0;
-                Main_varubles.clear();
-                globalroot = t.body;
-                struct NExpr* list = (NExpr *)malloc(sizeof(NExpr));
-                list = t.args->first;
-                while(list != NULL) {
-
-                        st_stmt_expr(list);
-
-                        list = list->next;
-                        countofvar = countofvar + 1;
-                }
-
-                st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
-
-                printf("List local varubles:\n");
-                for (auto c : table) {
-                        switch (c.type) {
-                        case CONST_UTF8:      if(strstr(c.value.utf8," ")== 0 && strlen(c.value.utf8) > 0) {printf("%5d: ", index); printf("'%s'\n", c.value.utf8); index++;}      break;
-                        }
-                }
-
-                function_varubles.push_back(List_of_varuble);
-                printf("\n");
-                index = 1;
         }
 
-
-        List_of_varuble = tempMain;
-
-        globalroot = tempGlobal;
-        //table = tempTable;
 }
 void printLocalVars_file(FILE *output){
         list<st_const> tempTable;

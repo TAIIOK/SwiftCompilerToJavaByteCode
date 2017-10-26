@@ -1,6 +1,16 @@
-var a:[Int] = [2,1]
+func fact(kek:Int,ksk:Int) -> Int {
 
-print(a[1])
+   var s =  1
 
+    print(s)
+//    s = kek
 
+return 1
 
+}
+
+var d = toInt(readLine())
+
+//d = 1.2
+
+print(d)
