@@ -72,29 +72,29 @@
    70;      INT;  6
    71;      INT;  9
    72;      INT;  10
-   73;      INT;  11
-   74;      INT;  0
-   75;     UTF8;  'Input array elements'
-   76;   STRING;  75
-   77;     UTF8;  'Input first float element'
-   78;   STRING;  77
-   79;     UTF8;  'Input second float element'
-   80;   STRING;  79
-   81;     UTF8;  'DIV'
-   82;   STRING;  81
-   83;     UTF8;  'MUL'
-   84;   STRING;  83
-   85;     UTF8;  'SUM'
-   86;   STRING;  85
-   87;     UTF8;  'SUB'
-   88;   STRING;  87
-   89;     UTF8;  'Privet'
-   90;   STRING;  89
-   91;     UTF8;  ' kak dela'
-   92;   STRING;  91
-   93;     UTF8;  'iads'
-   94;     UTF8;  'fac'
-   95;     UTF8;  '(II)I'
-   96; NAMETYPE;  94 95
-   97;METHODREF;  3 96
+   73;      INT;  0
+   74;     UTF8;  'Input array elements'
+   75;   STRING;  74
+   76;     UTF8;  'Input first float element'
+   77;   STRING;  76
+   78;     UTF8;  'Input second float element'
+   79;   STRING;  78
+   80;     UTF8;  'DIV'
+   81;   STRING;  80
+   82;     UTF8;  'MUL'
+   83;   STRING;  82
+   84;     UTF8;  'SUM'
+   85;   STRING;  84
+   86;     UTF8;  'SUB'
+   87;   STRING;  86
+   88;     UTF8;  'Privet'
+   89;   STRING;  88
+   90;     UTF8;  ' kak dela'
+   91;   STRING;  90
+   92;     UTF8;  'lol'
+   93;     UTF8;  '(III)B'
+   94; NAMETYPE;  92 93
+   95;METHODREF;  3 94
+   96;     UTF8;  'SomeText'
+   97;   STRING;  96
 Method list size = 0

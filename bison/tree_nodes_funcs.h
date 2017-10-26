@@ -636,10 +636,32 @@ struct NExpr* create_expr_exprlist(struct NExprList* value,struct NVarType* varu
 {
 
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
+    NVarType* type =  (NVarType*)malloc(sizeof(NVarType));
+
     set_null_field_expr(result);
     result->idlist = value;
     result->varconstant = varlet;
+    if(isArray && varubltype != NULL ){
+    switch (varubltype->type){
+      case INTTy:
+      type->type = ARRAYINTTy;
+      break;
+      case STRINGTy:
+      type->type = ARRAYSTRINGTy;
+      break;
+      case FLOATTy:
+      type->type = ARRAYFLOATTy;
+      break;
+      case DOUBLETy:
+      type->type = ARRAYDOUBLETy;
+      break;
+      default:
+      break;
+    }
+    result->vartype = type;
+  }else{
     result->vartype = varubltype;
+  }
     result->isArray = isArray;
     result->type = EXPR_ID_LIST;
     return result;
@@ -656,6 +678,7 @@ struct NVarType*  get_array_type(struct NTable* value)
   return resultType;
   }
 
+
   resultType->type = get_var_type(Element->value) ;
   return resultType;
 
@@ -664,14 +687,30 @@ struct NExpr* create_expr_table(struct NTable* value, struct NVarType* varubltyp
 {
     NExpr* result = (NExpr*)malloc(sizeof(NExpr));
     set_null_field_expr(result);
-
+    NVarType* type =  (NVarType*)malloc(sizeof(NVarType));
     result->table = value;
 
     if(varubltype == NULL){
-      result->vartype = get_array_type(value);
-    }
-    else{
-    result->vartype = varubltype;
+
+      switch (get_array_type(value)->type){
+        case INTTy:
+        type->type = ARRAYINTTy;
+        break;
+        case STRINGTy:
+        type->type = ARRAYSTRINGTy;
+        break;
+        case FLOATTy:
+        type->type = ARRAYFLOATTy;
+        break;
+        case DOUBLETy:
+        type->type = ARRAYDOUBLETy;
+        break;
+        default:
+        break;
+      }
+
+      result->vartype = type;
+
     }
 
     result->type = EXPR_TABLE;

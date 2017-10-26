@@ -1,11 +1,12 @@
 
 var iop = 1
 
-var a:[Int] = [2,1,3,7,5,8,4,6,9,10,11]
+var a:[Int] = [2,1,3,7,5,8,4,6,9,10]
 
 var i = 0
 
 var size = a.count()
+
 
 print("Input array elements")
 
@@ -16,12 +17,9 @@ while( i < size){
 
 }
 
-
-
-
 var temp = 0; // временная переменная для обмена элементов местами
 
-var size = a.count()
+//var size = a.count()
 
 var j = 0
 
@@ -86,16 +84,17 @@ var Example2:String = " kak dela"
 
 print(Example + Example2)
 
+func lol(kek:Int,kak:Array<Int>) -> Bool {
 
-func fac(num:Int,nul:Int) -> Int {
-    
-    if ( num > 1 ){
-        return 1
-    }
-    else{
-        return 1
-    }
+    //print(kak)
+    print("SomeText")
+    var keks = 1
+    var khm = 0
 
-    var iads = 0
-    return iads
+    return true
+
 }
+
+
+
+

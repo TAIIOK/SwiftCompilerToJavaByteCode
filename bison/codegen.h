@@ -151,7 +151,7 @@ code_number(byte_code.size() + 13, 4);//длинна атрибута
 code_number(2048, 2);//стек
 
 
-code_number(Main_varubles.size()  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
+code_number(List_of_varuble.size()  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 
@@ -1346,10 +1346,10 @@ void generate_byte_code()
 {
 
 printf("count of Main_varubles: %d\n", Main_varubles.size());
-for (auto c : Main_varubles) {
-	printf("name -> %s , id -> %d\n",c->idlist->first->name, c->id);
+for (auto c : List_of_varuble) {
+	printf("name -> %s , id -> %d\n",c.name, c.id);
 }
-
+generation = true;
 generate_stmt_list_code(root);
 byte_code = all_code;
 	generate_class_file();

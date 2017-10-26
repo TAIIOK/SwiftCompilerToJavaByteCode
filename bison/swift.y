@@ -145,7 +145,7 @@ end_expr:             ENDL  {;}
 ;
 
 opt_endl:             /* empty */ {;}
-                      | ENDL {;}
+                      | ENDL opt_endl {;}
 ;
 
 root:               stmt_list {printf("root\n");root=$1; $$=$1;}
@@ -160,7 +160,7 @@ stmt_block:          '{' stmt_list '}'   {printf("block found\n");$$ = $2;}
 ;
 
 stmt_list:            /* empty */ { printf("stmt list null found\n");$$ = create_stmt_list(NULL);}
-                    | stmt_list stmt   {printf("stmt list not null\n");$$ = add_stmt_to_list($1, $2);}
+                    | stmt_list stmt opt_endl  {printf("stmt list not null\n");$$ = add_stmt_to_list($1, $2);}
 ;
 
 stmt:                 stmt_block {printf("stmt_block\n");$$ = create_stmt_block($1);}
