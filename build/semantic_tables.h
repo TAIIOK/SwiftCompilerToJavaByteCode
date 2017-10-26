@@ -123,7 +123,7 @@ list<LocalVaruble> List_of_varuble;
 
 list<NExpr *> Main_varubles;
 
-list<list<NExpr *> > function_varubles;
+list<list<LocalVaruble> > function_varubles;
 
 vector<int> discriptor_of_methods;
 vector<int> name_of_methods;
@@ -583,7 +583,7 @@ void check_equal(char *left,char *right){
                 }
         }
 
-        if(strcmp(left,right) != 0 && left[0] != right[0])
+        if(strcmp(left,right) != 0 && left[0] != right[0]  )
         {
                 printf("Wrong equal TYPE 1 %s  2 %s \n",right,left);
                 exit (EXIT_FAILURE);
@@ -647,11 +647,11 @@ char * return_varuble_type(NExpr *var){
         case STRINGTy:    strcpy(str,"S ");    break;
         case VOIDTy:      strcpy(str,"V ");     break;
         case ARRAYTy:     strcpy(str,"A ");     break;
-        case ARRAYINTTy:  strcpy(str,"II ");     break;
-        case ARRAYSTRINGTy: strcpy(str,"SS ");     break;
-        case ARRAYFLOATTy: strcpy(str,"FF ");     break;
-        case ARRAYDOUBLETy: strcpy(str,"DD ");     break;
-        default:      printf("%d",var->vartype->type ); exit(EXIT_FAILURE);    break;
+        case ARRAYINTTy:  strcpy(str,"[I ");     break;
+        case ARRAYSTRINGTy: strcpy(str,"[S ");     break;
+        case ARRAYFLOATTy: strcpy(str,"[F ");     break;
+        case ARRAYDOUBLETy: strcpy(str,"[D ");     break;
+        default:        break;
         }
         return str;
 }
@@ -679,22 +679,29 @@ NVarEnumType Get_Local_Varuble_Type(LocalVaruble var)
 }
 
 char * Convert_Local_Varuble_Type(LocalVaruble var){
-        char * str = (char*)malloc(sizeof(char)*33);
-        switch (var.varType) {
-        case INTTy:       strcpy(str,"I ");    break;
-        case FLOATTy:     strcpy(str,"F ");    break;
-        case DOUBLETy:    strcpy(str,"D ");    break;
-        case BOOLTy:      strcpy(str,"B ");    break;
-        case STRINGTy:    strcpy(str,"S ");    break;
-        case VOIDTy:      strcpy(str,"V ");     break;
-        case ARRAYTy:     strcpy(str,"A ");     break;
-        case ARRAYINTTy:  strcpy(str,"II ");     break;
-        case ARRAYSTRINGTy: strcpy(str,"SS ");     break;
-        case ARRAYFLOATTy: strcpy(str,"FF ");     break;
-        case ARRAYDOUBLETy: strcpy(str,"DD ");     break;
+      printf("-> var.varType %d %s \n",var.varType,var.name);
+
+      for(auto c: List_of_varuble)
+      {
+              if(strcmp(c.name, var.name) == 0) {
+
+        switch (c.varType) {
+        case INTTy:       return "I ";    break;
+        case FLOATTy:     return "F ";    break;
+        case DOUBLETy:    return "D ";    break;
+        case BOOLTy:      return "B ";    break;
+        case STRINGTy:    return "S ";    break;
+        case VOIDTy:      return "V ";     break;
+        case ARRAYTy:     return "A ";    break;
+        case ARRAYINTTy:  return "[I ";     break;
+        case ARRAYSTRINGTy: return "[S ";     break;
+        case ARRAYFLOATTy: return "[F ";     break;
+        case ARRAYDOUBLETy: return "[D ";     break;
         default:           break;
         }
-        return str;
+      }
+}
+        return "";
 }
 
 char * return_Expr_Init_Type(NExpr *var){
@@ -731,43 +738,7 @@ if(generation){
   if(var->idlist != NULL){}
     //printf("var->type %d %s\n",var->type,var->idlist->first->name);
 }
-        if(function_varubles.size() > 0)
-        {
-                auto l_front = function_varubles.begin();
 
-                for(auto c : *l_front)
-
-                        if(c->name != NULL  && var->name != NULL)
-                                if(strcmp(c->name,var->name)==0 || (c->id == var->id))
-                                {
-
-                                        if(c->type != EXPR_ID_LIST && c->type != EXPR_ID && c->type != EXPR_MAS)
-                                        {
-                                                return return_Expr_Init_Type(c);
-                                        }
-                                        else{
-
-                                                char * str = (char*)malloc(sizeof(char)*33);
-                                                strcat(str,return_varuble_type(c));
-                                                return str;
-                                        }
-                                }
-
-        }
-
-        if(var->type != EXPR_ID_LIST && var->type != EXPR_ID && var->type != EXPR_MAS && var->type != EXPR_TABLE)
-        {
-
-                return return_Expr_Init_Type(var);
-        }
-
-        if(var->type == EXPR_TABLE)
-        {
-
-                char * str = (char*)malloc(sizeof(char)*33);
-                strcat(str,return_varuble_type(var));
-                return str;
-        }
 
 
 
@@ -815,6 +786,20 @@ if(generation){
                 }
         }
 
+
+            else    if(var->type != EXPR_ID_LIST && var->type != EXPR_ID && var->type != EXPR_MAS && var->type != EXPR_TABLE)
+                {
+
+                        return return_Expr_Init_Type(var);
+                }
+
+    else     if(var->type == EXPR_TABLE)
+                {
+
+                        return return_varuble_type(var);
+                }
+
+
         else if((var->idlist != NULL && var->idlist->first != NULL )|| var->type == EXPR_MAS) {
                 LocalVaruble result;
 
@@ -827,7 +812,10 @@ if(generation){
 
                 if(FindVaruble(result))
                 {
-                        result.varType = Get_Local_Varuble_Type(result);
+
+
+                        printf("EXPR_MASS Convert_Local_Varuble_Type(result)  %d\n",Get_Local_Varuble_Type(result));
+
                         return Convert_Local_Varuble_Type(result);
                 }
 
@@ -970,7 +958,7 @@ bool check_return_function(NStmtList *root,char * type){
         {
                 return true;
         }
-        else if (result && inbodyresult) {
+        else if (result || inbodyresult) {
                 return true;
         }
         else if (inbodyresult) {
@@ -1086,7 +1074,7 @@ void check_function_args(struct NExpr * cur){
                         {
                           printf("%s %s", str , deblank(newstr));
                                 printf("Function has wrong arguments\n");
-                                exit (EXIT_FAILURE);
+                              //  exit (EXIT_FAILURE);
                         }
                         else{
 
@@ -1122,7 +1110,7 @@ void check_function_args(struct NExpr * cur){
                         {
                               printf("%s %s", str , deblank(newstr));
                                 printf("Function has wrong arguments\n");
-                                exit (EXIT_FAILURE);
+                            //    exit (EXIT_FAILURE);
                         }
                         else{
 
@@ -1414,8 +1402,9 @@ void st_stmt(struct NStmt * node) {
                               strcpy(type,update_varuble(globalroot,node->var));
                                 if(strcmp(type,"V ") == 0) {
                                   List_of_varuble.back().varType = INTTy;
+                                    node->var->vartype->type = INTTy;
                                 }
-                                else if(strcmp(type,"I ") != 0) {
+                                else if(strcmp(type,"I ") != 0 && type[0] != 'I') {
                                   printf("Wrong equal TYPE");
                                   exit(EXIT_FAILURE);
                                 }
@@ -1426,8 +1415,9 @@ void st_stmt(struct NStmt * node) {
                             strcpy(type,update_varuble(globalroot,node->var));
                                 if(strcmp(type,"V ") == 0) {
                                     List_of_varuble.back().varType = FLOATTy;
+                                    node->var->vartype->type = FLOATTy;
                                 }
-                                else if(strcmp(type,"F ") != 0){
+                                else if(strcmp(type,"F ") != 0 && type[0] != 'F') {
                                   printf("Wrong equal TYPE");
                                   exit(EXIT_FAILURE);
                                 }
@@ -1438,9 +1428,10 @@ void st_stmt(struct NStmt * node) {
                           strcpy(type,update_varuble(globalroot,node->var));
                                 if(strcmp(type,"V ") == 0) {
                                           List_of_varuble.back().varType = STRINGTy;
+                                            node->var->vartype->type = STRINGTy;
 
                                 }
-                                else if(strcmp(type,"S ") != 0){
+                                else if(strcmp(type,"S ") != 0 && type[0] != 'S' ){
                                   printf("Wrong equal TYPE");
                                   exit(EXIT_FAILURE);
                                 }
@@ -1452,8 +1443,9 @@ void st_stmt(struct NStmt * node) {
                                   strcpy(type,update_varuble(globalroot,node->var));
                                         if(strcmp(type,"V ") == 0) {
                                           List_of_varuble.back().varType = INTTy;
+                                            node->var->vartype->type = INTTy;
                                         }
-                                        else if(strcmp(type,"I ") != 0){
+                                        else if(strcmp(type,"I ") != 0 && type[0] != 'I'){
                                           printf("Wrong equal TYPE");
                                           exit(EXIT_FAILURE);
                                         }
@@ -1462,10 +1454,30 @@ void st_stmt(struct NStmt * node) {
 
                 else{
 
-                      check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
+
                         if(node->expr->type == EXPR_TABLE && node->expr->array_id == 0)
                         {
-                                node->expr->vartype = node->var->vartype;
+                          switch (node->expr->vartype->type){
+                            case INTTy:
+                            node->expr->vartype->type = ARRAYINTTy;
+                            break;
+                            case STRINGTy:
+                            node->expr->vartype->type = ARRAYSTRINGTy;
+                            break;
+                            case FLOATTy:
+                            node->expr->vartype->type = ARRAYFLOATTy;
+                            break;
+                            case DOUBLETy:
+                            node->expr->vartype->type = ARRAYDOUBLETy;
+                            break;
+                            default:
+                            break;
+                          }
+
+                                node->expr->isArray = true;
+                                node->var->isArray = true;
+
+                                check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                                 node->expr->array_id = node->var->id;
 
                                 struct NTblElem * currentElem = node->expr->table->first;
@@ -1638,6 +1650,7 @@ void st_stmt_expr(struct NExpr * node) {
                                 LocalVaruble result;
                                 result.varType = node->vartype->type;
                                 result.name = node->idlist->first->name;
+                                result.isArray = node->isArray;
                                 if(node->varconstant != NULL)
                                         if(node->varconstant->constant != VART )
                                         {
@@ -1781,13 +1794,14 @@ void printLocalVars(){
         list<st_const> tempTable;
 
         tempTable = table;
-        list<NExpr*> tempMain = Main_varubles;
+        list<LocalVaruble> tempMain = List_of_varuble;
 
 
         int index = 1;
 
         printf("Method list size = %d\n",functions_list.size() + main_functions_list.size());
         for (auto t : main_functions_list) {
+
                 //  table.clear();
                 countofvar = 0;
                 Main_varubles.clear();
@@ -1795,16 +1809,12 @@ void printLocalVars(){
                 struct NExpr* list = (NExpr *)malloc(sizeof(NExpr));
                 list = t.args->first;
                 while(list != NULL) {
-                        list->id = countofvar;
 
                         st_stmt_expr(list);
-                        list->type = EXPR_ID_LIST;
 
-                        Main_varubles.push_back(list);
                         list = list->next;
                         countofvar = countofvar + 1;
                 }
-
 
                 st_stmt_list(t.body);
                 printf("%s:\n",t.name->last->name);
@@ -1816,13 +1826,13 @@ void printLocalVars(){
                         }
                 }
 
-                function_varubles.push_back(Main_varubles);
+                function_varubles.push_back(List_of_varuble);
                 printf("\n");
                 index = 1;
         }
 
 
-        Main_varubles = tempMain;
+        List_of_varuble = tempMain;
 
         globalroot = tempGlobal;
         //table = tempTable;

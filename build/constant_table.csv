@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 73;
+;Constant table size = 64;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -62,15 +62,6 @@
    60; NAMETYPE;  58 59
    61;METHODREF;  57 60
    62;     UTF8;  'StringOperations'
-   63;      INT;  1
-   64;      INT;  2
-   65;      INT;  3
-   66;      INT;  7
-   67;      INT;  5
-   68;      INT;  8
-   69;      INT;  4
-   70;      INT;  6
-   71;      INT;  9
-   72;      INT;  10
-   73;      INT;  0
+   63;      INT;  2
+   64;      INT;  1
 Method list size = 0

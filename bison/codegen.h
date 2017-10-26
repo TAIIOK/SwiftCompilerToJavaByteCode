@@ -414,7 +414,8 @@ void generate_expr_assign(NStmt *expr)
 {
 			std::vector<NExpr> *vars;
 			LocalVaruble el;
-
+printf("expr->var->type %d\n", expr->var->type );
+printf("expr->expr->type %d\n",expr->expr->type);
 				if(expr->var->type != EXPR_MAS)
 				generate_expr_code(expr->expr);
 				if( expr->var->type == EXPR_ID_LIST)
@@ -437,12 +438,13 @@ void generate_expr_assign(NStmt *expr)
 				{
 					code_number(ALOAD, 1);
 					el =  is_in_local_vars(expr->var->left->idlist->first->name);
+					printf("ARRAY ID el.id - > %d",el.id);
 					code_number(el.id, 1);
 					generate_expr_code(expr->var->right);
 					generate_expr_code(expr->expr);
 
-						switch (Convert_Local_Varuble_Type(el)[0]) {
-						case 'I':    code_number(IASTORE, 1);     break;
+						switch (Convert_Local_Varuble_Type(el)[1]) {
+						case 'I':   printf("INT generate_expr_assign MASS\n") ; code_number(IASTORE, 1);     break;
 						case 'F':    code_number(FASTORE, 1);   break;
 						case 'D':    code_number(FASTORE, 1);  break;
 						case 'S':    code_number(AASTORE, 1);  break;
@@ -507,7 +509,7 @@ default:
 void generate_expr_code(NExpr *expr)
 {
 
-	printf("type expr in generate_expr_code -> %d",expr->type);
+	printf("type expr in generate_expr_code -> %d\n",expr->type);
  bool arrInitializing = false;
 
 
@@ -525,7 +527,7 @@ void generate_expr_code(NExpr *expr)
 		generate_expr_code(expr->right);
 
 
-		switch (Convert_Local_Varuble_Type(el)[0]) {
+		switch (Convert_Local_Varuble_Type(el)[1]) {
 		case 'I':    code_number(IALOAD, 1);     break;
 		case 'F':    code_number(FALOAD, 1);   break;
 		case 'D':    code_number(FALOAD, 1);  break;
@@ -550,7 +552,7 @@ void generate_expr_code(NExpr *expr)
 	case EXPR_TABLE:
 	{
 
-		if (expr->vartype->type != STRINGTy )
+		if (expr->vartype->type != ARRAYSTRINGTy )
 		{
 			int size = 0;
 			code_number(SIPUSH, 1);
@@ -657,7 +659,7 @@ void generate_expr_code(NExpr *expr)
 			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
-			default:          printf("%s\n",str);   code_number(findMethodRef(INTTy,true), 2);    break;
+			default:          printf("%s\n",str);   code_number(findMethodRef(ARRAYTy,true), 2);    break;
 			}
 
 
@@ -1349,12 +1351,13 @@ void generate_byte_code()
 
 printf("count of List_of_varuble: %d\n", List_of_varuble.size());
 for (auto c : List_of_varuble) {
-	printf("name -> %s , id -> %d\n",c.name, c.id);
+	printf("name -> %s , id -> %d , type -> %d \n",c.name, c.id , c.varType);
 }
 generation = true;
 generate_stmt_list_code(root);
 byte_code = all_code;
 	generate_class_file();
+
 }
 
 void generate_class_file()
