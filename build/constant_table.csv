@@ -63,7 +63,7 @@
    61;METHODREF;  57 60
    62;     UTF8;  'StringOperations'
    63;     UTF8;  'fact'
-   64;     UTF8;  '(II)I'
+   64;     UTF8;  '(I)I'
    65; NAMETYPE;  63 64
    66;METHODREF;  3 65
    67;      INT;  1

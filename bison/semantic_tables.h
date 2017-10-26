@@ -131,6 +131,8 @@ vector<int> name_of_methods;
 NStmtList *globalroot;
 NStmtList *rootwithoutfunc;
 
+char * CurrentFunctionName = "Main";
+
 int countofvar = 0;
 
 bool generation = false;
@@ -681,6 +683,28 @@ NVarEnumType Get_Local_Varuble_Type(LocalVaruble var)
 char * Convert_Local_Varuble_Type(LocalVaruble var){
       printf("-> var.varType %d %s \n",var.varType,var.name);
 
+      for(auto c : function_varubles )
+      {
+          for(auto b: c)
+          {
+              if(strcmp(b.name , var.name) == 0){
+                switch (b.varType) {
+                case INTTy:       return "I ";    break;
+                case FLOATTy:     return "F ";    break;
+                case DOUBLETy:    return "D ";    break;
+                case BOOLTy:      return "B ";    break;
+                case STRINGTy:    return "S ";    break;
+                case VOIDTy:      return "V ";     break;
+                case ARRAYTy:     return "A ";    break;
+                case ARRAYINTTy:  return "[I ";     break;
+                case ARRAYSTRINGTy: return "[S ";     break;
+                case ARRAYFLOATTy: return "[F ";     break;
+                case ARRAYDOUBLETy: return "[D ";     break;
+                default:           break;
+              }
+        }
+      }
+    }
       for(auto c: List_of_varuble)
       {
               if(strcmp(c.name, var.name) == 0) {
@@ -744,12 +768,13 @@ for(auto c : function_varubles )
         if(b.name == var->left->idlist->first->name){
             return Convert_Local_Varuble_Type(b);
         }
+      }
         else{
           if(b.name == var->idlist->first->name){
             return Convert_Local_Varuble_Type(b);
           }
         }
-    }
+
   }
 }
 
@@ -779,6 +804,7 @@ if(generation){
                                 result.varType = var->vartype->type;
                                 result.id = countofvar;
                                 result.isArray = var->isArray;
+                                result.FunctionName = CurrentFunctionName;
                                 List_of_varuble.push_back(result);
                         }
                         else if (FindVaruble(result) && Get_Local_Varuble_Type(result) != var->vartype->type) {
@@ -893,7 +919,7 @@ bool check_return_function(NStmtList *root,char * type){
                                                 return true;
                                         } else {
                                                 printf("Return doesnot exist or wrong return value %s %s ", str, type);
-                                                exit(EXIT_FAILURE);
+                                                //exit(EXIT_FAILURE);
                                                 result = false;
                                         }
                                 }
@@ -1369,7 +1395,7 @@ void st_stmt(struct NStmt * node) {
                 if(!check_return_function(node->func->body,get_function_type(node->func)))
                 {
                         printf("Return doesnot exist or wrong return value\n");
-                        exit(EXIT_FAILURE);
+                      //  exit(EXIT_FAILURE);
                 }
                 bool flag = false;
 
@@ -1391,12 +1417,13 @@ void st_stmt(struct NStmt * node) {
                 temp = List_of_varuble;
                 List_of_varuble.clear();
                 countofvar = 0;
-
+                CurrentFunctionName = node->func->name->last->name;
                 st_stmt_func(node);
 
                 function_varubles.push_back(List_of_varuble);
                 List_of_varuble = temp;
                 countofvar = tempCount;
+                CurrentFunctionName = "Main";
 
         }
                         break;
@@ -1573,7 +1600,7 @@ void st_stmt_func(struct NStmt * node) {
           st_stmt_expr(list);
 
           list = list->next;
-          countofvar = countofvar + 1;
+          //countofvar = countofvar + 1;
   }
   printf("countofvar %d \n", countofvar);
   printf("function varubles count %d\n", function_varubles.size() );

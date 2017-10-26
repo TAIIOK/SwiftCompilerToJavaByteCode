@@ -195,7 +195,7 @@ for(int i = 0;i <name_of_methods.size() ;i++ ){
 	advance(l_front, i);
 
 
-	code_number(l_front->size()  + loops_of_methods.at(i) + 1  + 3 , 2);//количество локальных переменных
+	code_number(l_front->size()  + loops_of_methods.at(i) + 2  , 2);//количество локальных переменных
 
 	code_number(code_of_methods[i + 1].size() , 4);//длинна байт кода
 
@@ -518,7 +518,7 @@ void generate_expr_code(NExpr *expr)
 	case EXPR_MAS:
 	{
 		LocalVaruble el;
-		el =  is_in_local_vars(expr->left->idlist->first->name);
+		el =  is_in_local_vars(expr->name);
 
 		code_number(ALOAD, 1);
 		printf("el.id %d",el.id);
@@ -545,6 +545,33 @@ void generate_expr_code(NExpr *expr)
 		}
 	case EXPR_ID:
 	{
+		LocalVaruble elem = is_in_local_vars(expr->name);
+
+		if (elem.varType == INTTy )
+		{
+			code_number(ILOAD, 1);
+			code_number(elem.id, 1);
+		}
+		else if (elem.varType == BOOLTy)
+		{
+			code_number(ILOAD, 1);
+			code_number(elem.id, 1);
+		}
+		else if (elem.varType == DOUBLETy || elem.varType == FLOATTy)
+		{
+			code_number(FLOAD, 1);
+			code_number(elem.id, 1);
+		}
+		else if (elem.varType == STRINGTy)
+		{
+			code_number(ALOAD, 1);
+			code_number(elem.id, 1);
+		}
+		else if (elem.varType == ARRAYTy || elem.isArray)
+		{
+			code_number(ALOAD, 1);
+			code_number(elem.id, 1);
+		}
 
 
 		break;
@@ -947,7 +974,7 @@ void generate_var_code(NExpr*var)
 
 struct LocalVaruble is_in_local_vars(char*name)
 {
-	/*
+
 	auto l_front = function_varubles.begin();
 
 	advance(l_front, 0);
@@ -955,11 +982,11 @@ struct LocalVaruble is_in_local_vars(char*name)
 
 	for(auto c : *l_front)
 	{
-	if(strcmp(name,c->name)==0){
+	if(strcmp(name,c.name)==0){
 	return c;
 	}
 	}
-*/
+
 	LocalVaruble empty;
 	for (auto c: List_of_varuble){
 		if(strcmp(name,c.name)==0){
@@ -1186,7 +1213,7 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 	loopCounter = 0;
 
 
-	generate_expr_list_code(func->args);
+generate_expr_list_code(func->args);
 
 
 

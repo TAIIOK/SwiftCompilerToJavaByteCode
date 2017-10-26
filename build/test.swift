@@ -1,16 +1,13 @@
-func fact(kek:Int,ksk:Int) -> Int {
+func fact(kek:Int) -> Int {
 
-   var s =  1
-
-    print(s)
-//    s = kek
-
-return 1
+return kek
 
 }
 
 var d = toInt(readLine())
 
-//d = 1.2
+var s = 1
 
-print(d)
+s = fact(kek:1)
+
+print(s)
