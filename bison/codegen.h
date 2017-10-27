@@ -34,7 +34,6 @@ void code_string(int number);
 void code_methodref(int first , int second);
 void code_name_and_type(int first , int second);
 void code_float_number(float number, int size);
-struct LocalVaruble is_in_local_vars(char*name);
 void generate_expr_assign(NStmt *expr);
 void generate_elsif_code(NIf*elsif);
 void generate_func_proc_code(NFunc *func);
@@ -673,8 +672,17 @@ void generate_expr_code(NExpr *expr)
 
 				generate_expr_list_code(expr->right->idlist);
 
+					int count = 0;
+					for (auto c : main_functions_list) {
+					        if (strcmp(c.name->last->name, expr->left->idlist->first->name) == 0)
+					        {
+										break;
+					        }
+									count = count + 1;
+					     }
+							 printf("discriptor_of_methods[count] -> %d\n",discriptor_of_methods[count]);
 					code_number(INVOKESTATIC, 1);
-					code_number(discriptor_of_methods[0] + 2 , 2);
+					code_number(discriptor_of_methods[count] + 2 , 2);
 
 			}
 
@@ -703,7 +711,7 @@ void generate_expr_code(NExpr *expr)
 			case 'I':    code_number(IMUL, 1);     break;
 			case 'F':    code_number(FMUL, 1);   break;
 			case 'D':    code_number(FMUL, 1);  break;
-			default:          printf("==WTF?== IN EXPR_MUL\n");  code_number(IMUL, 1);      break;
+			default:          printf("==WTF?== IN EXPR_MUL %s \n",check_stack_operation(create_stack_operation(expr)));  code_number(IMUL, 1);      break;
 			}
 			break;
 		}
@@ -944,30 +952,6 @@ void generate_var_code(NExpr*var)
 	}
 
 }
-
-struct LocalVaruble is_in_local_vars(char*name)
-{
-
-
-for(auto b : function_varubles)
-	for(auto c : b)
-	{
-		printf("is_in_local_vars %s %s \n",name , c.name );
-	if(strcmp(name,c.name)==0){
-	return c;
-	}
-	}
-
-	LocalVaruble empty;
-	for (auto c: List_of_varuble){
-		if(strcmp(name,c.name)==0){
-			return c;
-		}
-	}
-
-	return empty;
-}
-
 
 void generate_name_code(NExpr*name)
 {

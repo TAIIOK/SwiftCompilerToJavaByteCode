@@ -112,6 +112,7 @@ char * return_Expr_Init_Type(NExpr *var);
 char * return_varuble_type(NExpr *var);
 char* deblank(char* input);
 char * get_function_type(struct NFunc * f);
+struct LocalVaruble is_in_local_vars(char*name);
 //############################################################################//
 
 list<st_const> table;
@@ -137,6 +138,30 @@ char * CurrentFunctionName = "Main";
 int countofvar = 0;
 
 bool generation = false;
+
+struct LocalVaruble is_in_local_vars(char*name)
+{
+
+
+for(auto b : function_varubles)
+	for(auto c : b)
+	{
+		printf("is_in_local_vars %s %s \n",name , c.name );
+	if(strcmp(name,c.name)==0){
+	return c;
+	}
+	}
+
+	LocalVaruble empty;
+	for (auto c: List_of_varuble){
+		if(strcmp(name,c.name)==0){
+			return c;
+		}
+	}
+
+	return empty;
+}
+
 void buildBaseTable()
 {
         STConst null;
@@ -806,7 +831,7 @@ if(generation){
 
                         result.name = var->idlist->first->name;
 
-                        if(var->varconstant->constant != VART )
+                        if(var->varconstant->constant == LETT )
                         {
                                 result.constant = true;
                         }
@@ -869,7 +894,6 @@ if(generation){
 
                 if(FindVaruble(result))
                 {
-
 
                         printf("EXPR_MASS Convert_Local_Varuble_Type(result)  %d\n",Get_Local_Varuble_Type(result));
 
@@ -1242,15 +1266,15 @@ void print_function_param(char * function,struct NStmt * current){
                         }else{
                                 strcat(str,get_function_type(current->func));
                         }
-                        if((st_constant_index( CONST_UTF8, (void*)(str)) == -1)) {
+
                                 STConst code;
                                 code.next = NULL;
                                 code.type = CONST_UTF8;
                                 code.value.utf8  = str;
                                 table.push_back(code);
-                        }
+
                         name_of_methods.insert(name_of_methods.end(),func_num - 1);
-                        discriptor_of_methods.insert(discriptor_of_methods.end(),func_num);
+                        discriptor_of_methods.insert(discriptor_of_methods.end(),func_num );
 
                         STConst name_type;
                         name_type.next = NULL;
@@ -1451,8 +1475,22 @@ void st_stmt(struct NStmt * node) {
         }
                         break;
 
-        case STMT_ASSIGN:
+        case STMT_ASSIGN:{
             printf("node->expr->type %d \n", node->expr->type);
+LocalVaruble temp;
+
+  if(node->var->type == EXPR_MAS){
+      temp = is_in_local_vars(node->var->left->idlist->first->name);
+  }
+    else{
+        temp = is_in_local_vars(node->var->idlist->first->name);
+      }
+
+        if(temp.constant && temp.id != -1 )
+        {
+          printf("Try to change for Constant");
+          exit(EXIT_FAILURE);
+        }
                 if (node->expr->type == EXPR_ID_LIST)
                 {
                         check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
@@ -1574,7 +1612,7 @@ void st_stmt(struct NStmt * node) {
 
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);
-
+}
                 break;
         case STMT_LASSIGN:
                 update_varuble(globalroot,node->var);
@@ -1619,6 +1657,11 @@ void st_stmt_func(struct NStmt * node) {
   struct NExpr* list = (NExpr *)malloc(sizeof(NExpr));
   list = node->func->args->first;
   while(list != NULL) {
+
+    struct NConstant * nconst = (NConstant *)malloc(sizeof(NConstant));
+    nconst->constant = LETT;
+
+          list->varconstant = nconst;
 
           st_stmt_expr(list);
 
