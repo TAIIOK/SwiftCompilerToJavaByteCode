@@ -38,6 +38,8 @@ void generate_expr_assign(NStmt *expr);
 void generate_elsif_code(NIf*elsif);
 void generate_func_proc_code(NFunc *func);
 void code_method_class();
+void generate_elsif_list_code(NIfList *list);
+void generate_elsif_code(NIf*elsif);
 
 std::vector<char> all_code;
 std::vector<char> byte_code;
@@ -1014,6 +1016,13 @@ void generate_name_list_code(NExprList*list)
 
 }
 
+int sizeIf;
+int sizeElsif;
+int sizeElse;
+std::vector<int> jumpHolderPos;
+std::vector<int> posTo;
+int elsifCount = 0;
+
 void generate_if_code(NIf * If)
 {
 
@@ -1024,34 +1033,63 @@ void generate_if_code(NIf * If)
 
 	code_number(IFEQ, 1);
 	int size = all_code.size();
+	jumpHolderPos.push_back(all_code.size());
 	code_number(0, 2);
 
 	generate_stmt_list_code(If->body);
+
+	generate_elsif_list_code(If->elseiflist);
+
+	for (int i = 0; i<elsifCount; i++)
+			posTo.push_back(all_code.size());
+
+		for (int i = 1; i+1 < jumpHolderPos.size(); i++)
+		{
+			if (i % 2 == 0)
+				posTo[i - 1] = jumpHolderPos[i + 1]-1;
+			else
+				posTo[i - 1] = jumpHolderPos[i]+2;
+		}
+
+
 	if (If->elsebody != NULL)
 	{
 
 		code_number(GO_TO, 1);
 		size2 = all_code.size();
+		jumpHolderPos.push_back(all_code.size());
+		code_number(0, 2);
 	}
 
 	if (If->elsebody == NULL)
 	{
-		temp = make_reversed_s2(all_code.size() + 1 - size);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size + i) = temp.bytes[i];
+		posTo.push_back(all_code.size());
 	}
-	else if (If->elsebody != NULL)
+ if (If->elsebody != NULL)
 	{
-		code_number(0, 2);
-		temp = make_reversed_s2(all_code.size() + 1 - size);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size + i) = temp.bytes[i];
+	posTo.push_back(all_code.size());
+	//6. ÂÒÎË ÔËÒÛÚÒÚ‚ÛÂÚ ‚ÂÚÍ‡ "ËÌ‡˜Â", ÚÓ Ò„ÂÌÂËÓ‚‡Ú¸ ÍÓ‰ ‰Îˇ ÌÂÂ ËÒÔÓÎ¸ÁÛˇ GenerateCodeForBlock Ë Á‡ÔÓÎÌËÚ¸ ‡‰ÂÒ ÔÂÂıÓ‰‡ ËÁ ÔÛÌÍÚ‡ 4 Ì‡ ‰‡Î¸ÌÂÈ¯ËÈ ÍÓ‰.
+	generate_stmt_list_code(If->elsebody);
+	posTo.push_back(all_code.size());
 
-		generate_stmt_list_code(If->elsebody);
-		temp = make_reversed_s2(all_code.size() + 1 - size2);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size2 + i) = temp.bytes[i];
+	if (If->elseiflist != NULL)
+	{
+		posTo[posTo.size() - 2] = jumpHolderPos[jumpHolderPos.size() - 1]+2;
 	}
+	}
+
+	for (int i = 0; i < jumpHolderPos.size(); i++)
+{
+	temp = make_reversed_s2(posTo[i] + 1 - jumpHolderPos[i]);
+	for (int j = 0; j < 2; j++)
+		all_code.at(jumpHolderPos[i] + j) = temp.bytes[j];
+}
+
+sizeIf = 0;
+sizeElsif = 0;
+sizeElse = 0;
+jumpHolderPos.clear();
+posTo.clear();
 
 }
 
@@ -1062,22 +1100,32 @@ void generate_elsif_list_code(NIfList *list)
 		generate_elsif_code(list->first);
 
 }
-
+bool newElsif = false;
 void generate_elsif_code(NIf*elsif)
 {
 
-	if(elsif!=NULL)
+	if (elsif != NULL)
+{
+	elsifCount++;
+	code_number(GO_TO, 1);
+	jumpHolderPos.push_back(all_code.size());
+	code_number(0, 2);
+	posTo.push_back(all_code.size());
+	generate_expr_code(elsif->condition);
+	code_number(IFEQ, 1);
+	jumpHolderPos.push_back(all_code.size());
+	code_number(0, 2);
+	generate_stmt_list_code(elsif->body);
+	if (!newElsif)
+		posTo.push_back(all_code.size());
+
+	if (elsif->next != NULL)
 	{
-		generate_expr_code(elsif->condition);
-		code_number(IFEQ, 1);
-		int size = all_code.size();
-		code_number(0, 2);
-		generate_stmt_list_code(elsif->body);
-		union s2 temp = make_reversed_s2(all_code.size() - size);
-		for (int i = 0; i < 2; i++)
-			all_code.at(size + i) = temp.bytes[i];
+		newElsif = true;
 		generate_elsif_code(elsif->next);
 	}
+	newElsif = false;
+}
 
 }
 void generate_stmt_list_code(NStmtList *list)
