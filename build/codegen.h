@@ -195,7 +195,7 @@ for(int i = 0;i <name_of_methods.size() ;i++ ){
 	advance(l_front, i);
 
 
-	code_number(l_front->size()  + loops_of_methods.at(i) + 2  , 2);//количество локальных переменных
+	code_number(l_front->size()  + loops_of_methods.at(i) + 900  , 2);//количество локальных переменных
 
 	code_number(code_of_methods[i + 1].size() , 4);//длинна байт кода
 
@@ -547,33 +547,6 @@ void generate_expr_code(NExpr *expr)
 	{
 		LocalVaruble elem = is_in_local_vars(expr->name);
 
-		if (elem.varType == INTTy )
-		{
-			code_number(ILOAD, 1);
-			code_number(elem.id, 1);
-		}
-		else if (elem.varType == BOOLTy)
-		{
-			code_number(ILOAD, 1);
-			code_number(elem.id, 1);
-		}
-		else if (elem.varType == DOUBLETy || elem.varType == FLOATTy)
-		{
-			code_number(FLOAD, 1);
-			code_number(elem.id, 1);
-		}
-		else if (elem.varType == STRINGTy)
-		{
-			code_number(ALOAD, 1);
-			code_number(elem.id, 1);
-		}
-		else if (elem.varType == ARRAYTy || elem.isArray)
-		{
-			code_number(ALOAD, 1);
-			code_number(elem.id, 1);
-		}
-
-
 		break;
 	}
 
@@ -718,7 +691,7 @@ void generate_expr_code(NExpr *expr)
 			case 'D':    code_number(FADD, 1);  break;
 			case 'S':			code_number(INVOKESTATIC, 1);
 										code_number(61,2);break;
-			default:          printf("==WTF?== IN EXPR_PLUS\n");       break;
+			default:          printf("==WTF?== IN EXPR_PLUS\n");   code_number(IADD, 1);      break;
 			}
 			break;
 		}
@@ -730,7 +703,7 @@ void generate_expr_code(NExpr *expr)
 			case 'I':    code_number(IMUL, 1);     break;
 			case 'F':    code_number(FMUL, 1);   break;
 			case 'D':    code_number(FMUL, 1);  break;
-			default:          printf("==WTF?== IN EXPR_MUL\n");       break;
+			default:          printf("==WTF?== IN EXPR_MUL\n");  code_number(IMUL, 1);      break;
 			}
 			break;
 		}
@@ -742,7 +715,7 @@ void generate_expr_code(NExpr *expr)
 			case 'I':    code_number(IDIV, 1);     break;
 			case 'F':    code_number(FDIV, 1);   break;
 			case 'D':    code_number(FDIV, 1);  break;
-			default:          printf("==WTF?== EXPR_DIV\n");       break;
+			default:          printf("==WTF?== EXPR_DIV\n"); code_number(IDIV, 1);       break;
 			}
 			break;
 		}
@@ -757,7 +730,7 @@ switch (check_stack_operation(create_stack_operation(expr))[0]) {
 case 'I':    code_number(ISUB, 1);     break;
 case 'F':    code_number(FSUB, 1);   break;
 case 'D':    code_number(FSUB, 1);  break;
-default:          printf("==WTF?== IN EXPR_MINUS\n");       break;
+default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);      break;
 }
 
 			break;
@@ -975,13 +948,11 @@ void generate_var_code(NExpr*var)
 struct LocalVaruble is_in_local_vars(char*name)
 {
 
-	auto l_front = function_varubles.begin();
 
-	advance(l_front, 0);
-
-
-	for(auto c : *l_front)
+for(auto b : function_varubles)
+	for(auto c : b)
 	{
+		printf("is_in_local_vars %s %s \n",name , c.name );
 	if(strcmp(name,c.name)==0){
 	return c;
 	}
@@ -1188,7 +1159,7 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 				case 'D':    code_number(FRETURN, 1);  break;
 				case 'S':    code_number(ARETURN, 1);  break;
 				case 'A':    code_number(ARETURN, 1);  break;
-				default:          printf("==WTF?== generate_expr_assign MASS\n"); code_number(IASTORE, 1);       break;
+				default:          printf("==WTF?== generate_expr_assign MASS\n"); code_number(IRETURN, 1);       break;
 				}
 
 				funcReturn = true;
@@ -1214,6 +1185,8 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 
 
 generate_expr_list_code(func->args);
+
+
 
 
 

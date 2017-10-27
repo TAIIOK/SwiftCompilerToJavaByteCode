@@ -111,6 +111,7 @@ void printTable();
 char * return_Expr_Init_Type(NExpr *var);
 char * return_varuble_type(NExpr *var);
 char* deblank(char* input);
+char * get_function_type(struct NFunc * f);
 //############################################################################//
 
 list<st_const> table;
@@ -551,17 +552,20 @@ char * check_stack_operation(list <NExpr *> operations){
 
                         if(strcmp(type,return_Expr_Init_Type(op)) != 0)
                         {
-
+                            if(!generation){
                                 printf("Varuble have wrong type or not declarate %s\n",type);
                                 exit(EXIT_FAILURE);
+                              }
                         }
                 }
                 else{
 
                         if(strcmp(type,update_varuble(globalroot,op)) != 0)
                         {
-                                printf("Varuble have wrong type or not declarate %s\n",type);
-                                exit(EXIT_FAILURE);
+                          if(!generation){
+                              printf("Varuble have wrong type or not declarate %s\n",type);
+                              exit(EXIT_FAILURE);
+                            }
                         }
                 }
         }
@@ -778,8 +782,17 @@ for(auto c : function_varubles )
   }
 }
 
-if(var->type == EXPR_MET)
+if(var->type == EXPR_MET){
+
+for (auto c : main_functions_list) {
+        if (strcmp(c.name->last->name, var->name) == 0)
+        {
+          printf("c.name->last->name %s\n", c.name->last->name);
+        return  get_function_type(&c);
+        }
+      }
 return "";
+}
 if(generation){
   if(var->idlist != NULL){}
     //printf("var->type %d %s\n",var->type,var->idlist->first->name);
@@ -1377,7 +1390,17 @@ void st_stmt(struct NStmt * node) {
         case STMT_BLOCK:  st_stmt_list(node->list);                         break;
         case STMT_REPEAT: st_stmt_while(node->while_loop);                  break;
         case STMT_LFUNC:  st_stmt_func(node);                               break;
-        case STMT_RETURN: if (node->expr != NULL) st_stmt_expr(node->expr); break;
+        case STMT_RETURN: if (node->expr != NULL){
+
+        if(node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD) {
+
+              //  check_equal(update_varuble(globalroot,node->expr->left),update_varuble(globalroot,node->expr->right));
+                st_stmt_expr(node->expr->left);
+                st_stmt_expr(node->expr->right);
+        }
+        else{
+                st_stmt_expr(node->expr);
+        }  }break;
         case STMT_IF:     st_stmt_if(node->if_tree);                        break;
         case STMT_SWITCH:  st_stmt_switch(node->switch_tree);               break;
 
@@ -1416,7 +1439,7 @@ void st_stmt(struct NStmt * node) {
                 int tempCount = countofvar;
                 temp = List_of_varuble;
                 List_of_varuble.clear();
-                countofvar = 0;
+                countofvar = -1;
                 CurrentFunctionName = node->func->name->last->name;
                 st_stmt_func(node);
 
@@ -1745,6 +1768,8 @@ void st_stmt_expr(struct NExpr * node) {
                         {
                                 LocalVaruble result;
                                 result.varType = node->vartype->type;
+                                printf("node->vartype->type %d",node->vartype->type);
+                                //exit(EXIT_FAILURE);
                                 result.name = node->name;
                                 result.isArray = node->isArray;
                                 if(node->varconstant != NULL)
