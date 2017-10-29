@@ -785,6 +785,27 @@ char * return_Expr_Init_Type(NExpr *var){
 }
 char * update_varuble(NStmtList *root,NExpr *var){
 
+
+  if(var->type == EXPR_MET && var->name != NULL){
+
+  for (auto c : main_functions_list) {
+
+          if (strcmp(c.name->last->name, var->name) == 0)
+          {
+            printf("c.name->last->name %s\n", c.name->last->name);
+          return  get_function_type(&c);
+          }
+        }
+  return "";
+  }
+  else{
+      return "";
+  }
+  if(generation){
+    if(var->idlist != NULL){}
+      //printf("var->type %d %s\n",var->type,var->idlist->first->name);
+  }
+
 list<list<LocalVaruble> > function_varubles;
 
 for(auto c : function_varubles )
@@ -807,21 +828,7 @@ for(auto c : function_varubles )
   }
 }
 
-if(var->type == EXPR_MET){
 
-for (auto c : main_functions_list) {
-        if (strcmp(c.name->last->name, var->name) == 0)
-        {
-          printf("c.name->last->name %s\n", c.name->last->name);
-        return  get_function_type(&c);
-        }
-      }
-return "";
-}
-if(generation){
-  if(var->idlist != NULL){}
-    //printf("var->type %d %s\n",var->type,var->idlist->first->name);
-}
 
 
         if(var->varconstant != NULL) {

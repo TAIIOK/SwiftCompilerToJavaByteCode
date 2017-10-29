@@ -920,6 +920,7 @@ void generate_expr_list_code(NExprList *list)
 
 	if(list!=NULL)
 	{
+		if(list->first != NULL)
 		generate_expr_code(list->first);
 	}
 
@@ -1215,12 +1216,9 @@ code_of_methods.insert(code_of_methods.end(), std::vector<char>());
 	int temploop = loopCounter;
 	loopCounter = 0;
 
-
-generate_expr_list_code(func->args);
-
-
-
-
+if(func->args != NULL){
+	generate_expr_list_code(func->args);
+}
 
 	generate_stmt_list_code(func->body);
 
