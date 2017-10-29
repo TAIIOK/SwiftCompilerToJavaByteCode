@@ -1068,7 +1068,7 @@ void generate_if_code(NIf * If)
  if (If->elsebody != NULL)
 	{
 	posTo.push_back(all_code.size());
-	//6. ÂÒÎË ÔËÒÛÚÒÚ‚ÛÂÚ ‚ÂÚÍ‡ "ËÌ‡˜Â", ÚÓ Ò„ÂÌÂËÓ‚‡Ú¸ ÍÓ‰ ‰Îˇ ÌÂÂ ËÒÔÓÎ¸ÁÛˇ GenerateCodeForBlock Ë Á‡ÔÓÎÌËÚ¸ ‡‰ÂÒ ÔÂÂıÓ‰‡ ËÁ ÔÛÌÍÚ‡ 4 Ì‡ ‰‡Î¸ÌÂÈ¯ËÈ ÍÓ‰.
+
 	generate_stmt_list_code(If->elsebody);
 	posTo.push_back(all_code.size());
 

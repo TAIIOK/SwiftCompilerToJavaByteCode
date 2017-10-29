@@ -1676,7 +1676,9 @@ void st_stmt_func(struct NStmt * node) {
 
 }
 void st_stmt_if(struct NIf * node) {
+  if(node->condition->left != NULL)
         update_varuble(globalroot,node->condition->left);
+  if(node->condition->right != NULL)
         update_varuble(globalroot,node->condition->right);
         st_stmt_expr(node->condition);
         st_stmt_list(node->body);
