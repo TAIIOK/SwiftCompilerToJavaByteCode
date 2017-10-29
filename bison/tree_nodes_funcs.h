@@ -802,6 +802,9 @@ NVarEnumType get_var_type(NExpr*  temp)
     case EXPR_STR:
     return STRINGTy;
     break;
+    case EXPR_BOOL:
+    return BOOLTy;
+    break;
     default:
     return VOIDTy;
     break;

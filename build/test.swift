@@ -1,6 +1,6 @@
 
-var a = 1
+var a = true
 
 if (a){
-    print(a)
+    print("lol")
 }
