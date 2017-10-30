@@ -695,6 +695,7 @@ void generate_expr_code(NExpr *expr)
 		{
 			generate_expr_code(expr->left);
 			generate_expr_code(expr->right);
+
 			switch (check_stack_operation(create_stack_operation(expr))[0]) {
 			case 'I':    code_number(IADD, 1);     break;
 			case 'F':    code_number(FADD, 1);   break;

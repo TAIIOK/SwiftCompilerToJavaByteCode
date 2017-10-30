@@ -560,6 +560,7 @@ list<NExpr *> create_stack_operation(NExpr *var){
 
 char * check_stack_operation(list <NExpr *> operations){
         char * type =  (char*)malloc(sizeof(char)*33);
+
         if(operations.front()->type != EXPR_ID_LIST && operations.front()->type != EXPR_ID)
         {
                 strcpy(type,return_Expr_Init_Type(operations.front()));
@@ -717,6 +718,7 @@ char * Convert_Local_Varuble_Type(LocalVaruble var){
           for(auto b: c)
           {
               if(strcmp(b.name , var.name) == 0){
+
                 switch (b.varType) {
                 case INTTy:       return "I ";    break;
                 case FLOATTy:     return "F ";    break;
@@ -737,7 +739,7 @@ char * Convert_Local_Varuble_Type(LocalVaruble var){
       for(auto c: List_of_varuble)
       {
               if(strcmp(c.name, var.name) == 0) {
-
+                printf("-> c.varType %d %s \n",c.varType,c.name);
         switch (c.varType) {
         case INTTy:       return "I ";    break;
         case FLOATTy:     return "F ";    break;
@@ -798,12 +800,10 @@ char * update_varuble(NStmtList *root,NExpr *var){
         }
   return "";
   }
-  else{
-      return "";
-  }
+
   if(generation){
     if(var->idlist != NULL){}
-      //printf("var->type %d %s\n",var->type,var->idlist->first->name);
+      printf("var->type %d %s\n",var->type,var->idlist->first->name);
   }
 
 list<list<LocalVaruble> > function_varubles;
@@ -882,14 +882,14 @@ for(auto c : function_varubles )
                         return return_Expr_Init_Type(var);
                 }
 
-    else     if(var->type == EXPR_TABLE)
+    else  if(var->type == EXPR_TABLE)
                 {
 
                         return return_varuble_type(var);
                 }
 
 
-        else if((var->idlist != NULL && var->idlist->first != NULL )|| var->type == EXPR_MAS) {
+        else if((var->idlist != NULL && var->idlist->first != NULL ) || var->type == EXPR_MAS || var->type == EXPR_ID_LIST) {
                 LocalVaruble result;
 
                 if(var->type == EXPR_MAS){
@@ -906,8 +906,6 @@ for(auto c : function_varubles )
 
                         return Convert_Local_Varuble_Type(result);
                 }
-
-
         }
 
         return "";
@@ -1506,6 +1504,18 @@ LocalVaruble temp;
                 else if (node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD)
                 {
                         check_stack_operation(create_stack_operation(node->expr));
+                        if(node->var->vartype->type == VOIDTy)
+                        {
+                          switch (check_stack_operation(create_stack_operation(node->expr))[0]) {
+                    			case 'I':    node->var->vartype->type = INTTy;     break;
+                    			case 'F':    node->var->vartype->type = FLOATTy;   break;
+                    			case 'D':    node->var->vartype->type = DOUBLETy;  break;
+                    			case 'S':		 node->var->vartype->type = STRINGTy;  break;
+                          case 'B':    node->var->vartype->type = BOOLTy;    break;
+                    			default:              break;
+                    			}
+
+                        }
                         check_equal(update_varuble(globalroot,node->var),check_stack_operation(create_stack_operation(node->expr)));
                 }
 
