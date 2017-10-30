@@ -11,5 +11,11 @@ var name = "Vlad"
 var full_str = string + name
 print(full_str)
 
+if (a > d){
+    print("a > d")
+}
 
- print("Insides")
+if(g > f){
+    print("4.9 < 5.1")
+}
+

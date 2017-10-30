@@ -1,15 +1,43 @@
 
+let logical = false
 
-func lol() -> Int {
+if (!logical){
+    print("It works")
+}
 
+
+
+let door = true
+let key = false
+
+let hasKey = false
+let hasPassword = true
+
+print("kek")
+
+
+
+
+
+func r() -> Int{
+    print("Right")
     return 1
 }
 
-
-var o = 0
-
-if (lol() || true){
-    
+func l() -> Int{
+    print("Left")
+    return 1
 }
+
+func s() -> Int{
+    print("Right")
+    return 1
+}
+
+func t() -> Int{
+    print("Left")
+    return 1
+}
+
 
 

@@ -35,11 +35,11 @@ void code_methodref(int first , int second);
 void code_name_and_type(int first , int second);
 void code_float_number(float number, int size);
 void generate_expr_assign(NStmt *expr);
-void generate_elsif_code(NIf*elsif);
+void generate_elsif_code(NIf*elsif, std::vector<int> jump , std::vector<int> pos);
 void generate_func_proc_code(NFunc *func);
 void code_method_class();
-void generate_elsif_list_code(NIfList *list);
-void generate_elsif_code(NIf*elsif);
+void generate_elsif_list_code(NIfList *list, std::vector<int> jump , std::vector<int> pos);
+
 
 std::vector<char> all_code;
 std::vector<char> byte_code;
@@ -854,6 +854,7 @@ default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);     
 			code_number(GO_TO, 1);
 			code_number(4, 2);
 			code_number(ICONST_1, 1);
+
 			break;
 		}
 
@@ -1021,15 +1022,19 @@ void generate_name_list_code(NExprList*list)
 int sizeIf;
 int sizeElsif;
 int sizeElse;
-std::vector<int> jumpHolderPos;
-std::vector<int> posTo;
 int elsifCount = 0;
 
 void generate_if_code(NIf * If)
 {
 
+	printf("generate_expr_code(If->condition); generate_expr_code(If->condition);\n");
 	int size2;
 	union s2 temp;
+	int temp_count = 0;
+
+	std::vector<int> jumpHolderPos;
+
+	std::vector<int> posTo;
 
 	generate_expr_code(If->condition);
 
@@ -1040,12 +1045,12 @@ void generate_if_code(NIf * If)
 
 	generate_stmt_list_code(If->body);
 
-	generate_elsif_list_code(If->elseiflist);
+	generate_elsif_list_code(If->elseiflist,jumpHolderPos,posTo);
 
 	for (int i = 0; i<elsifCount; i++)
 			posTo.push_back(all_code.size());
 
-		for (int i = 1; i+1 < jumpHolderPos.size(); i++)
+		for (int i = 1; i+1 < jumpHolderPos.size() ; i++)
 		{
 			if (i % 2 == 0)
 				posTo[i - 1] = jumpHolderPos[i + 1]-1;
@@ -1076,7 +1081,7 @@ void generate_if_code(NIf * If)
 
 	if (If->elseiflist != NULL)
 	{
-		posTo[posTo.size() - 2] = jumpHolderPos[jumpHolderPos.size() - 1]+2;
+		posTo[posTo.size()   - 2] = jumpHolderPos[jumpHolderPos.size()  - 1]+2;
 	}
 	}
 
@@ -1087,44 +1092,40 @@ void generate_if_code(NIf * If)
 		all_code.at(jumpHolderPos[i] + j) = temp.bytes[j];
 }
 
-sizeIf = 0;
-sizeElsif = 0;
-sizeElse = 0;
-jumpHolderPos.clear();
-posTo.clear();
+
 
 }
 
-void generate_elsif_list_code(NIfList *list)
+void generate_elsif_list_code(NIfList *list, std::vector<int> jump , std::vector<int> pos)
 {
 
 	if(list!=NULL)
-		generate_elsif_code(list->first);
+		generate_elsif_code(list->first,jump,pos);
 
 }
 bool newElsif = false;
-void generate_elsif_code(NIf*elsif)
+void generate_elsif_code(NIf*elsif, std::vector<int> jump , std::vector<int> pos)
 {
 
 	if (elsif != NULL)
 {
 	elsifCount++;
 	code_number(GO_TO, 1);
-	jumpHolderPos.push_back(all_code.size());
+	jump.push_back(all_code.size());
 	code_number(0, 2);
-	posTo.push_back(all_code.size());
+	pos.push_back(all_code.size());
 	generate_expr_code(elsif->condition);
 	code_number(IFEQ, 1);
-	jumpHolderPos.push_back(all_code.size());
+	jump.push_back(all_code.size());
 	code_number(0, 2);
 	generate_stmt_list_code(elsif->body);
 	if (!newElsif)
-		posTo.push_back(all_code.size());
+		pos.push_back(all_code.size());
 
 	if (elsif->next != NULL)
 	{
 		newElsif = true;
-		generate_elsif_code(elsif->next);
+		generate_elsif_code(elsif->next,jump,pos);
 	}
 	newElsif = false;
 }
@@ -1158,6 +1159,8 @@ void generate_stmt_code(NStmt*stmt)
 		{
 
 code_of_methods.insert(code_of_methods.end(), std::vector<char>());
+
+code_of_methods[0].clear();
 
 	for (auto el : all_code)
 			code_of_methods[0].push_back(el);

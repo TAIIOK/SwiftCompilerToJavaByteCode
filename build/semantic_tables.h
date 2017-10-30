@@ -803,7 +803,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
 
   if(generation){
     if(var->idlist != NULL){}
-      printf("var->type %d %s\n",var->type,var->idlist->first->name);
+    //  printf("var->type %d %s\n",var->type,var->idlist->first->name);
   }
 
 list<list<LocalVaruble> > function_varubles;
@@ -1698,6 +1698,7 @@ void st_stmt_if(struct NIf * node) {
   if(node->condition->right != NULL)
         update_varuble(globalroot,node->condition->right);
         st_stmt_expr(node->condition);
+
         st_stmt_list(node->body);
 
         struct NIf* current = node->elseiflist->first;
