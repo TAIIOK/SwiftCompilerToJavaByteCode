@@ -651,7 +651,7 @@ void generate_expr_code(NExpr *expr)
 							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
 						}
 						else{
-							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
+							strcpy(str, return_Expr_Init_Type(expr->right->idlist->first));
 						}
 
 						int i = 0;
