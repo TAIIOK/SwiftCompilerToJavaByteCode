@@ -519,8 +519,7 @@ void generate_expr_code(NExpr *expr)
 	case EXPR_MAS:
 	{
 		LocalVaruble el;
-		el =  is_in_local_vars(expr->name);
-
+		el =  is_in_local_vars(expr->left->idlist->first->name);
 		code_number(ALOAD, 1);
 		printf("el.id %d",el.id);
 		code_number(el.id, 1);
@@ -650,14 +649,21 @@ void generate_expr_code(NExpr *expr)
 				else if (expr->right->idlist->first->type==EXPR_MINUS ||expr->right->idlist->first->type==EXPR_PLUS || expr->right->idlist->first->type==EXPR_MUL || expr->right->idlist->first->type==EXPR_DIV || expr->right->idlist->first->type==EXPR_MOD){
 							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
 						}
+						else if(expr->right->idlist->first->type == EXPR_MAS){
+							LocalVaruble el;
+							el =  is_in_local_vars(expr->right->idlist->first->left->idlist->first->name);
+							strcpy(str,Convert_Local_Varuble_Type(el));
+						}
 						else{
 							strcpy(str, return_Expr_Init_Type(expr->right->idlist->first));
 						}
 
 						int i = 0;
 
-						if(strlen(str) > 2)
+						if(strlen(str) > 2){
 								i = 1;
+							}
+							printf("case 'I':    code_number(findMethodRef(INTTy,true), 2);     break; %s\n",str);
 			switch (str[i]) {
 			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;

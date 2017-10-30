@@ -146,7 +146,7 @@ struct LocalVaruble is_in_local_vars(char*name)
 for(auto b : function_varubles)
 	for(auto c : b)
 	{
-		printf("is_in_local_vars %s %s \n",name , c.name );
+		//printf("is_in_local_vars %s %s \n",name , c.name );
 	if(strcmp(name,c.name)==0){
 	return c;
 	}
@@ -615,7 +615,7 @@ void check_equal(char *left,char *right){
                 }
         }
 
-        if(strcmp(left,right) != 0 && left[0] != right[0]  )
+        if(strcmp(left,right) != 0 && left[0] != right[1]  &&  left[1] != right[0] )
         {
                 printf("Wrong equal TYPE 1 %s  2 %s \n",right,left);
                 exit (EXIT_FAILURE);
@@ -1487,7 +1487,7 @@ LocalVaruble temp;
   if(node->var->type == EXPR_MAS){
       temp = is_in_local_vars(node->var->left->idlist->first->name);
   }
-    else{
+    else if (node->var->type == EXPR_ID_LIST){
         temp = is_in_local_vars(node->var->idlist->first->name);
       }
 
@@ -1504,18 +1504,34 @@ LocalVaruble temp;
                 else if (node->expr->type==EXPR_MINUS ||node->expr->type==EXPR_PLUS || node->expr->type==EXPR_MUL || node->expr->type==EXPR_DIV || node->expr->type==EXPR_MOD)
                 {
                         check_stack_operation(create_stack_operation(node->expr));
+
+                        struct NVarType* result = (NVarType*)malloc(sizeof(NVarType));
+                      if(node->var->vartype != NULL){
                         if(node->var->vartype->type == VOIDTy)
                         {
                           switch (check_stack_operation(create_stack_operation(node->expr))[0]) {
-                    			case 'I':    node->var->vartype->type = INTTy;     break;
-                    			case 'F':    node->var->vartype->type = FLOATTy;   break;
-                    			case 'D':    node->var->vartype->type = DOUBLETy;  break;
-                    			case 'S':		 node->var->vartype->type = STRINGTy;  break;
-                          case 'B':    node->var->vartype->type = BOOLTy;    break;
+                    			case 'I':    result->type = INTTy;     break;
+                    			case 'F':    result->type = FLOATTy;   break;
+                    			case 'D':    result->type = DOUBLETy;  break;
+                    			case 'S':		 result->type = STRINGTy;  break;
+                          case 'B':    result->type = BOOLTy;    break;
                     			default:              break;
                     			}
-
+                          node->var->vartype = result;
                         }
+                      }
+                      else{
+                        switch (check_stack_operation(create_stack_operation(node->expr))[0]) {
+                        case 'I':    result->type = INTTy;     break;
+                        case 'F':    result->type = FLOATTy;   break;
+                        case 'D':    result->type = DOUBLETy;  break;
+                        case 'S':		 result->type = STRINGTy;  break;
+                        case 'B':    result->type = BOOLTy;    break;
+                        default:              break;
+                        }
+                        node->var->vartype = result;
+
+                      }
                         check_equal(update_varuble(globalroot,node->var),check_stack_operation(create_stack_operation(node->expr)));
                 }
 

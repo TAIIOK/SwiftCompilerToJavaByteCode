@@ -1,43 +1,13 @@
+var new:[Int] = [1,2,3,4,5,6,7,9,11,25,-5,0]
 
-let logical = false
+var N = new.count()
+var tmp = 0
+var i:Int = 0
+var j:Int = 0
 
-if (!logical){
-    print("It works")
+
+while(i < N){
+    print(new[i])
+    i = i + 1
 }
-
-
-
-let door = true
-let key = false
-
-let hasKey = false
-let hasPassword = true
-
-print("kek")
-
-
-
-
-
-func r() -> Int{
-    print("Right")
-    return 1
-}
-
-func l() -> Int{
-    print("Left")
-    return 1
-}
-
-func s() -> Int{
-    print("Right")
-    return 1
-}
-
-func t() -> Int{
-    print("Left")
-    return 1
-}
-
-
 
