@@ -1523,31 +1523,40 @@ case 82:
 YY_RULE_SETUP
 #line 202 "../lexer/swift.yy"
 {
+                                  double test = atof(yytext);
+                                  if(test > 2139095039){
                                   yylval.Double = atof(yytext);
                                   return DOUBLE;
+                                  }
+                                  else{
+                                  yylval.Double = atof(yytext);
+                                  return FLOAT;
+                                  }
+
+
                               }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 207 "../lexer/swift.yy"
+#line 216 "../lexer/swift.yy"
 printf("Unknown symbol: %s\n",yytext);
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 209 "../lexer/swift.yy"
+#line 218 "../lexer/swift.yy"
 {;};
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(STRING_A):
-#line 211 "../lexer/swift.yy"
+#line 220 "../lexer/swift.yy"
 return 0;
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 212 "../lexer/swift.yy"
+#line 221 "../lexer/swift.yy"
 ECHO;
 	YY_BREAK
-#line 1551 "lex.yy.c"
+#line 1560 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2554,7 +2563,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 212 "../lexer/swift.yy"
+#line 221 "../lexer/swift.yy"
 
 
 int main(int argc,char* argv[])
