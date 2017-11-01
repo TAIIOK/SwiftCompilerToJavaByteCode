@@ -1,9 +1,19 @@
 
 
-func increment(digit: Int) -> Int {
+func razor(ar:Int) -> Int {
 
-    var a = 0 
 
-    return digit
+     uk = 90
+
+    print(ar)
+
+return 1
 }
 
+
+var uk = 100
+
+var d = razor(ar:uk)
+
+
+print(uk)

@@ -502,7 +502,7 @@ printf("expr->expr->type %d\n",expr->expr->type);
 				if(!flagVar){
 				 if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
-						code_number(ISTORE, 1);
+				//		code_number(ISTORE, 1);
 					}
 					else if (expr->var->vartype->type == FLOATTy)
 					{
@@ -1480,8 +1480,6 @@ byte_code = all_code;
 
 void code_field_table()
 {
-	exit(EXIT_FAILURE);
-	
 	for (auto a: Fields_table){
 		unsigned long int number;
 		code_number(0x0008, 2);
@@ -1525,6 +1523,8 @@ void generate_class_file()
 	code_number(number, 2);
 
 	number = Fields_table.size();
+
+
 	code_number(number, 2);
 
  code_field_table();

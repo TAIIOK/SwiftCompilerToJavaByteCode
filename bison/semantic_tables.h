@@ -129,6 +129,9 @@ list<NExpr *> Main_varubles;
 
 list<list<LocalVaruble> > function_varubles;
 
+
+list<LocalVaruble> Check_list;
+
 vector<int> discriptor_of_methods;
 vector<int> name_of_methods;
 
@@ -618,10 +621,18 @@ void check_equal(char *left,char *right){
                 }
         }
 
+        char * str1 = (char*)malloc(sizeof(char)*33);
+        char * str2 = (char*)malloc(sizeof(char)*33);
+        strcat(str1,left);
+        strcat(str2,right);
+        if(deblank(str1)[0] == deblank(str2)[0])
+        {
+          return;
+        }
         if(strcmp(left,right) != 0 && left[0] != right[1]  &&  left[1] != right[0] )
         {
-                printf("Wrong equal TYPE 1 %s  2 %s \n",right,left);
-                exit (EXIT_FAILURE);
+                printf("Wrong equal TYPE 1 %s| 2 %s| \n",right,left);
+                //exit (EXIT_FAILURE);
         }
         return;
 }
@@ -699,6 +710,26 @@ bool FindVaruble(LocalVaruble var)
                         return true;
                 }
         }
+
+        for(auto c : function_varubles )
+        {
+          list<LocalVaruble> temp;
+          temp = c;
+            for(auto b: temp)
+            {
+              if(var.varType == EXPR_MAS){
+                if(strcmp(b.name, var.name) == 0){
+                    return true;
+                }
+              }
+                else{
+                  if(strcmp(b.name ,var.name) == 0){
+                    return true;
+                  }
+                }
+
+          }
+        }
         return false;
 }
 
@@ -710,6 +741,7 @@ NVarEnumType Get_Local_Varuble_Type(LocalVaruble var)
                         return c.varType;
                 }
         }
+
         return NULLTYPE;
 }
 
@@ -804,6 +836,7 @@ char * update_varuble(NStmtList *root,NExpr *var){
   return "";
   }
 
+
   if(generation){
     if(var->idlist != NULL){}
     //  printf("var->type %d %s\n",var->type,var->idlist->first->name);
@@ -831,13 +864,13 @@ for(auto c : function_varubles )
   }
 }
 
-
+LocalVaruble result;
 
 
         if(var->varconstant != NULL) {
                 if(var->vartype != NULL)
                 {
-                        LocalVaruble result;
+
 
                         result.name = var->idlist->first->name;
 
@@ -873,8 +906,11 @@ for(auto c : function_varubles )
                                 type.type = CONST_UTF8;
                                char * str = (char*)malloc(sizeof(char)*33);
                                strcat(str , Convert_Local_Varuble_Type(result));
-
+                               if(str[0] == 'S'){
+                                type.value.utf8  = "Ljava/lang/String;";
+                              }else{
                                 type.value.utf8  = deblank(str);
+                              }
                                 table.push_back(type);
 
                                 STConst name_type;
@@ -890,6 +926,7 @@ for(auto c : function_varubles )
                                 field_ref.value.args.arg1  = 3;
                                 field_ref.value.args.arg2  = table.size()-1;
                                 table.push_back(field_ref);
+
 
                                 Fields_table.push_back(name_type);
                               }
@@ -951,6 +988,15 @@ for(auto c : function_varubles )
                         return Convert_Local_Varuble_Type(result);
                 }
         }
+
+        if(var->type == EXPR_ID_LIST)
+        {
+          result.name = var->idlist->first->name;
+        }
+        if(var->type == EXPR_MAS){
+                result.name = var->left->idlist->first->name;
+          }
+        Check_list.push_back(result);
 
         return "";
 }
@@ -1134,8 +1180,11 @@ void check_function_args(struct NExpr * cur){
                         if(cur->right->idlist->first->type==EXPR_MINUS ||cur->right->idlist->first->type==EXPR_PLUS || cur->right->idlist->first->type==EXPR_MUL || cur->right->idlist->first->type==EXPR_DIV || cur->right->idlist->first->type==EXPR_MOD)
                         {
 
-                            //    check_stack_operation(create_stack_operation(cur->right->idlist->first));
+                                check_stack_operation(create_stack_operation(cur->right->idlist->first));
 
+                        }
+                        else {
+                          update_varuble(globalroot,cur->right->idlist->first);
                         }
                 }
                 return;
@@ -1278,6 +1327,7 @@ char * get_function_args(struct NFunc * f){
         return deblank(str);
 }
 void print_function_param(char * function,struct NStmt * current){
+
         char * str = (char*)malloc(sizeof(char)*33);;
         int func_num = -1;
         if(current->type == STMT_FUNC)
@@ -1288,9 +1338,16 @@ void print_function_param(char * function,struct NStmt * current){
                 name.value.utf8  = function;
                 table.push_back(name);
                 func_num = table.size();
+
+
                 if(strcmp(current->func->name->last->name,function) == 0)
                 {
-                        if(current->func->args->first == NULL)
+
+                    if(current->func->args == NULL)
+                    {
+                      strcat(str,"()");
+                    }
+                      else  if(current->func->args->first == NULL)
                         {
                                 strcat(str,"()");
 
@@ -1317,8 +1374,8 @@ void print_function_param(char * function,struct NStmt * current){
                         STConst name_type;
                         name_type.next = NULL;
                         name_type.type = CONST_NAMETYPE;
-                        name_type.value.args.arg1  = func_num - 1;
-                        name_type.value.args.arg2  = (st_constant_index( CONST_UTF8, (void*)(str)));
+                        name_type.value.args.arg1  = table.size() - 2;
+                        name_type.value.args.arg2  = table.size() - 1;
                         table.push_back(name_type);
                         STConst method_ref;
                         method_ref.next = NULL;
@@ -1410,6 +1467,14 @@ void create_table(NStmtList *root){
         printTable();
         printLocalVars();
 
+        bool flag = false;
+
+        for(auto c : Check_list){
+          if(!FindVaruble(c)){
+            printf("Variable %s is not declared\n",c.name);
+            exit(EXIT_FAILURE);
+          }
+        }
 }
 void create_main_table(NStmtList *root){
         struct NStmt * current = root->first;
@@ -1573,10 +1638,35 @@ LocalVaruble temp;
                 else if(node->expr->type == EXPR_MET )
                 {
                   char * type =  (char*)malloc(sizeof(char)*33);
-                        for (auto c : functions_list) {
+                        for (auto c : main_functions_list) {
                                 if (strcmp(c.name->last->name, node->expr->left->idlist->first->name) == 0)
                                 {
+                                  if(c.vartype == node->var->vartype)
+                                  {
+                                    break;
+                                  }
+                                  if (node->var->vartype->type == VOIDTy)
+                                  {
+                                    node->var->vartype = c.vartype;
+                                  }
+                                  strcpy(type,update_varuble(globalroot,node->var));
+                                    if(strcmp(type,"V ") == 0) {
+                                      switch (get_function_type(&c)[0]) {
+                                      case 'I':    List_of_varuble.back().varType = INTTy;node->var->vartype->type = INTTy;     break;
+                                      case 'D':    List_of_varuble.back().varType = DOUBLETy;node->var->vartype->type = DOUBLETy;  break;
+                                      case 'S':    List_of_varuble.back().varType = STRINGTy;node->var->vartype->type = STRINGTy;  break;
+                                      case 'A':    List_of_varuble.back().varType = ARRAYTy;node->var->vartype->type = ARRAYTy;  break;
+                                      default:     break;
+                                      }
+
+                                    }
+                                    else if(strcmp(type,"I ") != 0 && type[0] != get_function_type(&c)[0]) {
+                                      printf("Wrong equal TYPE");
+                                      exit(EXIT_FAILURE);
+                                    }
+
                                         check_equal(update_varuble(globalroot,node->var),get_function_type(&c));
+
                                         break;
                                 }
                         }
@@ -1609,13 +1699,17 @@ LocalVaruble temp;
 
                         if(strcmp(node->expr->left->idlist->first->name,"readLine" )==0)
                         {
+                          if(node->var->vartype->type == VOIDTy)
+                          {
+                            node->var->vartype->type = STRINGTy;
+                          }
                           strcpy(type,update_varuble(globalroot,node->var));
                                 if(strcmp(type,"V ") == 0) {
                                           List_of_varuble.back().varType = STRINGTy;
                                             node->var->vartype->type = STRINGTy;
 
                                 }
-                                else if(strcmp(type,"S ") != 0 && type[0] != 'S' ){
+                                else if(strcmp(type,"S ") != 0 && strcmp(type,"Ljava/lang/String;") != 0  && type[0] != 'S' ){
                                   printf("Wrong equal TYPE");
                                   exit(EXIT_FAILURE);
                                 }
@@ -1724,6 +1818,7 @@ void st_stmt_func(struct NStmt * node) {
 
   struct NExpr* list = (NExpr *)malloc(sizeof(NExpr));
   list = node->func->args->first;
+
   while(list != NULL) {
 
     struct NConstant * nconst = (NConstant *)malloc(sizeof(NConstant));
@@ -1871,9 +1966,55 @@ void st_stmt_expr(struct NExpr * node) {
                                 if(!FindVaruble(result))
                                 {
                                         countofvar = countofvar  + 1;
-                                        result.id = countofvar;
+                                        if(strcmp(CurrentFunctionName , "Main") == 0){
+                                          result.id = table.size() + 4 ;
+                                        }
+                                        else{
+                                          result.id = countofvar;
+                                        }
+
                                         List_of_varuble.push_back(result);
-                                }
+
+                                        if(strcmp(CurrentFunctionName , "Main") == 0){
+                                        STConst name;
+                                        name.next = NULL;
+                                        name.type = CONST_UTF8;
+                                      //  name.value.utf8 = "aaa";
+                                        name.value.utf8 = node->name;
+                                        table.push_back(name);
+
+                                        STConst type;
+                                        type.next = NULL;
+                                        type.type = CONST_UTF8;
+                                       char * str = (char*)malloc(sizeof(char)*33);
+                                       strcat(str , Convert_Local_Varuble_Type(result));
+
+                                        type.value.utf8  = deblank(str);
+
+                                        if(str[0] == 'S'){
+                                         type.value.utf8  = "Ljava/lang/String;";
+                                       }else{
+                                         type.value.utf8  = deblank(str);;
+                                       }
+                                        table.push_back(type);
+
+                                        STConst name_type;
+                                        name_type.next = NULL;
+                                        name_type.type = CONST_NAMETYPE;
+                                        name_type.value.args.arg1  = table.size() - 2;
+                                        name_type.value.args.arg2  = table.size() - 1;
+                                        table.push_back(name_type);
+
+                                        STConst field_ref;
+                                        field_ref.next = NULL;
+                                        field_ref.type = CONST_FIELDREF;
+                                        field_ref.value.args.arg1  = 3;
+                                        field_ref.value.args.arg2  = table.size()-1;
+                                        table.push_back(field_ref);
+
+                                        Fields_table.push_back(name_type);
+                                      }
+                                    }
                         }
                 }
         }
@@ -1919,6 +2060,13 @@ void st_stmt_expr(struct NExpr * node) {
                                        strcat(str , Convert_Local_Varuble_Type(result));
 
                                         type.value.utf8  = deblank(str);
+
+                                        if(str[0] == 'S'){
+                                         type.value.utf8  = "Ljava/lang/String;";
+                                       }else{
+                                         type.value.utf8  = deblank(str);;
+                                       }
+
                                         table.push_back(type);
 
                                         STConst name_type;
