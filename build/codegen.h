@@ -152,7 +152,7 @@ code_number(byte_code.size() + 13, 4);//длинна атрибута
 code_number(2048, 2);//стек
 
 
-code_number(0  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
+code_number(100  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 

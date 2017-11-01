@@ -1,9 +1,13 @@
 
+func d(){
+var s = 0
 
-var mass1:[Int] = [1,2,3,4,5,6]
+for s in 0 ... 10{
 
-var mass2:[Int] = [6,5,4,3,2,1]
+    print(s)
 
-mass1 = mass2
+}
 
+}
 
+d()
