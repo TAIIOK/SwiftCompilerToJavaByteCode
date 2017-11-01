@@ -201,14 +201,9 @@
                               }
 [+-]?[0-9]+\.[0-9eE-]+        {
                                   double test = atof(yytext);
-                                  if(test > 2139095039){
                                   yylval.Double = atof(yytext);
                                   return DOUBLE;
-                                  }
-                                  else{
-                                  yylval.Double = atof(yytext);
-                                  return FLOAT;
-                                  }
+
 
 
                               }

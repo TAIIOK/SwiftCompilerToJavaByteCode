@@ -4,11 +4,7 @@ public final class StringOperations
     public static String ConcString(String first,String second)
     {
 
-        boolean hasKey = false;
-        boolean hasPassword = true;
-
-        if (hasPassword || hasKey ) {
-        }
+        Double yes = 9.0;
 
         return  first + second;
     }

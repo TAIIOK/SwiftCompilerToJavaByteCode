@@ -455,6 +455,7 @@ printf("expr->expr->type %d\n",expr->expr->type);
 						code_number(el.id - 1, 2);
 						return;
 					}
+					printf("EEEEEEE eeeeee EEEEEE\n");
 					switch (update_varuble(globalroot,expr->var)[0]) {
 					case 'I':    code_number(ISTORE, 1);     break;
 					case 'F':    code_number(FSTORE, 1);   break;
@@ -500,18 +501,20 @@ printf("expr->expr->type %d\n",expr->expr->type);
 
 				}
 				if(!flagVar){
+					if(expr->var->vartype != NULL){
 				 if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
 				//		code_number(ISTORE, 1);
 					}
-					else if (expr->var->vartype->type == FLOATTy)
+					else if (expr->var->vartype->type == FLOATTy || expr->var->vartype->type == DOUBLETy)
 					{
-						code_number(FSTORE, 1);
+						//code_number(FSTORE, 1);
 					}
 					else
 					{
 						code_number(ASTORE, 1);
 					}
+				}
 					el = is_in_local_vars(expr->var->idlist->first->name);
 					code_number(el.id, 1);
 					return;
@@ -669,11 +672,18 @@ void generate_expr_code(NExpr *expr)
 			if(strcmp(expr->left->idlist->first->next->name,"count") == 0)
 			{
 
+
 				LocalVaruble el;
 				el =  is_in_local_vars(expr->left->idlist->first->name);
-
+				if(strcmp(el.FunctionName,"Main")==0){
+					code_number(GETSTATIC, 1);
+					code_number(el.id - 1,2);
+				}
+				else{
 				code_number(ALOAD, 1);
+				printf("el.id %d",el.id);
 				code_number(el.id, 1);
+				}
 
 				code_number(ARRAYLENGTH,1);
 				return;
@@ -730,7 +740,7 @@ void generate_expr_code(NExpr *expr)
 			switch (str[i]) {
 			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;
-			case 'D':    code_number(findMethodRef(DOUBLETy,true), 2);  break;
+			case 'D':    code_number(findMethodRef(FLOATTy,true), 2);  break;
 			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
@@ -952,7 +962,7 @@ default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);     
 		}
 	case EXPR_DOUBLE:
 		{
-			code_number(LDC2_W, 1);
+			code_number(LDC_W, 1);
 			code_number(expr->id, 2);
 			break;
 		}

@@ -1,35 +1,58 @@
 
+func ki(array:Array<Int>){
 
-func razor(ar:Int) -> Int {
+var mas1:[Int] = [5,2,3,4,1,2]
 
 
 
+var i:Int = 0
 
-    print(ar)
+var N = array.count()
 
-return uk
+var j = 0
+
+var tmp = 0
+
+while(i < N){
+
+mas1[i] = array[i]
+
+i = i + 1
+
 }
 
+i = 0
 
-var uk = 100
+while (i < N - 1){
 
-var d = razor(ar:uk)
+while(j < N - 1){
+
+    if(mas1[j] > mas1[j + 1]){
+
+        tmp = mas1[j]
+        mas1[j] = mas1[j + 1]
+        mas1[j + 1] = tmp
 
 
-print(uk)
+    }
 
+    j = j + 1
 
-
-
-
-
-var a = 90
-
-fn()
-func fn() -> Int {
-    a = 6
-    print (a)
-     a = -99999
-    print (a)
-return 1
 }
+
+j = 0
+
+i = i + 1
+
+}
+
+i = 0
+
+while(i < N){
+print(mas1[i])
+i = i + 1
+}
+
+}
+var s:[Int] = [7,5,3,4,9,6]
+ki(array:s)

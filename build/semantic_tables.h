@@ -1031,16 +1031,17 @@ bool check_return_function(NStmtList *root,char * type){
 
                                 if(strcmp("D",type) == 0 || strcmp("F",type) == 0)
                                 {
-                                        if(strcmp("F",str) == 0 || strcmp("D",str) == 0 || strcmp("I",str) == 0)
+                                        if(strcmp("F",str) == 0 || strcmp("D",str) == 0 || strcmp("I",str) == 0  ||  type[0] == str[0])
                                         {
                                                 result =  true;;
                                         }
                                         else{
                                                 result = false;
                                         }
+
                                 }
 
-                                else if(strcmp(str,type) == 0)
+                                else if(strcmp(str,type) == 0 || type[0] == str[0])
                                 {
                                         result = true;
                                 }
@@ -1129,6 +1130,11 @@ bool check_return_function(NStmtList *root,char * type){
                 currentbody = currentbody->next;
         }
 
+return true;
+        if(strcmp(type, "V") == 0)
+        {
+                return true;
+        }
 
 
         if(inbodyresult && result)
@@ -1172,6 +1178,11 @@ char * get_function_type(struct NFunc * f){
         case BOOLTy:      strcpy(str,"B");    break;
         case STRINGTy:    strcpy(str,"S");    break;
         case VOIDTy:      strcpy(str,"V");     break;
+        case ARRAYTy:     return "A";    break;
+        case ARRAYINTTy:  return "[I";     break;
+        case ARRAYSTRINGTy: return "[S";     break;
+        case ARRAYFLOATTy: return "[F";     break;
+        case ARRAYDOUBLETy: return "[D";     break;
         default:           break;
         }
         return str;
@@ -1333,6 +1344,7 @@ char * get_function_args(struct NFunc * f){
 void print_function_param(char * function,struct NStmt * current){
 
         char * str = (char*)malloc(sizeof(char)*33);;
+        char * strtemp = (char*)malloc(sizeof(char)*33);;
         int func_num = -1;
         if(current->type == STMT_FUNC)
         {
@@ -1350,6 +1362,7 @@ void print_function_param(char * function,struct NStmt * current){
                     if(current->func->args == NULL)
                     {
                       strcat(str,"()");
+
                     }
                       else  if(current->func->args->first == NULL)
                         {
@@ -1358,18 +1371,30 @@ void print_function_param(char * function,struct NStmt * current){
                         }
                         else{
                                 strcat(str,get_function_args(current->func));
+
+
+
                         }
                         if(current->func->vartype == NULL)
                         {
                                 strcat(str,"V");
                         }else{
                                 strcat(str,get_function_type(current->func));
+
                         }
 
+                        for(int i = 0 ; i < strlen(str);i++){
+                            if(str[i] == 'S'){
+                              strcat(strtemp,"Ljava/lang/String;");
+                            }else{
+
+                              strtemp[strlen(strtemp)] =str[i];
+                            }
+                        }
                                 STConst code;
                                 code.next = NULL;
                                 code.type = CONST_UTF8;
-                                code.value.utf8  = str;
+                                code.value.utf8  = strtemp;
                                 table.push_back(code);
 
                         name_of_methods.insert(name_of_methods.end(),func_num - 1);
@@ -1692,6 +1717,10 @@ LocalVaruble temp;
 
                         if(strcmp(node->expr->left->idlist->first->name,"toFloat" )==0)
                         {
+                          if(node->var->vartype->type == VOIDTy)
+                          {
+                            node->var->vartype->type = FLOATTy;
+                          }
                             strcpy(type,update_varuble(globalroot,node->var));
                                 if(strcmp(type,"V ") == 0) {
                                     List_of_varuble.back().varType = FLOATTy;
@@ -1724,6 +1753,10 @@ LocalVaruble temp;
                         if(node->expr->left->idlist->first->next != NULL)
                                 if(strcmp(node->expr->left->idlist->first->next->name,"count" )==0)
                                 {
+                                  if(node->var->vartype->type == VOIDTy)
+                                  {
+                                    node->var->vartype->type = INTTy;
+                                  }
                                   strcpy(type,update_varuble(globalroot,node->var));
                                         if(strcmp(type,"V ") == 0) {
                                           List_of_varuble.back().varType = INTTy;
@@ -1882,13 +1915,13 @@ void st_stmt_expr(struct NExpr * node) {
 
         case EXPR_FLOAT: {
                 if (st_constant_index( CONST_FLOAT, (void *)&(node->Float)) == -1) {
-                        STConst cfloat;
-                        cfloat.next = NULL;
+                        STConst cfloat1;
+                        cfloat1.next = NULL;
 
-                        cfloat.type = CONST_FLOAT;
-                        cfloat.value.val_float = node->Float;
+                        cfloat1.type = CONST_FLOAT;
+                        cfloat1.value.val_float = node->Float;
 
-                        table.push_back(cfloat);
+                        table.push_back(cfloat1);
                         node->id = st_constant_index(CONST_FLOAT, (void *)&(node->Float));
 
                 }
