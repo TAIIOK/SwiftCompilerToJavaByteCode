@@ -152,7 +152,7 @@ code_number(byte_code.size() + 13, 4);//длинна атрибута
 code_number(2048, 2);//стек
 
 
-code_number(List_of_varuble.size()  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
+code_number(0  + loopCounter + name_of_methods.size() + 1 , 2);//количество локальных переменных
 
 code_number(byte_code.size() + 1, 4);//длинна байт кода
 
@@ -411,17 +411,50 @@ void write_code_to_class_file(unsigned long int number, int size)
 
 }
 
+bool is_var_global(NExpr *expr){
+				LocalVaruble el;
+if (expr->type == EXPR_MAS)
+{
+	el =  is_in_local_vars(expr->left->idlist->first->name);
+}
+else if(expr->type == EXPR_ID_LIST) {
+el = is_in_local_vars(expr->idlist->first->name);
+
+}
+if(el.id != -1){
+if(strcmp(el.FunctionName,"Main")==0){
+printf("1\n");
+	return true;
+}
+}
+
+printf("0\n");
+return false;
+}
+
 void generate_expr_assign(NStmt *expr)
 {
 			std::vector<NExpr> *vars;
 			LocalVaruble el;
 printf("expr->var->type %d\n", expr->var->type );
 printf("expr->expr->type %d\n",expr->expr->type);
+
+				bool flagVar = is_var_global(expr->var);
+				bool flagExpr = is_var_global(expr->expr);
+
+				printf("flagVar %d flagExpr %d\n", flagVar , flagExpr);
 				if(expr->var->type != EXPR_MAS)
 				generate_expr_code(expr->expr);
+
 				if( expr->var->type == EXPR_ID_LIST)
 				{	if(!expr->var->isArray){
-
+					if(flagVar){
+						el = is_in_local_vars(expr->var->idlist->first->name);
+						code_number(PUTSTATIC, 1);
+						printf("KKKKK kkkkkk KKKKK %d\n",el.id);
+						code_number(el.id - 1, 2);
+						return;
+					}
 					switch (update_varuble(globalroot,expr->var)[0]) {
 					case 'I':    code_number(ISTORE, 1);     break;
 					case 'F':    code_number(FSTORE, 1);   break;
@@ -431,16 +464,26 @@ printf("expr->expr->type %d\n",expr->expr->type);
 					default:          printf("==WTF?== IN generate_expr_assign '%s' \n", update_varuble(globalroot,expr->var));  code_number(ISTORE, 1);     break;
 					}
 				}else{
-					code_number(ASTORE, 1);
+					//code_number(ASTORE, 1);
 				}
 
 				}
 				else if (expr->var->type == EXPR_MAS)
 				{
-					code_number(ALOAD, 1);
-					el =  is_in_local_vars(expr->var->left->idlist->first->name);
-					printf("ARRAY ID el.id - > %d",el.id);
-					code_number(el.id, 1);
+
+					if(flagVar){
+						el = is_in_local_vars(expr->var->left->idlist->first->name);
+						code_number(GETSTATIC, 1);
+						printf("KKKKK kkkkkk KKKKK\n");
+						code_number(el.id - 1, 2);
+					}
+					else{
+						code_number(ALOAD, 1);
+						el =  is_in_local_vars(expr->var->left->idlist->first->name);
+						printf("ARRAY ID el.id - > %d",el.id);
+						code_number(el.id, 1);
+					}
+
 					generate_expr_code(expr->var->right);
 					generate_expr_code(expr->expr);
 
@@ -456,7 +499,8 @@ printf("expr->expr->type %d\n",expr->expr->type);
 						return;
 
 				}
-				else if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
+				if(!flagVar){
+				 if (expr->var->vartype->type == INTTy || expr->var->vartype->type== BOOLTy)
 					{
 						code_number(ISTORE, 1);
 					}
@@ -470,6 +514,17 @@ printf("expr->expr->type %d\n",expr->expr->type);
 					}
 					el = is_in_local_vars(expr->var->idlist->first->name);
 					code_number(el.id, 1);
+					return;
+				}
+				else{
+					el = is_in_local_vars(expr->var->idlist->first->name);
+					code_number(PUTSTATIC, 1);
+					code_number(el.id - 1, 2);
+					printf("el = is_in_local_vars(expr->var->idlist->first->name);\n");
+					return;
+				}
+				el = is_in_local_vars(expr->var->idlist->first->name);
+				code_number(el.id, 1);
 }
 
  int findMethodRef(enum NVarEnumType type , bool Print)
@@ -520,10 +575,15 @@ void generate_expr_code(NExpr *expr)
 	{
 		LocalVaruble el;
 		el =  is_in_local_vars(expr->left->idlist->first->name);
+		if(strcmp(el.FunctionName,"Main")==0){
+			code_number(GETSTATIC, 1);
+			code_number(el.id - 1,2);
+		}
+		else{
 		code_number(ALOAD, 1);
 		printf("el.id %d",el.id);
 		code_number(el.id, 1);
-
+		}
 
 		generate_expr_code(expr->right);
 
@@ -987,6 +1047,12 @@ void generate_name_code(NExpr*name)
 
 			LocalVaruble elem = is_in_local_vars(name->name);
 
+			if(strcmp(elem.FunctionName, "Main") == 0){
+				code_number(GETSTATIC, 1);
+				code_number(elem.id - 1, 2);
+				return;
+			}
+
 			if (elem.varType == INTTy )
 			{
 				code_number(ILOAD, 1);
@@ -1414,6 +1480,8 @@ byte_code = all_code;
 
 void code_field_table()
 {
+	exit(EXIT_FAILURE);
+	
 	for (auto a: Fields_table){
 		unsigned long int number;
 		code_number(0x0008, 2);

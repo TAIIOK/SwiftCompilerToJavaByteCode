@@ -531,27 +531,7 @@ void buildBaseTable()
         stringClass.value.utf8 = "StringOperations";
         table.push_back(stringClass);
 
-        STConst static_test;
-        static_test.type = CONST_UTF8;
-        static_test.value.utf8 = "GH";
-        table.push_back(static_test);
 
-        STConst static_test1;
-        static_test1.type = CONST_UTF8;
-        static_test1.value.utf8 = "I";
-        table.push_back(static_test1);
-
-        STConst static_test2;
-        static_test2.type = CONST_NAMETYPE;
-        static_test2.value.args.arg1 = 63;
-        static_test2.value.args.arg2 = 64;
-        table.push_back(static_test2);
-
-        STConst static_test3;
-        static_test3.type = CONST_FIELDREF;
-        static_test3.value.args.arg1 = 3;
-        static_test3.value.args.arg2 = 65;
-        table.push_back(static_test3);
 
 
 }
@@ -741,7 +721,7 @@ char * Convert_Local_Varuble_Type(LocalVaruble var){
           for(auto b: c)
           {
               if(strcmp(b.name , var.name) == 0){
-
+                printf("-> c.varType %d %s \n",b.varType,b.name);
                 switch (b.varType) {
                 case INTTy:       return "I ";    break;
                 case FLOATTy:     return "F ";    break;
@@ -870,7 +850,12 @@ for(auto c : function_varubles )
                         {
                                 countofvar = countofvar  + 1;
                                 result.varType = var->vartype->type;
-                                result.id = countofvar;
+                                if(strcmp(CurrentFunctionName , "Main") == 0){
+                                  result.id = table.size() + 4 ;
+                                }
+                                else{
+                                  result.id = countofvar;
+                                }
                                 result.isArray = var->isArray;
                                 result.FunctionName = CurrentFunctionName;
                                 List_of_varuble.push_back(result);
@@ -1910,7 +1895,13 @@ void st_stmt_expr(struct NExpr * node) {
                                 if(!FindVaruble(result))
                                 {
                                         countofvar = countofvar  + 1;
-                                        result.id = countofvar;
+                                        if(strcmp(CurrentFunctionName , "Main") == 0){
+                                          result.id = table.size() + 4 ;
+                                        }
+                                        else{
+                                          result.id = countofvar;
+                                        }
+
                                         List_of_varuble.push_back(result);
 
                                         if(strcmp(CurrentFunctionName , "Main") == 0){
