@@ -462,6 +462,7 @@ printf("expr->expr->type %d\n",expr->expr->type);
 					case 'D':    code_number(FSTORE, 1);  break;
 					case 'S':    code_number(ASTORE, 1);  break;
 					case 'A':    code_number(ASTORE, 1);  break;
+					case '[':    code_number(ASTORE, 1);  break;
 					default:          printf("==WTF?== IN generate_expr_assign '%s' \n", update_varuble(globalroot,expr->var));  code_number(ISTORE, 1);     break;
 					}
 				}else{
