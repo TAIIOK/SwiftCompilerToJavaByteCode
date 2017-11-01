@@ -1007,6 +1007,7 @@ bool check_return_function(NStmtList *root,char * type){
         char * strbody = (char*)malloc(sizeof(char)*33);
         struct NStmt * current = root->first;
 
+
         while (current != NULL && !result) {
 
                 switch (current->type) {
@@ -1022,18 +1023,17 @@ bool check_return_function(NStmtList *root,char * type){
                                 if(current->expr->type != EXPR_ID_LIST && current->expr->type != EXPR_ID)
                                 {
 
-                                        strcat(str,return_Expr_Init_Type(current->expr));
+                                        strcpy(str,return_Expr_Init_Type(current->expr));
                                 }
                                 else{
                                         strcpy(str,update_varuble(globalroot,current->expr));
                                 }
 
-
                                 if(strcmp("D",type) == 0 || strcmp("F",type) == 0)
                                 {
                                         if(strcmp("F",str) == 0 || strcmp("D",str) == 0 || strcmp("I",str) == 0)
                                         {
-                                                result = true;;
+                                                result =  true;;
                                         }
                                         else{
                                                 result = false;
@@ -1098,11 +1098,11 @@ bool check_return_function(NStmtList *root,char * type){
 
                                 if(currentbody->expr->type != EXPR_ID_LIST && currentbody->expr->type != EXPR_ID)
                                 {
-                                        strcat(strbody,return_Expr_Init_Type(currentbody->expr));
+                                        strcpy(strbody,return_Expr_Init_Type(currentbody->expr));
 
                                 }
                                 else{
-                                        strcat(strbody,update_varuble(globalroot,currentbody->expr));
+                                        strcpy(strbody,update_varuble(globalroot,currentbody->expr));
                                 }
 
                                 if(strcmp("D",type) == 0 || strcmp("F",type) == 0)
@@ -1110,20 +1110,18 @@ bool check_return_function(NStmtList *root,char * type){
                                         if(strcmp("F",strbody) == 0 || strcmp("D",strbody) == 0 || strcmp("I",strbody) == 0)
                                         {
                                                 inbodyresult = true;;
-                                                return true;
                                         }
                                         else{
-                                                inbodyresult = false;
+                                                inbodyresult =  false;
                                         }
                                 }
 
                                  if(strbody[0] == type[0])
                                 {
-                                        inbodyresult = true;
-                                        return true;
+                                        inbodyresult =  true;
                                 }
                                 else{
-                                        inbodyresult = false;
+                                        inbodyresult =  false;
                                 }
 
                         }
@@ -1131,10 +1129,16 @@ bool check_return_function(NStmtList *root,char * type){
                 currentbody = currentbody->next;
         }
 
-        if(strcmp(type, "V") == 0)
+
+
+        if(inbodyresult && result)
         {
-                return true;
+          return true;
         }
+        else
+          return false;
+
+
 
         return inbodyresult;
 }
@@ -1475,6 +1479,15 @@ void create_table(NStmtList *root){
             exit(EXIT_FAILURE);
           }
         }
+
+        for(auto s: main_functions_list){
+
+        if(!check_return_function(s.body,get_function_type(&s)))
+        {
+                printf("Return doesnot exist or wrong return value\n");
+                exit(EXIT_FAILURE);
+        }
+      }
 }
 void create_main_table(NStmtList *root){
         struct NStmt * current = root->first;
@@ -1570,13 +1583,6 @@ void st_stmt(struct NStmt * node) {
                 List_of_varuble = temp;
                 countofvar = tempCount;
                 CurrentFunctionName = "Main";
-
-                                if(!check_return_function(node->func->body,get_function_type(node->func)))
-                                {
-                                        printf("Return doesnot exist or wrong return value\n");
-                                      //  exit(EXIT_FAILURE);
-                                }
-
         }
                         break;
 

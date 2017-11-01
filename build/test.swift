@@ -3,11 +3,11 @@
 func razor(ar:Int) -> Int {
 
 
-     uk = 90
+
 
     print(ar)
 
-return 1
+return uk
 }
 
 
@@ -17,3 +17,19 @@ var d = razor(ar:uk)
 
 
 print(uk)
+
+
+
+
+
+
+var a = 90
+
+fn()
+func fn() -> Int {
+    a = 6
+    print (a)
+     a = -99999
+    print (a)
+return 1
+}
