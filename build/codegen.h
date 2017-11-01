@@ -39,7 +39,7 @@ void generate_elsif_code(NIf*elsif, std::vector<int> jump , std::vector<int> pos
 void generate_func_proc_code(NFunc *func);
 void code_method_class();
 void generate_elsif_list_code(NIfList *list, std::vector<int> jump , std::vector<int> pos);
-
+void code_fieldref(int first , int second);
 
 std::vector<char> all_code;
 std::vector<char> byte_code;
@@ -114,10 +114,10 @@ void code_const_table()
 					code_string(c.value.args.arg1);
 					break;
 					case CONST_NULL:      break;
-					case CONST_FIELDREF:/*
+					case CONST_FIELDREF:
 					code_number(9,1);
 					code_fieldref(c.value.args.arg1, c.value.args.arg2);
-					*/
+
 					 break;
 					case CONST_METHODREF:
 					code_number(10,1);
@@ -644,7 +644,10 @@ void generate_expr_code(NExpr *expr)
   	char * str = (char*)malloc(sizeof(char)*33);
 
 			if(expr->right->idlist->first->type == EXPR_ID_LIST) {
-							strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
+				LocalVaruble el;
+				el =  is_in_local_vars(expr->right->idlist->first->idlist->first->name);
+							//strcpy(str,update_varuble(globalroot,expr->right->idlist->first));
+							strcpy(str,Convert_Local_Varuble_Type(el));
 			}
 				else if (expr->right->idlist->first->type==EXPR_MINUS ||expr->right->idlist->first->type==EXPR_PLUS || expr->right->idlist->first->type==EXPR_MUL || expr->right->idlist->first->type==EXPR_DIV || expr->right->idlist->first->type==EXPR_MOD){
 							strcpy(str,check_stack_operation(create_stack_operation(expr->right->idlist->first)));
@@ -1030,6 +1033,10 @@ int sizeElsif;
 int sizeElse;
 int elsifCount = 0;
 
+std::vector<int> jumpHolderPos;
+std::vector<int> posTo;
+
+
 void generate_if_code(NIf * If)
 {
 
@@ -1038,9 +1045,6 @@ void generate_if_code(NIf * If)
 	union s2 temp;
 	int temp_count = 0;
 
-	std::vector<int> jumpHolderPos;
-
-	std::vector<int> posTo;
 
 	generate_expr_code(If->condition);
 
@@ -1097,8 +1101,11 @@ void generate_if_code(NIf * If)
 	for (int j = 0; j < 2; j++)
 		all_code.at(jumpHolderPos[i] + j) = temp.bytes[j];
 }
-
-
+ sizeIf = 0;
+ sizeElsif = 0;
+ sizeElse = 0;
+jumpHolderPos.clear();
+posTo.clear();
 
 }
 
@@ -1117,16 +1124,16 @@ void generate_elsif_code(NIf*elsif, std::vector<int> jump , std::vector<int> pos
 {
 	elsifCount++;
 	code_number(GO_TO, 1);
-	jump.push_back(all_code.size());
+	jumpHolderPos.push_back(all_code.size());
 	code_number(0, 2);
-	pos.push_back(all_code.size());
+	posTo.push_back(all_code.size());
 	generate_expr_code(elsif->condition);
 	code_number(IFEQ, 1);
-	jump.push_back(all_code.size());
+	jumpHolderPos.push_back(all_code.size());
 	code_number(0, 2);
 	generate_stmt_list_code(elsif->body);
 	if (!newElsif)
-		pos.push_back(all_code.size());
+		posTo.push_back(all_code.size());
 
 	if (elsif->next != NULL)
 	{
@@ -1405,6 +1412,20 @@ byte_code = all_code;
 
 }
 
+void code_field_table()
+{
+	for (auto a: Fields_table){
+		unsigned long int number;
+		code_number(0x0008, 2);
+		number = a.value.args.arg1;
+		code_number(number, 2);
+		number = a.value.args.arg2;
+		code_number(number, 2);
+		number = 0;
+		code_number(number, 2);
+	}
+}
+
 void generate_class_file()
 {
 	all_code.clear();
@@ -1435,8 +1456,10 @@ void generate_class_file()
 	number = 0;
 	code_number(number, 2);
 
-	number = 0;
+	number = Fields_table.size();
 	code_number(number, 2);
+
+ code_field_table();
 
 	number = 1 + name_of_methods.size();  // parent_class->methods->size();
 	code_number(number, 2);

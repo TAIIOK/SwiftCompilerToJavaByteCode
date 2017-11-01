@@ -71,7 +71,7 @@ typedef struct st_const STConst;
 struct st_const {
         enum st_const_types type;
         union {
-                char * utf8;
+                char * utf8 = NULL;
                 struct {
                         int arg1;
                         int arg2;
@@ -120,6 +120,8 @@ list<NFunc> functions_list;
 list<NExpr> function_call;
 list<NFunc> main_functions_list;
 list<st_const> Main_table;
+
+list<st_const> Fields_table;
 
 list<LocalVaruble> List_of_varuble;
 
@@ -529,6 +531,27 @@ void buildBaseTable()
         stringClass.value.utf8 = "StringOperations";
         table.push_back(stringClass);
 
+        STConst static_test;
+        static_test.type = CONST_UTF8;
+        static_test.value.utf8 = "GH";
+        table.push_back(static_test);
+
+        STConst static_test1;
+        static_test1.type = CONST_UTF8;
+        static_test1.value.utf8 = "I";
+        table.push_back(static_test1);
+
+        STConst static_test2;
+        static_test2.type = CONST_NAMETYPE;
+        static_test2.value.args.arg1 = 63;
+        static_test2.value.args.arg2 = 64;
+        table.push_back(static_test2);
+
+        STConst static_test3;
+        static_test3.type = CONST_FIELDREF;
+        static_test3.value.args.arg1 = 3;
+        static_test3.value.args.arg2 = 65;
+        table.push_back(static_test3);
 
 
 }
@@ -815,12 +838,12 @@ for(auto c : function_varubles )
     for(auto b: temp)
     {
       if(var->type == EXPR_MAS){
-        if(b.name == var->left->idlist->first->name){
+        if(strcmp(b.name, var->left->idlist->first->name) == 0){
             return Convert_Local_Varuble_Type(b);
         }
       }
         else{
-          if(b.name == var->idlist->first->name){
+          if(strcmp(b.name ,var->idlist->first->name) == 0){
             return Convert_Local_Varuble_Type(b);
           }
         }
@@ -851,6 +874,42 @@ for(auto c : function_varubles )
                                 result.isArray = var->isArray;
                                 result.FunctionName = CurrentFunctionName;
                                 List_of_varuble.push_back(result);
+
+                                if(strcmp(CurrentFunctionName , "Main") == 0){
+                                STConst name;
+                                name.next = NULL;
+                                name.type = CONST_UTF8;
+                              //  name.value.utf8 = "aaa";
+                                name.value.utf8 = result.name;
+                                table.push_back(name);
+
+                                STConst type;
+                                type.next = NULL;
+                                type.type = CONST_UTF8;
+                               char * str = (char*)malloc(sizeof(char)*33);
+                               strcat(str , Convert_Local_Varuble_Type(result));
+
+                                type.value.utf8  = deblank(str);
+                                table.push_back(type);
+
+                                STConst name_type;
+                                name_type.next = NULL;
+                                name_type.type = CONST_NAMETYPE;
+                                name_type.value.args.arg1  = table.size() - 2;
+                                name_type.value.args.arg2  = table.size() - 1;
+                                table.push_back(name_type);
+
+                                STConst field_ref;
+                                field_ref.next = NULL;
+                                field_ref.type = CONST_FIELDREF;
+                                field_ref.value.args.arg1  = 3;
+                                field_ref.value.args.arg2  = table.size()-1;
+                                table.push_back(field_ref);
+
+                                Fields_table.push_back(name_type);
+                              }
+
+
                         }
                         else if (FindVaruble(result) && Get_Local_Varuble_Type(result) != var->vartype->type) {
                           for(auto c: List_of_varuble)
@@ -943,7 +1002,7 @@ bool check_return_function(NStmtList *root,char * type){
                                 {
                                         if(strcmp("F",str) == 0 || strcmp("D",str) == 0 || strcmp("I",str) == 0)
                                         {
-                                                return true;;
+                                                result = true;;
                                         }
                                         else{
                                                 result = false;
@@ -952,16 +1011,15 @@ bool check_return_function(NStmtList *root,char * type){
 
                                 else if(strcmp(str,type) == 0)
                                 {
-                                        return true;
+                                        result = true;
                                 }
                                 else{
                                         if(str[0] == type[0])
                                         {
                                                 result = true;
-                                                return true;
+
                                         } else {
-                                                printf("Return doesnot exist or wrong return value %s %s ", str, type);
-                                                //exit(EXIT_FAILURE);
+
                                                 result = false;
                                         }
                                 }
@@ -971,7 +1029,7 @@ bool check_return_function(NStmtList *root,char * type){
                         }
                         else if(strcmp(type, "V") == 0)
                         {
-                                return true;
+                                result = true;
                         }
                         break;
                 case STMT_IF:
@@ -1021,15 +1079,17 @@ bool check_return_function(NStmtList *root,char * type){
                                         if(strcmp("F",strbody) == 0 || strcmp("D",strbody) == 0 || strcmp("I",strbody) == 0)
                                         {
                                                 inbodyresult = true;;
+                                                return true;
                                         }
                                         else{
                                                 inbodyresult = false;
                                         }
                                 }
 
-                                else if(strcmp(strbody,type) == 0)
+                                 if(strbody[0] == type[0])
                                 {
                                         inbodyresult = true;
+                                        return true;
                                 }
                                 else{
                                         inbodyresult = false;
@@ -1044,20 +1104,8 @@ bool check_return_function(NStmtList *root,char * type){
         {
                 return true;
         }
-        else if (result || inbodyresult) {
-                return true;
-        }
-        else if (inbodyresult) {
-                return true;
-        }
-        else {
-                return false;
-        }
 
-
-
-
-        return result;
+        return inbodyresult;
 }
 
 void check_function_call(NStmtList *root,NExpr *var){
@@ -1444,11 +1492,6 @@ void st_stmt(struct NStmt * node) {
                         }
                 }
 
-                if(!check_return_function(node->func->body,get_function_type(node->func)))
-                {
-                        printf("Return doesnot exist or wrong return value\n");
-                      //  exit(EXIT_FAILURE);
-                }
                 bool flag = false;
 
 
@@ -1469,6 +1512,7 @@ void st_stmt(struct NStmt * node) {
                 temp = List_of_varuble;
                 List_of_varuble.clear();
                 countofvar = -1;
+
                 CurrentFunctionName = node->func->name->last->name;
                 st_stmt_func(node);
 
@@ -1476,6 +1520,12 @@ void st_stmt(struct NStmt * node) {
                 List_of_varuble = temp;
                 countofvar = tempCount;
                 CurrentFunctionName = "Main";
+
+                                if(!check_return_function(node->func->body,get_function_type(node->func)))
+                                {
+                                        printf("Return doesnot exist or wrong return value\n");
+                                      //  exit(EXIT_FAILURE);
+                                }
 
         }
                         break;
@@ -1826,6 +1876,7 @@ void st_stmt_expr(struct NExpr * node) {
                                 result.varType = node->vartype->type;
                                 result.name = node->idlist->first->name;
                                 result.isArray = node->isArray;
+                                result.FunctionName = CurrentFunctionName;
                                 if(node->varconstant != NULL)
                                         if(node->varconstant->constant != VART )
                                         {
@@ -1847,10 +1898,9 @@ void st_stmt_expr(struct NExpr * node) {
                         {
                                 LocalVaruble result;
                                 result.varType = node->vartype->type;
-                                printf("node->vartype->type %d",node->vartype->type);
-                                //exit(EXIT_FAILURE);
                                 result.name = node->name;
                                 result.isArray = node->isArray;
+                                result.FunctionName = CurrentFunctionName;
                                 if(node->varconstant != NULL)
                                         if(node->varconstant->constant != VART )
                                         {
@@ -1862,6 +1912,40 @@ void st_stmt_expr(struct NExpr * node) {
                                         countofvar = countofvar  + 1;
                                         result.id = countofvar;
                                         List_of_varuble.push_back(result);
+
+                                        if(strcmp(CurrentFunctionName , "Main") == 0){
+                                        STConst name;
+                                        name.next = NULL;
+                                        name.type = CONST_UTF8;
+                                      //  name.value.utf8 = "aaa";
+                                        name.value.utf8 = node->name;
+                                        table.push_back(name);
+
+                                        STConst type;
+                                        type.next = NULL;
+                                        type.type = CONST_UTF8;
+                                       char * str = (char*)malloc(sizeof(char)*33);
+                                       strcat(str , Convert_Local_Varuble_Type(result));
+
+                                        type.value.utf8  = deblank(str);
+                                        table.push_back(type);
+
+                                        STConst name_type;
+                                        name_type.next = NULL;
+                                        name_type.type = CONST_NAMETYPE;
+                                        name_type.value.args.arg1  = table.size() - 2;
+                                        name_type.value.args.arg2  = table.size() - 1;
+                                        table.push_back(name_type);
+
+                                        STConst field_ref;
+                                        field_ref.next = NULL;
+                                        field_ref.type = CONST_FIELDREF;
+                                        field_ref.value.args.arg1  = 3;
+                                        field_ref.value.args.arg2  = table.size()-1;
+                                        table.push_back(field_ref);
+
+                                        Fields_table.push_back(name_type);
+                                      }
                                 }
                         }
                 }
