@@ -1,5 +1,5 @@
 ;Constant table:;
-;Constant table size = 82;
+;Constant table size = 73;
     1;     UTF8;  'Code'
     2;     UTF8;  'Main'
     3;    CLASS;  2
@@ -66,20 +66,11 @@
    64; NAMETYPE;  62 63
    65;METHODREF;  57 64
    66;     UTF8;  'StringOperations'
-   67;     UTF8;  'a'
-   68;     UTF8;  'I'
+   67;     UTF8;  's'
+   68;     UTF8;  '()V'
    69; NAMETYPE;  67 68
-   70; FIELDREF;  3 69
-   71;      INT;  1
-   72;     UTF8;  'b'
-   73;     UTF8;  'I'
-   74; NAMETYPE;  72 73
-   75; FIELDREF;  3 74
-   76;      INT;  4
-   77;     UTF8;  'wow'
-   78;   STRING;  77
-   79;     UTF8;  'asdasd'
-   80;   STRING;  79
-   81;     UTF8;  'wow2'
-   82;   STRING;  81
+   70;METHODREF;  3 69
+   71;      INT;  0
+   72;      INT;  10
+   73;      INT;  1
 Method list size = 0
