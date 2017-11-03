@@ -565,7 +565,7 @@ printf("expr->expr->type %d\n",expr->expr->type);
 					}
 					else
 					{
-						code_number(ASTORE, 1);
+					//	code_number(ASTORE, 1);
 					}
 				}
 					el = is_in_local_vars(expr->var->idlist->first->name);
@@ -637,10 +637,12 @@ void generate_expr_code(NExpr *expr)
 		}
 		else{
 		code_number(ALOAD, 1);
-		printf("el.id %d",el.id);
+		printf("el.id %d + 1 %s",el.id,Convert_Local_Varuble_Type(el));
 		code_number(el.id, 1);
 		}
 
+		printf("expr->right->type %d\n",expr->right->type);
+		//exit(EXIT_FAILURE);
 		generate_expr_code(expr->right);
 
 

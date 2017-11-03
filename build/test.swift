@@ -1,12 +1,16 @@
 
-func s() {
+func s(arr:Array<Int>){
 
-var sa = 0
+var po:[Int] = [1,2,3,4,5]
 
-for sa in 0 ... 10{
-    print(sa)
+po = arr
+
+print(arr[0])
 }
 
-}
+var we:[Int] = [1,2,3,4]
 
-s()
+s(arr:we)
+
+
+
