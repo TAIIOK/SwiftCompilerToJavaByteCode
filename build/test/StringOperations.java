@@ -6,6 +6,8 @@ public final class StringOperations
 
         Double yes = 9.0;
 
+        System.out.print(1);
+
         return  first + second;
     }
 

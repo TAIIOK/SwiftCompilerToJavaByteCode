@@ -821,6 +821,7 @@ struct NStmt* create_stmt_assign(struct NExpr* var, struct NExpr* expr, int loca
     struct NVarType* varType = (NVarType*)malloc(sizeof(NVarType));
 
 
+
     if (local)
         result->type = STMT_LASSIGN;
     else if(var->type == EXPR_ID_LIST){

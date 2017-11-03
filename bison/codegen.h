@@ -40,6 +40,8 @@ void generate_func_proc_code(NFunc *func);
 void code_method_class();
 void generate_elsif_list_code(NIfList *list, std::vector<int> jump , std::vector<int> pos);
 void code_fieldref(int first , int second);
+void code_double(double number);
+void code_double_number(double number, int size);
 
 std::vector<char> all_code;
 std::vector<char> byte_code;
@@ -74,6 +76,14 @@ union s4
 	char bytes[4];
 };
 
+union s8
+{
+	signed long int number;
+	double dlnumber;
+	char bytes[8];
+};
+
+
 union s2
 {
 	signed short number;
@@ -103,7 +113,9 @@ void code_const_table()
 					break;
 					case CONST_DOUBLE:
 					code_number(4,1);
+					//code_float(c.value.val_double);
 					code_float(c.value.val_double);
+					//code_double(c.value.val_double);
 					break;
 					case CONST_CLASS:
 					code_number(7,1);
@@ -229,6 +241,12 @@ void code_float(float number)
 	code_float_number(number, 4);
 }
 
+void code_double(double number)
+{
+	code_double_number(number, 8);
+}
+
+
 void code_fieldref(int first , int second)
 {
 	code_number(first, 2);
@@ -332,6 +350,15 @@ union s4 make_reversed_float_s4(float number)
 	return changer;
 }
 
+union s8 make_reversed_float_s8(float number)
+{
+	union s8 changer;
+	changer.dlnumber = number;
+	reverse_bytes(changer.bytes, 8);
+	return changer;
+}
+
+
 void code_number(unsigned long int number, int size)
 {
 
@@ -383,8 +410,33 @@ void code_float_number(float number, int size)
 			all_code.insert(all_code.end(), temp.bytes[i]);
 		}
 	}
+	else if (size == 8)
+	{
+		union s8 temp = make_reversed_float_s8(number);
+		for (i = 0; i < 8; i++)
+		{
+			all_code.insert(all_code.end(), temp.bytes[i]);
+		}
+	}
 
 }
+
+void code_double_number(double number, int size)
+{
+
+	int i;
+
+	 if (size == 8)
+	{
+		union s8 temp = make_reversed_float_s8(number);
+		for (i = 0; i < 8; i++)
+		{
+			all_code.insert(all_code.end(), temp.bytes[i]);
+		}
+	}
+
+}
+
 
 void write_code_to_class_file(unsigned long int number, int size)
 {
@@ -459,7 +511,7 @@ printf("expr->expr->type %d\n",expr->expr->type);
 					switch (update_varuble(globalroot,expr->var)[0]) {
 					case 'I':    code_number(ISTORE, 1);     break;
 					case 'F':    code_number(FSTORE, 1);   break;
-					case 'D':    code_number(FSTORE, 1);  break;
+					case 'D':    code_number(DSTORE, 1);  break;
 					case 'S':    code_number(ASTORE, 1);  break;
 					case 'A':    code_number(ASTORE, 1);  break;
 					case '[':    code_number(ASTORE, 1);  break;
@@ -492,7 +544,7 @@ printf("expr->expr->type %d\n",expr->expr->type);
 						switch (Convert_Local_Varuble_Type(el)[1]) {
 						case 'I':   printf("INT generate_expr_assign MASS\n") ; code_number(IASTORE, 1);     break;
 						case 'F':    code_number(FASTORE, 1);   break;
-						case 'D':    code_number(FASTORE, 1);  break;
+						case 'D':    code_number(DASTORE, 1);  break;
 						case 'S':    code_number(AASTORE, 1);  break;
 						case 'A':    code_number(AASTORE, 1);  break;
 						default:          printf("==WTF?== generate_expr_assign MASS\n"); code_number(IASTORE, 1);       break;
@@ -595,7 +647,7 @@ void generate_expr_code(NExpr *expr)
 		switch (Convert_Local_Varuble_Type(el)[1]) {
 		case 'I':    code_number(IALOAD, 1);     break;
 		case 'F':    code_number(FALOAD, 1);   break;
-		case 'D':    code_number(FALOAD, 1);  break;
+		case 'D':    code_number(DALOAD, 1);  break;
 		case 'S':    code_number(AALOAD, 1);  break;
 		case 'A':    code_number(AALOAD, 1);  break;
 		default:          printf("DEFAULT");       break;
@@ -741,7 +793,7 @@ void generate_expr_code(NExpr *expr)
 			switch (str[i]) {
 			case 'I':    code_number(findMethodRef(INTTy,true), 2);     break;
 			case 'F':    code_number(findMethodRef(FLOATTy,true), 2);   break;
-			case 'D':    code_number(findMethodRef(FLOATTy,true), 2);  break;
+			case 'D':    code_number(findMethodRef(DOUBLETy,true), 2);  break;
 			case 'B':    code_number(findMethodRef(BOOLTy,true), 2);    break;
 			case 'S':    code_number(findMethodRef(STRINGTy,true), 2);  break;
 			case 'A':    code_number(findMethodRef(ARRAYTy,true), 2);   break;
@@ -779,7 +831,7 @@ void generate_expr_code(NExpr *expr)
 			switch (check_stack_operation(create_stack_operation(expr))[0]) {
 			case 'I':    code_number(IADD, 1);     break;
 			case 'F':    code_number(FADD, 1);   break;
-			case 'D':    code_number(FADD, 1);  break;
+			case 'D':    code_number(DADD, 1);  break;
 			case 'S':			code_number(INVOKESTATIC, 1);
 										code_number(61,2);break;
 			default:          printf("==WTF?== IN EXPR_PLUS\n");   code_number(IADD, 1);      break;
@@ -793,7 +845,7 @@ void generate_expr_code(NExpr *expr)
 			switch (check_stack_operation(create_stack_operation(expr))[0]) {
 			case 'I':    code_number(IMUL, 1);     break;
 			case 'F':    code_number(FMUL, 1);   break;
-			case 'D':    code_number(FMUL, 1);  break;
+			case 'D':    code_number(DMUL, 1);  break;
 			default:          printf("==WTF?== IN EXPR_MUL %s \n",check_stack_operation(create_stack_operation(expr)));  code_number(IMUL, 1);      break;
 			}
 			break;
@@ -805,7 +857,7 @@ void generate_expr_code(NExpr *expr)
 			switch (check_stack_operation(create_stack_operation(expr))[0]) {
 			case 'I':    code_number(IDIV, 1);     break;
 			case 'F':    code_number(FDIV, 1);   break;
-			case 'D':    code_number(FDIV, 1);  break;
+			case 'D':    code_number(DDIV, 1);  break;
 			default:          printf("==WTF?== EXPR_DIV\n"); code_number(IDIV, 1);       break;
 			}
 			break;
@@ -820,7 +872,7 @@ void generate_expr_code(NExpr *expr)
 switch (check_stack_operation(create_stack_operation(expr))[0]) {
 case 'I':    code_number(ISUB, 1);     break;
 case 'F':    code_number(FSUB, 1);   break;
-case 'D':    code_number(FSUB, 1);  break;
+case 'D':    code_number(DSUB, 1);  break;
 default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);      break;
 }
 
@@ -842,8 +894,10 @@ default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);     
 		{
 			generate_expr_code(expr->right);
 			generate_expr_code(expr->left);
+
 			code_number(IF_ICMPEQ, 1);
 			code_number(7, 2);
+
 			code_number(ICONST_0, 1);
 			code_number(GO_TO, 1);
 			code_number(4, 2);
@@ -965,6 +1019,11 @@ default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);     
 		{
 			code_number(LDC_W, 1);
 			code_number(expr->id, 2);
+
+/*
+			code_number(INVOKESTATIC, 1);
+			code_number(65, 2);
+			*/
 			break;
 		}
 		case EXPR_FLOAT:
@@ -1110,9 +1169,6 @@ int sizeElsif;
 int sizeElse;
 int elsifCount = 0;
 
-std::vector<int> jumpHolderPos;
-std::vector<int> posTo;
-
 
 void generate_if_code(NIf * If)
 {
@@ -1121,6 +1177,9 @@ void generate_if_code(NIf * If)
 	int size2;
 	union s2 temp;
 	int temp_count = 0;
+
+	std::vector<int> jumpHolderPos;
+	std::vector<int> posTo;
 
 
 	generate_expr_code(If->condition);
@@ -1133,6 +1192,8 @@ void generate_if_code(NIf * If)
 	generate_stmt_list_code(If->body);
 
 	generate_elsif_list_code(If->elseiflist,jumpHolderPos,posTo);
+
+	printf("%d" , elsifCount);
 
 	for (int i = 0; i<elsifCount; i++)
 			posTo.push_back(all_code.size());
@@ -1178,12 +1239,8 @@ void generate_if_code(NIf * If)
 	for (int j = 0; j < 2; j++)
 		all_code.at(jumpHolderPos[i] + j) = temp.bytes[j];
 }
- sizeIf = 0;
- sizeElsif = 0;
- sizeElse = 0;
-jumpHolderPos.clear();
-posTo.clear();
 
+ elsifCount = 0;
 }
 
 void generate_elsif_list_code(NIfList *list, std::vector<int> jump , std::vector<int> pos)
@@ -1201,16 +1258,16 @@ void generate_elsif_code(NIf*elsif, std::vector<int> jump , std::vector<int> pos
 {
 	elsifCount++;
 	code_number(GO_TO, 1);
-	jumpHolderPos.push_back(all_code.size());
+	jump.push_back(all_code.size());
 	code_number(0, 2);
-	posTo.push_back(all_code.size());
+	pos.push_back(all_code.size());
 	generate_expr_code(elsif->condition);
 	code_number(IFEQ, 1);
-	jumpHolderPos.push_back(all_code.size());
+	jump.push_back(all_code.size());
 	code_number(0, 2);
 	generate_stmt_list_code(elsif->body);
 	if (!newElsif)
-		posTo.push_back(all_code.size());
+		pos.push_back(all_code.size());
 
 	if (elsif->next != NULL)
 	{
@@ -1283,7 +1340,7 @@ code_of_methods[0].clear();
 				case 'I':    code_number(IRETURN, 1);     break;
 				case 'B': 	 code_number(IRETURN, 1); break;
 				case 'F':    code_number(FRETURN, 1);   break;
-				case 'D':    code_number(FRETURN, 1);  break;
+				case 'D':    code_number(DRETURN, 1);  break;
 				case 'S':    code_number(ARETURN, 1);  break;
 				case 'A':    code_number(ARETURN, 1);  break;
 				default:          printf("==WTF?== generate_expr_assign MASS\n"); code_number(IRETURN, 1);       break;

@@ -503,7 +503,7 @@ void buildBaseTable()
 
         STConst RTLStringOperations;
         RTLStringOperations.type = CONST_CLASS;
-        RTLStringOperations.value.val_int  = 62;
+        RTLStringOperations.value.val_int  = 66;
         table.push_back(RTLStringOperations);
 
 //Print int block 36 37 38 39
@@ -528,6 +528,28 @@ void buildBaseTable()
         concStringMethod.value.args.arg1 = 57;
         concStringMethod.value.args.arg2 = 60;
         table.push_back(concStringMethod);
+
+        STConst valueOf;
+        valueOf.type = CONST_UTF8;
+        valueOf.value.utf8 = "valueOf";
+        table.push_back(valueOf);
+
+        STConst valueOfDesc;
+        valueOfDesc.type = CONST_UTF8;
+        valueOfDesc.value.utf8 = "(D)D";
+        table.push_back(valueOfDesc);
+
+        STConst valueOfNT;
+        valueOfNT.type = CONST_NAMETYPE;
+        valueOfNT.value.args.arg1 = 62;
+        valueOfNT.value.args.arg2 = 63;
+        table.push_back(valueOfNT);
+
+        STConst valueOfMethod;
+        valueOfMethod.type = CONST_METHODREF;
+        valueOfMethod.value.args.arg1 = 57;
+        valueOfMethod.value.args.arg2 = 64;
+        table.push_back(valueOfMethod);
 
         STConst stringClass;
         stringClass.type = CONST_UTF8;
@@ -632,7 +654,7 @@ void check_equal(char *left,char *right){
         if(strcmp(left,right) != 0 && left[0] != right[1]  &&  left[1] != right[0] )
         {
                 printf("Wrong equal TYPE 1 %s| 2 %s| \n",right,left);
-                //exit (EXIT_FAILURE);
+                exit (EXIT_FAILURE);
         }
         return;
 }
@@ -1613,6 +1635,7 @@ void st_stmt(struct NStmt * node) {
 
         case STMT_ASSIGN:{
             printf("node->expr->type %d \n", node->expr->type);
+            printf("node->var->type %d \n", node->var->type);
 LocalVaruble temp;
 
   if(node->var->type == EXPR_MAS){
@@ -1676,10 +1699,28 @@ LocalVaruble temp;
                                   {
                                     break;
                                   }
-                                  if (node->var->vartype->type == VOIDTy)
+                                  LocalVaruble tempLocal;
+                                  tempLocal.name = node->var->idlist->first->name;
+
+                                bool flag =   FindVaruble(tempLocal);
+
+                                   if(node->var->vartype != 0  && !flag){
+
+
+
+                                    struct NVarType* result = (NVarType*)malloc(sizeof(NVarType));
+                                    result->type = c.vartype->type;
+                                    node->var->vartype = result ;
+
+                                      }
+
+                                  if(strcmp(Convert_Local_Varuble_Type(tempLocal),update_varuble(globalroot,node->var)) == 0)
                                   {
-                                    node->var->vartype = c.vartype;
+
                                   }
+
+
+
                                   strcpy(type,update_varuble(globalroot,node->var));
                                     if(strcmp(type,"V ") == 0) {
                                       switch (get_function_type(&c)[0]) {
@@ -1810,7 +1851,7 @@ LocalVaruble temp;
                         }
 
                 }
-
+//check_equal(update_varuble(globalroot,node->var),update_varuble(globalroot,node->expr));
                 st_stmt_expr(node->var);
                 st_stmt_expr(node->expr);
 }

@@ -1,13 +1,25 @@
+var a = 1
+var b = 4
+if (a < b){
+    a = a + 1
+}
+print(a)
 
-func d(){
-var s = 0
+if (b > a){
+    b = a + b
+}
+else{
+     b = b - 1
+}
+print(b)
 
-for s in 0 ... 10{
+if (a != b){
+    print("wow")
+    if(a == b ){
+    print("asdasd")
+    }
+} else if (a == b){
 
-    print(s)
-
+    print("wow2")
 }
 
-}
-
-d()

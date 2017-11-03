@@ -6,4 +6,8 @@ public final class StringOperations
         return  first + second;
     }
 
+    public static Double valueOf(double d) {
+                   return new Double(d);
+       }
+
 }
