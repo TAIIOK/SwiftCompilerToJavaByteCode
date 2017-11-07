@@ -1,16 +1,18 @@
 
-func s(arr:Array<Int>){
-
-var po:[Int] = [1,2,3,4,5]
-
-po = arr
-
-print(arr[0])
+func a() -> Int{
+print("zaq")
+return 0
 }
 
-var we:[Int] = [1,2,3,4]
+func b() -> Int {
+print("qaz")
+return 1
+}
 
-s(arr:we)
+
+if(a() && b()){
+    print("ya ebal")
+}
 
 
 

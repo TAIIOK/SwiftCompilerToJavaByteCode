@@ -654,7 +654,7 @@ void check_equal(char *left,char *right){
         if(strcmp(left,right) != 0 && left[0] != right[1]  &&  left[1] != right[0] )
         {
                 printf("Wrong equal TYPE 1 %s| 2 %s| \n",right,left);
-                exit (EXIT_FAILURE);
+                //exit (EXIT_FAILURE);
         }
         return;
 }

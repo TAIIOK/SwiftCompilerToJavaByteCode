@@ -968,28 +968,85 @@ default:          printf("==WTF?== IN EXPR_MINUS\n"); code_number(ISUB, 1);     
 		}
 	case EXPR_AND:
 		{
-			generate_expr_code(expr->left);
+			auto temp_vector = all_code;
+
+			int size = all_code.size();
+
 			generate_expr_code(expr->right);
-			code_number(IMUL, 1);
+
+			size = all_code.size()  - size;
+
+			all_code = temp_vector;
+
+			generate_expr_code(expr->left);
+
+			code_number(IFEQ, 1);
+
+			union s2 temp;
+
+			temp = make_reversed_s2(10 + size);
+			for (int j = 0; j < 2; j++)
+			{
+				all_code.push_back(temp.bytes[j]);
+			}
+
+			generate_expr_code(expr->right);
+
+			code_number(IFEQ, 1);
+
+			temp = make_reversed_s2(7);
+			for (int j = 0; j < 2; j++){
+				all_code.push_back(temp.bytes[j]);
+			}
 			code_number(ICONST_1, 1);
-			code_number(IF_ICMPEQ, 1);
-			code_number(7, 2);
-			code_number(ICONST_0, 1);
 			code_number(GO_TO, 1);
-			code_number(4, 2);
-			code_number(ICONST_1, 1);
+			temp = make_reversed_s2(4);
+			for (int j = 0; j < 2; j++){
+				all_code.push_back(temp.bytes[j]);
+			}
+			code_number(ICONST_0, 1);
 			break;
 		}
 	case EXPR_OR:
 		{
+			auto temp_vector = all_code;
+
+			int size = all_code.size();
+
+			generate_expr_code(expr->right);
+
+			size = all_code.size()  - size;
+
+			all_code = temp_vector;
+
 			generate_expr_code(expr->left);
-			code_number(ICONST_0, 1);
-			code_number(IF_ICMPNE, 1);
-			code_number(7, 2);
+
+			code_number(IFNE, 1);
+
+			union s2 temp;
+
+			temp = make_reversed_s2(10 + size);
+			for (int j = 0; j < 2; j++)
+			{
+				all_code.push_back(temp.bytes[j]);
+			}
+
+			generate_expr_code(expr->right);
+
+			code_number(IFNE, 1);
+
+			temp = make_reversed_s2(7);
+			for (int j = 0; j < 2; j++){
+				all_code.push_back(temp.bytes[j]);
+			}
 			code_number(ICONST_0, 1);
 			code_number(GO_TO, 1);
-			code_number(4, 2);
+			temp = make_reversed_s2(4);
+			for (int j = 0; j < 2; j++){
+				all_code.push_back(temp.bytes[j]);
+			}
 			code_number(ICONST_1, 1);
+
 
 			break;
 		}
